@@ -9,8 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+/**
+ * This activity is shown when the match the user joined previously has started. There is a chat
+ * with all other participants and a button to start navigation.
+ */
 public class ChatActivity extends Activity {
-
 
     private ChatHistory chatHistoryAdapter;
 
