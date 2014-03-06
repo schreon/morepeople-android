@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,7 +22,15 @@ public class SearchAdapter extends BaseAdapter {
         searchEntryList = new ArrayList<SearchEntry>();
     }
 
-    public void addEntry(SearchEntry searchEntry) {
+    public void emptySilent() {
+        searchEntryList.clear();
+    }
+
+    public void addAll(Collection<SearchEntry> searchEntries) {
+        searchEntryList.addAll(searchEntries);
+        notifyDataSetChanged();
+    }
+    public void add(SearchEntry searchEntry) {
         searchEntryList.add(searchEntry);
         notifyDataSetChanged();
     }

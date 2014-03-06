@@ -1,5 +1,8 @@
 package morepeople.android.app;
 
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -10,8 +13,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 
-import java.util.HashMap;
-
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
@@ -53,7 +55,7 @@ public class SearchActivityTest {
         // add some search entries
         for (int i=0; i < 40; i++) {
             SearchEntry searchEntry = new SearchEntry(String.valueOf(i), "schmusen", "Hans Dampf", "1/3");
-            searchAdapter.addEntry(searchEntry);
+            searchAdapter.add(searchEntry);
 
             // update robolectric
             Robolectric.shadowOf(searchView).populateItems();
@@ -83,5 +85,49 @@ public class SearchActivityTest {
             }
             assertTrue(isDisplayed);
         }
+    }
+
+    // should display the "add search" button when the user has entered text
+    // should add new search if the button is pressed
+    @Test
+    public void shouldDisplayAddSearchButton() {
+        final LinearLayout layoutAddSearch = (LinearLayout) activity.findViewById(R.id.layout_add_search);
+        EditText inputSearch = (EditText) activity.findViewById(R.id.input_search);
+
+        assertEquals(layoutAddSearch.getVisibility(), View.INVISIBLE);
+        inputSearch.setText("schmu");
+        assertEquals(layoutAddSearch.getVisibility(), View.VISIBLE);
+        inputSearch.setText("");
+        assertEquals(layoutAddSearch.getVisibility(), View.INVISIBLE);
+
+        String expectedDescription = "schmu";
+        String expectedCreator = "Hans Dampf";
+        String expectedParticipants = "1/3";
+
+        inputSearch.setText(expectedDescription);
+
+        Button buttonSendSearch = (Button) activity.findViewById(R.id.button_send_search);
+        buttonSendSearch.performClick();
+
+        ListView searchView = (ListView)activity.findViewById(R.id.list_search);
+
+        // update robolectric
+        Robolectric.shadowOf(searchView).populateItems();
+        boolean isDisplayed = false;
+        // the ListView should now display the new message
+        for (int j=0; j < searchView.getChildCount(); j++) {
+            LinearLayout group = (LinearLayout)searchView.getChildAt(j);
+
+            assertTrue(group.getChildCount() > 0);
+
+            String foundDescription = ((TextView)group.getChildAt(0)).getText().toString();
+            String foundCreator = ((TextView)group.getChildAt(1)).getText().toString();
+            String foundParticipants = ((TextView)group.getChildAt(2)).getText().toString();
+
+            if (!foundDescription.equals(expectedDescription)) continue;
+
+            isDisplayed = true;
+        }
+        assertTrue(isDisplayed);
     }
 }

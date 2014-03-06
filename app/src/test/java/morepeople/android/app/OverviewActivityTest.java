@@ -95,7 +95,7 @@ public class OverviewActivityTest {
         messageInput.setText(testMessage);
 
         // Click send button
-        Button sendButton = (Button) activity.findViewById(R.id.send_button);
+        Button sendButton = (Button) activity.findViewById(R.id.button_send_search);
         sendButton.performClick();
 
         // Message should now be contained in the chatAdapter
@@ -132,7 +132,7 @@ public class OverviewActivityTest {
     public void shouldIgnoreEmptyMessages() {
 
         EditText messageInput = (EditText) activity.findViewById(R.id.messageInput);
-        Button sendButton = (Button) activity.findViewById(R.id.send_button);
+        Button sendButton = (Button) activity.findViewById(R.id.button_send_search);
         ListView chatHistoryView = (ListView) activity.findViewById(R.id.chat_history);
 
         String testMessage = null;

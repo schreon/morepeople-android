@@ -27,7 +27,7 @@ public class ChatActivity extends Activity {
         listView.setAdapter(chatAdapterAdapter);
         listView.smoothScrollToPosition(chatAdapterAdapter.getCount()-1);
 
-        Button btn = (Button) findViewById(R.id.send_button);
+        Button btn = (Button) findViewById(R.id.button_send_search);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
