@@ -1,4 +1,4 @@
-package hdm.gcmtestapp.gcmtest;
+package morepeople.android.app;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.AndroidManifest;

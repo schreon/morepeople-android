@@ -1,4 +1,4 @@
-package hdm.gcmtestapp.gcmtest;
+package morepeople.android.app;
 
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -22,19 +22,19 @@ import static org.junit.Assert.assertSame;
 
 @SuppressWarnings("ConstantConditions")
 @Config(emulateSdk = 18)
-@RunWith(hdm.gcmtestapp.gcmtest.TestRunner.class)
+@RunWith(TestRunner.class)
 /**
  * Created by schreon on 3/4/14.
  */
 public class ChatHistoryTest {
     ChatHistory chatHistory;
-    OverviewActivity overviewActivity;
+    ChatActivity activity;
     /**
      * Setup method
      */
     @Before
     public void setUp(){
-        overviewActivity = Robolectric.buildActivity(OverviewActivity.class).create().get();
+        activity = Robolectric.buildActivity(ChatActivity.class).create().get();
         chatHistory = new ChatHistory();
     }
 
@@ -47,8 +47,6 @@ public class ChatHistoryTest {
     @Test
     public void shouldContainNewMessages() {
         assertNotNull(chatHistory);
-
-        // TODO: the following should work repeatedly
 
         // new message arrives
         String testMessage = "This is a test Message!";
@@ -71,7 +69,7 @@ public class ChatHistoryTest {
     public void shouldReturnTextViews() {
         String testMessage = "Test message";
         chatHistory.addNewMessage(testMessage);
-        TextView messageView = (TextView) chatHistory.getView(0, null, (ViewGroup)overviewActivity.findViewById(R.id.chat_history));
+        TextView messageView = (TextView) chatHistory.getView(0, null, (ViewGroup) activity.findViewById(R.id.chat_history));
         assertNotNull(messageView);
         assertEquals(messageView.getText().toString(), testMessage);
     }
@@ -82,10 +80,10 @@ public class ChatHistoryTest {
         chatHistory.addNewMessage(testMessage1);
         String testMessage2 = "Test message";
         chatHistory.addNewMessage(testMessage2);
-        TextView messageView1 = (TextView) chatHistory.getView(0, null, (ViewGroup)overviewActivity.findViewById(R.id.chat_history));
+        TextView messageView1 = (TextView) chatHistory.getView(0, null, (ViewGroup) activity.findViewById(R.id.chat_history));
         assertNotNull(messageView1);
         assertEquals(messageView1.getText().toString(), testMessage1);
-        TextView messageView2 = (TextView) chatHistory.getView(1, messageView1, (ViewGroup)overviewActivity.findViewById(R.id.chat_history));
+        TextView messageView2 = (TextView) chatHistory.getView(1, messageView1, (ViewGroup) activity.findViewById(R.id.chat_history));
         assertNotNull(messageView2);
         assertEquals(messageView1.getText().toString(), testMessage2);
         assertSame(messageView1, messageView2);

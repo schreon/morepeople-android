@@ -1,17 +1,17 @@
-package hdm.gcmtestapp.integrationtest;
+package morepeople.android.app;
 
 
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.robotium.solo.Solo;
 
-import hdm.gcmtestapp.gcmtest.OverviewActivity;
+import morepeople.android.app.SearchActivity;
 
-public class ChatTest extends ActivityInstrumentationTestCase2<OverviewActivity> {
+public class ChatTest extends ActivityInstrumentationTestCase2<SearchActivity> {
     private Solo solo;
 
     public ChatTest() {
-        super(OverviewActivity.class);
+        super(SearchActivity.class);
     }
 
     @Override

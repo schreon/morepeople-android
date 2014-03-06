@@ -1,6 +1,5 @@
-package hdm.gcmtestapp.gcmtest;
+package morepeople.android.app;
 
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -11,8 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
-
-import java.util.Arrays;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -27,14 +24,14 @@ import static org.junit.Assert.assertFalse;
 @Config(emulateSdk = 18)
 @RunWith(TestRunner.class)
 public class OverviewActivityTest {
-    private OverviewActivity activity;
+    private ChatActivity activity;
 
     /**
      * Setup method
      */
     @Before
     public void setUp(){
-        activity = Robolectric.buildActivity(OverviewActivity.class).create().get();
+        activity = Robolectric.buildActivity(ChatActivity.class).create().get();
     }
 
     @Test
