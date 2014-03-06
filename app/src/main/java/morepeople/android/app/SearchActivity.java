@@ -60,6 +60,7 @@ public class SearchActivity extends Activity {
             @Override
             public void onClick(View view) {
                 searchAdapter.add(new SearchEntry("testid", inputSearch.getText().toString(), "Hans Dampf", "1/3"));
+                inputSearch.setText("");
             }
         });
     }

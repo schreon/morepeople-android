@@ -108,6 +108,8 @@ public class SearchActivityTest {
 
         Button buttonSendSearch = (Button) activity.findViewById(R.id.button_send_search);
         buttonSendSearch.performClick();
+        assertTrue(inputSearch.getText().length() == 0);
+        assertEquals(layoutAddSearch.getVisibility(), View.INVISIBLE);
 
         ListView searchView = (ListView)activity.findViewById(R.id.list_search);
 
