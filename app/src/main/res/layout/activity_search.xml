@@ -57,7 +57,7 @@
         android:layout_alignParentStart="false"
         android:layout_above="@+id/layout_search_input"
         android:gravity="center"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <Button
             style="?android:attr/buttonStyleSmall"

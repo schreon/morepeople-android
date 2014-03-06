@@ -30,7 +30,7 @@ public class SearchActivity extends Activity {
         ListView listView = (ListView) findViewById(R.id.list_search);
         listView.setAdapter(searchAdapter);
         final LinearLayout layoutAddSearch = (LinearLayout) findViewById(R.id.layout_add_search);
-        layoutAddSearch.setVisibility(View.INVISIBLE);
+        layoutAddSearch.setVisibility(View.GONE);
 
         final EditText inputSearch = (EditText) this.findViewById(R.id.input_search);
         inputSearch.addTextChangedListener(new TextWatcher() {
@@ -42,10 +42,11 @@ public class SearchActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 if(charSequence.length() > 0) {
+
                     layoutAddSearch.setVisibility(View.VISIBLE);
                 } else {
 
-                    layoutAddSearch.setVisibility(View.INVISIBLE);
+                    layoutAddSearch.setVisibility(View.GONE);
                 }
             }
 
