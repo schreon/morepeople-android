@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 
 /**
@@ -20,6 +21,8 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         searchAdapter = new SearchAdapter();
+        ListView listView = (ListView) findViewById(R.id.list_search);
+        listView.setAdapter(searchAdapter);
     }
 
     public SearchAdapter getSearchAdapter() {

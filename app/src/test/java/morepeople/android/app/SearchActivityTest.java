@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 
 /**
  * Created by schreon on 3/6/14.
@@ -50,7 +51,7 @@ public class SearchActivityTest {
         SearchAdapter searchAdapter = activity.getSearchAdapter();
 
         // add some search entries
-        for (int i=0; i <20; i++) {
+        for (int i=0; i < 40; i++) {
             SearchEntry searchEntry = new SearchEntry(String.valueOf(i), "schmusen", "Hans Dampf", "1/3");
             searchAdapter.addEntry(searchEntry);
 
@@ -66,16 +67,17 @@ public class SearchActivityTest {
                 LinearLayout group = (LinearLayout)searchView.getChildAt(j);
 
                 SearchEntry foundSearchEntry = (SearchEntry) group.getTag();
-                String foundId = foundSearchEntry.id;
+
+                assertTrue(group.getChildCount() > 0);
 
                 String foundDescription = ((TextView)group.getChildAt(0)).getText().toString();
                 String foundCreator = ((TextView)group.getChildAt(1)).getText().toString();
                 String foundParticipants = ((TextView)group.getChildAt(2)).getText().toString();
 
-                if (foundId != searchEntry.id) continue;
-                if (foundDescription != searchEntry.description) continue;
-                if (foundCreator != searchEntry.creator) continue;
-                if (foundParticipants != searchEntry.participants) continue;
+                if (!foundSearchEntry.id.equals(searchEntry.id)) continue;
+                if (!foundDescription.equals(searchEntry.description)) continue;
+                if (!foundCreator.equals(searchEntry.creator)) continue;
+                if (!foundParticipants.equals(searchEntry.participants)) continue;
 
                 isDisplayed = true;
             }
