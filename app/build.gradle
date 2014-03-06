@@ -111,8 +111,8 @@ task robotium {
 // Configuration of the sonarRunner task (the task itself is provided by the sonar-runner plugin)
 sonarRunner {
     sonarProperties {
-        property "sonar.projectKey", "gcmtest"
-        property "sonar.projectName", "GCM Testprojekt"
+        property "sonar.projectKey", "morepeopleandroid"
+        property "sonar.projectName", "morepeople android client"
         property "sonar.projectVersion", "v0.01"
         property "sonar.host.url", "$System.env.SONAR_URL"
         property "sonar.jdbc.url", "$System.env.SONAR_JDBC_URL"
