@@ -12,13 +12,13 @@ import java.util.List;
 /**
  * Adapter for a chat history. It contains a list of messages and extends BaseAdapter, so it can be used together with ListViews.
  */
-public class ChatHistory extends BaseAdapter {
+public class ChatAdapter extends BaseAdapter {
     private List<String> messageList;
 
     /**
-     * Constructor of the ChatHistory adapter.
+     * Constructor of the ChatAdapter adapter.
      */
-    public ChatHistory() {
+    public ChatAdapter() {
         this.messageList = new ArrayList<String>();
     }
 

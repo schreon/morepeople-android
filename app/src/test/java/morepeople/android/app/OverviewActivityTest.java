@@ -52,12 +52,12 @@ public class OverviewActivityTest {
         ListView chatHistoryView = (ListView) activity.findViewById(R.id.chat_history);
         assertNotNull(chatHistoryView);
 
-        ChatHistory chatHistory = activity.getChatHistoryAdapter();
+        ChatAdapter chatAdapter = activity.getChatAdapterAdapter();
 
         for (int m=0; m < 100; m++) {
             // new message arrives
             String testMessage = "message" + m;
-            chatHistory.addNewMessage(testMessage);
+            chatAdapter.addNewMessage(testMessage);
 
             // update robolectric
             Robolectric.shadowOf(chatHistoryView).populateItems();
@@ -98,9 +98,9 @@ public class OverviewActivityTest {
         Button sendButton = (Button) activity.findViewById(R.id.send_button);
         sendButton.performClick();
 
-        // Message should now be contained in the chatHistory
-        ChatHistory chatHistory = activity.getChatHistoryAdapter();
-        assertTrue(chatHistory.contains(testMessage));
+        // Message should now be contained in the chatAdapter
+        ChatAdapter chatAdapter = activity.getChatAdapterAdapter();
+        assertTrue(chatAdapter.contains(testMessage));
 
         // Update view
         ListView chatHistoryView = (ListView) activity.findViewById(R.id.chat_history);

@@ -4,7 +4,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 
-import android.app.Activity;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -26,8 +25,8 @@ import static org.junit.Assert.assertSame;
 /**
  * Created by schreon on 3/4/14.
  */
-public class ChatHistoryTest {
-    ChatHistory chatHistory;
+public class ChatAdapterTest {
+    ChatAdapter chatAdapter;
     ChatActivity activity;
     /**
      * Setup method
@@ -35,41 +34,41 @@ public class ChatHistoryTest {
     @Before
     public void setUp(){
         activity = Robolectric.buildActivity(ChatActivity.class).create().get();
-        chatHistory = new ChatHistory();
+        chatAdapter = new ChatAdapter();
     }
 
     @Test
     public void shouldNotBeNull() {
-        assertNotNull(chatHistory);
+        assertNotNull(chatAdapter);
     }
 
     // if a user sends a chat message, it should be contained in the list of all messages
     @Test
     public void shouldContainNewMessages() {
-        assertNotNull(chatHistory);
+        assertNotNull(chatAdapter);
 
         // new message arrives
         String testMessage = "This is a test Message!";
-        chatHistory.addNewMessage(testMessage);
+        chatAdapter.addNewMessage(testMessage);
 
-        assertTrue(chatHistory.contains(testMessage));
+        assertTrue(chatAdapter.contains(testMessage));
     }
 
     @Test
     public void shouldBehaveLikeListAdapter() {
-        assertEquals(chatHistory.getCount(), 0);
+        assertEquals(chatAdapter.getCount(), 0);
         String testMessage = "Test message";
-        chatHistory.addNewMessage(testMessage);
-        assertEquals(chatHistory.getCount(), 1);
-        assertEquals(chatHistory.getItem(0), testMessage);
-        assertEquals(chatHistory.getItemId(0), 0);
+        chatAdapter.addNewMessage(testMessage);
+        assertEquals(chatAdapter.getCount(), 1);
+        assertEquals(chatAdapter.getItem(0), testMessage);
+        assertEquals(chatAdapter.getItemId(0), 0);
     }
 
     @Test
     public void shouldReturnTextViews() {
         String testMessage = "Test message";
-        chatHistory.addNewMessage(testMessage);
-        TextView messageView = (TextView) chatHistory.getView(0, null, (ViewGroup) activity.findViewById(R.id.chat_history));
+        chatAdapter.addNewMessage(testMessage);
+        TextView messageView = (TextView) chatAdapter.getView(0, null, (ViewGroup) activity.findViewById(R.id.chat_history));
         assertNotNull(messageView);
         assertEquals(messageView.getText().toString(), testMessage);
     }
@@ -77,13 +76,13 @@ public class ChatHistoryTest {
     @Test
     public void shouldReuseTextView() {
         String testMessage1 = "Test message";
-        chatHistory.addNewMessage(testMessage1);
+        chatAdapter.addNewMessage(testMessage1);
         String testMessage2 = "Test message";
-        chatHistory.addNewMessage(testMessage2);
-        TextView messageView1 = (TextView) chatHistory.getView(0, null, (ViewGroup) activity.findViewById(R.id.chat_history));
+        chatAdapter.addNewMessage(testMessage2);
+        TextView messageView1 = (TextView) chatAdapter.getView(0, null, (ViewGroup) activity.findViewById(R.id.chat_history));
         assertNotNull(messageView1);
         assertEquals(messageView1.getText().toString(), testMessage1);
-        TextView messageView2 = (TextView) chatHistory.getView(1, messageView1, (ViewGroup) activity.findViewById(R.id.chat_history));
+        TextView messageView2 = (TextView) chatAdapter.getView(1, messageView1, (ViewGroup) activity.findViewById(R.id.chat_history));
         assertNotNull(messageView2);
         assertEquals(messageView1.getText().toString(), testMessage2);
         assertSame(messageView1, messageView2);
@@ -91,7 +90,7 @@ public class ChatHistoryTest {
 
     @Test(expected=RuntimeException.class)
     public void shouldRejectMissingViewGroup() {
-        chatHistory.getView(0, null, null);
+        chatAdapter.getView(0, null, null);
     }
 
     @Test(expected=RuntimeException.class)
@@ -102,15 +101,15 @@ public class ChatHistoryTest {
 
             }
         };
-        chatHistory.getView(0, null, myViewGroup);
+        chatAdapter.getView(0, null, myViewGroup);
     }
     @Test(expected=RuntimeException.class)
     public void shouldRejectMissingMessage() {
-        chatHistory.addNewMessage(null);
+        chatAdapter.addNewMessage(null);
     }
 
     @Test(expected=RuntimeException.class)
     public void shouldRejectEmptyMessage() {
-        chatHistory.addNewMessage("");
+        chatAdapter.addNewMessage("");
     }
 }

@@ -11,6 +11,7 @@ import android.view.MenuItem;
  */
 public class SearchActivity extends Activity {
 
+    SearchAdapter searchAdapter;
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
      */
@@ -18,11 +19,12 @@ public class SearchActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        searchAdapter = new SearchAdapter();
     }
 
     public SearchAdapter getSearchAdapter() {
         // TODO
-        return null;
+        return searchAdapter;
     }
 
     // TODO: remove search button (instant search) and add dynamic "add search" entry

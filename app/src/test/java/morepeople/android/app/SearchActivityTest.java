@@ -52,6 +52,7 @@ public class SearchActivityTest {
         // add some search entries
         for (int i=0; i <20; i++) {
             SearchEntry searchEntry = new SearchEntry(String.valueOf(i), "schmusen", "Hans Dampf", "1/3");
+            searchAdapter.addEntry(searchEntry);
 
             // update robolectric
             Robolectric.shadowOf(searchView).populateItems();
