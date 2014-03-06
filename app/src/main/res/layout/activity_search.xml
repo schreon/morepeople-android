@@ -15,13 +15,13 @@
         android:layout_alignParentEnd="false"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_above="@+id/layout_search_input" >
+        android:layout_above="@+id/layout_add_search" >
 
         <ListView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/list_search"
-            android:stackFromBottom="true"
+            android:stackFromBottom="false"
             android:choiceMode="none" />
     </RelativeLayout>
 
@@ -46,12 +46,26 @@
             android:clickable="true"
             android:layout_weight=".95" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_add_search"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:layout_above="@+id/layout_search_input"
+        android:gravity="center">
+
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="search"
-            android:id="@+id/send_search"
-            android:layout_weight=".05" />
+            android:text="Create new search"
+            android:id="@+id/button_send_search"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:visibility="invisible" />
     </LinearLayout>
 </RelativeLayout>

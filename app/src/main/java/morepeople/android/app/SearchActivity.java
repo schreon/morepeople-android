@@ -20,4 +20,10 @@ public class SearchActivity extends Activity {
         setContentView(R.layout.activity_search);
     }
 
+    public SearchAdapter getSearchAdapter() {
+        // TODO
+        return null;
+    }
+
+    // TODO: remove search button (instant search) and add dynamic "add search" entry
 }
