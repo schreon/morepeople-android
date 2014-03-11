@@ -141,6 +141,13 @@ public class SearchActivityTest {
             isDisplayed = true;
         }
         assertTrue(isDisplayed);
+
+        // TODO: click list item
+
+        // TODO: assert that a pop up is shown, asking the user if he wants to join
+
+        // TODO: if the user is already waiting for a match, ask him if he wants to switch
+
     }
 
 
