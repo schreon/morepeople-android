@@ -39,6 +39,8 @@ public class ConfirmationActivityTest {
     @Test
     public void activityShouldNotBeNull() {
         assertNotNull(activity);
+        assertNotNull(activity.findViewById(R.id.button_confirm));
+        assertNotNull(activity.findViewById(R.id.button_reject));
     }
 
     @Test
