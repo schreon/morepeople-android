@@ -7,5 +7,6 @@
     <string name="title_activity_chat">ChatActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_confirmation">ConfirmationActivity</string>
+    <string name="please_confirm_cancel">Möchtest Du wirklich absagen?</string>
 
 </resources>

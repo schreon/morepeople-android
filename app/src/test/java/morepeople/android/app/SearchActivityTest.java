@@ -135,6 +135,8 @@ public class SearchActivityTest {
             String foundParticipants = ((TextView)group.getChildAt(2)).getText().toString();
 
             if (!foundDescription.equals(expectedDescription)) continue;
+            if (!foundCreator.equals(expectedCreator)) continue;
+            if (!foundParticipants.equals(expectedParticipants)) continue;
 
             isDisplayed = true;
         }

@@ -1,5 +1,8 @@
 package morepeople.android.app;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,11 +15,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowAlertDialog;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.robolectric.Robolectric.shadowOf;
 
 /**
  * Created by schreon on 3/3/14.
@@ -58,7 +66,7 @@ public class ConfirmationActivityTest {
             assertTrue(participantsAdapter.getCount() > 0);
 
             // update robolectric
-            Robolectric.shadowOf(confirmListView).populateItems();
+            shadowOf(confirmListView).populateItems();
 
             // searchVview should have at least 1 child now
             assertTrue(confirmListView.getChildCount() > 0);
@@ -84,5 +92,53 @@ public class ConfirmationActivityTest {
             }
             assertTrue(isDisplayed);
         }
+
+        // if the user clicks "confirm", the button layout should be "gone" and the
+        // wait layout should become visible
+
+        LinearLayout layoutConfirmWait = (LinearLayout) activity.findViewById(R.id.confirm_wait_layout);
+        LinearLayout layoutConfirmButtons = (LinearLayout) activity.findViewById(R.id.confirm_button_layout);
+        Button buttonConfirm = (Button) activity.findViewById(R.id.button_confirm);
+
+        assertEquals(layoutConfirmWait.getVisibility(), View.GONE);
+        assertEquals(layoutConfirmButtons.getVisibility(), View.VISIBLE);
+
+        buttonConfirm.performClick();
+
+        assertEquals(layoutConfirmWait.getVisibility(), View.VISIBLE);
+        assertEquals(layoutConfirmButtons.getVisibility(), View.GONE);
+    }
+
+    // TODO: if the user clicks the button "reject", an alert dialog should be shown
+    // TODO: if the user clicks "okay" on the alert dialog, he should be directed to the search activity
+    @Test
+    public void shouldDirectToStartOnReject() {
+        Button buttonReject = (Button) activity.findViewById(R.id.button_reject);
+        buttonReject.performClick();
+
+        AlertDialog alert =
+                ShadowAlertDialog.getLatestAlertDialog();
+
+        ShadowAlertDialog sAlert = shadowOf(alert);
+        assertNotNull(sAlert);
+        assertThat(sAlert.getTitle().toString(),
+                equalTo(activity.getString(R.string.please_confirm_cancel)));
+
+        alert.getButton(DialogInterface.BUTTON_NEGATIVE).performClick();
+        assertNull(shadowOf(activity).getNextStartedActivity());
+
+        // now do it actually
+        buttonReject.performClick();
+        alert = ShadowAlertDialog.getLatestAlertDialog();
+
+        alert.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+
+        sAlert = shadowOf(alert);
+        assertNotNull(sAlert);
+        assertThat(sAlert.getTitle().toString(),
+                equalTo(activity.getString(R.string.please_confirm_cancel)));
+
+        Intent intent = shadowOf(activity).peekNextStartedActivity();
+        assertEquals(SearchActivity.class.getCanonicalName(), intent.getComponent().getClassName());
     }
 }
