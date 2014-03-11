@@ -27,9 +27,11 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         searchAdapter = new SearchAdapter();
-        ListView listView = (ListView) findViewById(R.id.list_search);
+        final ListView listView = (ListView) findViewById(R.id.list_search);
         listView.setAdapter(searchAdapter);
         final LinearLayout layoutAddSearch = (LinearLayout) findViewById(R.id.layout_add_search);
+        final LinearLayout layoutWaiting = (LinearLayout) findViewById(R.id.layout_waiting);
+        final LinearLayout layoutSearchInput = (LinearLayout) findViewById(R.id.layout_search_input);
         layoutAddSearch.setVisibility(View.GONE);
 
         final EditText inputSearch = (EditText) this.findViewById(R.id.input_search);
@@ -62,6 +64,8 @@ public class SearchActivity extends Activity {
             public void onClick(View view) {
                 searchAdapter.add(new SearchEntry("testid", inputSearch.getText().toString(), "Hans Dampf", "1/3"));
                 inputSearch.setText("");
+                layoutWaiting.setVisibility(View.VISIBLE);
+                layoutSearchInput.setVisibility(View.GONE);
             }
         });
     }

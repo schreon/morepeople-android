@@ -89,16 +89,20 @@ public class SearchActivityTest {
 
     // should display the "add search" button when the user has entered text
     // should add new search if the button is pressed
+    // TODO: should display wait-view if search is submitted
     @Test
     public void shouldDisplayAddSearchButton() {
         final LinearLayout layoutAddSearch = (LinearLayout) activity.findViewById(R.id.layout_add_search);
+        final LinearLayout layoutSearchInput = (LinearLayout) activity.findViewById(R.id.layout_search_input);
+        final LinearLayout layoutWaiting = (LinearLayout) activity.findViewById(R.id.layout_waiting);
+
         EditText inputSearch = (EditText) activity.findViewById(R.id.input_search);
 
-        assertEquals(layoutAddSearch.getVisibility(), View.INVISIBLE);
+        assertEquals(layoutAddSearch.getVisibility(), View.GONE);
         inputSearch.setText("schmu");
         assertEquals(layoutAddSearch.getVisibility(), View.VISIBLE);
         inputSearch.setText("");
-        assertEquals(layoutAddSearch.getVisibility(), View.INVISIBLE);
+        assertEquals(layoutAddSearch.getVisibility(), View.GONE);
 
         String expectedDescription = "schmu";
         String expectedCreator = "Hans Dampf";
@@ -106,10 +110,14 @@ public class SearchActivityTest {
 
         inputSearch.setText(expectedDescription);
 
+        assertEquals(layoutSearchInput.getVisibility(), View.VISIBLE);
+        assertEquals(layoutWaiting.getVisibility(), View.GONE);
         Button buttonSendSearch = (Button) activity.findViewById(R.id.button_send_search);
         buttonSendSearch.performClick();
         assertTrue(inputSearch.getText().length() == 0);
-        assertEquals(layoutAddSearch.getVisibility(), View.INVISIBLE);
+        assertEquals(layoutAddSearch.getVisibility(), View.GONE);
+        assertEquals(layoutSearchInput.getVisibility(), View.GONE);
+        assertEquals(layoutWaiting.getVisibility(), View.VISIBLE);
 
         ListView searchView = (ListView)activity.findViewById(R.id.list_search);
 
@@ -132,4 +140,6 @@ public class SearchActivityTest {
         }
         assertTrue(isDisplayed);
     }
+
+
 }
