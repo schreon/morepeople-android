@@ -20,6 +20,10 @@
             android:name="morepeople.android.app.ChatActivity"
             android:label="@string/title_activity_chat" >
         </activity>
+        <activity
+            android:name="morepeople.android.app.ConfirmationActivity"
+            android:label="@string/title_activity_confirmation" >
+        </activity>
     </application>
 
 </manifest>

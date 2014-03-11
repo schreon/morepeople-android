@@ -44,10 +44,8 @@ public class SearchActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 if(charSequence.length() > 0) {
-
                     layoutAddSearch.setVisibility(View.VISIBLE);
                 } else {
-
                     layoutAddSearch.setVisibility(View.GONE);
                 }
             }

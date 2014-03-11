@@ -23,7 +23,7 @@ import static org.junit.Assert.assertFalse;
 @SuppressWarnings("ConstantConditions")
 @Config(emulateSdk = 18)
 @RunWith(TestRunner.class)
-public class OverviewActivityTest {
+public class ChatActivityTest {
     private ChatActivity activity;
 
     /**
