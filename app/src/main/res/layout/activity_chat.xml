@@ -16,7 +16,9 @@
         android:layout_alignParentEnd="false"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_above="@+id/sendMessageLayout">
+        android:layout_above="@+id/sendMessageLayout"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/chat_top_bar">
 
         <ListView
             android:layout_width="fill_parent"
@@ -56,4 +58,37 @@
             android:id="@+id/button_send_search"
             android:layout_weight=".05" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/chat_top_bar"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Treffen beenden"
+            android:id="@+id/button_end_match"
+            android:layout_gravity="left"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Navi starten"
+            android:id="@+id/button_start_navi"
+            android:layout_gravity="right"
+            android:layout_alignParentLeft="false"
+            android:layout_marginLeft="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
 </RelativeLayout>

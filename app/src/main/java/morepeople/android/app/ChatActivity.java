@@ -36,6 +36,7 @@ public class ChatActivity extends Activity {
                 if (message == null) return;
                 if (message.toString().equals("")) return;
                 chatAdapterAdapter.addNewMessage(message.toString());
+                messageInput.setText("");
                 // scroll
                 ListView listView = (ListView) findViewById(R.id.chat_history);
                 listView.smoothScrollToPosition(chatAdapterAdapter.getCount() - 1);

@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
@@ -97,6 +98,8 @@ public class ChatActivityTest {
         // Click send button
         Button sendButton = (Button) activity.findViewById(R.id.button_send_search);
         sendButton.performClick();
+
+        assertEquals(messageInput.getText().length(), 0);
 
         // Message should now be contained in the chatAdapter
         ChatAdapter chatAdapter = activity.getChatAdapterAdapter();
