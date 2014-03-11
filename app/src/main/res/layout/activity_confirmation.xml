@@ -36,15 +36,32 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button"
+            android:text="Confirm"
+            android:id="@+id/button_confirm"
             android:layout_weight=".50" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button2"
+            android:text="Reject"
+            android:id="@+id/button_reject"
             android:layout_weight=".50" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/confirm_wait_layout"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="true" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Du hast verbindlich zugesagt."
+            android:id="@+id/confirm_wait_text" />
     </LinearLayout>
 </RelativeLayout>
