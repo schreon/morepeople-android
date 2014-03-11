@@ -11,29 +11,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by schreon on 3/11/14.
+ * ParticipantsAdapter extends BaseAdapter and includes methods for the participant list
  */
 public class ParticipantsAdapter extends BaseAdapter {
     private List<Participant> participantList;
 
+    /**
+     * Constructor of ParticipantsAdapter class
+     */
     public ParticipantsAdapter() {
         participantList = new ArrayList<Participant>();
     }
+
+    /**
+     * @return size of participantList
+     */
     @Override
     public int getCount() {
         return participantList.size();
     }
 
+    /**
+     * Returns an item at specific position
+     * @param i -> position
+     * @return -> item at position i
+     */
     @Override
     public Object getItem(int i) {
         return participantList.get(i);
     }
 
+    /**
+     * Gets item id at specific position
+     * @param i -> position
+     * @return -> id of item
+     */
     @Override
     public long getItemId(int i) {
         return i;
     }
 
+    /**
+     * Gets the view
+     * @param i -> position
+     * @param view -> view
+     * @param viewGroup -> viewgroup
+     * @return group
+     */
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         Context context = viewGroup.getContext();
@@ -65,6 +89,11 @@ public class ParticipantsAdapter extends BaseAdapter {
         return group;
     }
 
+    /**
+     * Adds an participant to the participantList
+     * and notifies the data change
+     * @param participant
+     */
     public void add(Participant participant) {
         participantList.add(participant);
         notifyDataSetChanged();

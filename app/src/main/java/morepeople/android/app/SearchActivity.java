@@ -14,7 +14,8 @@ import android.widget.ListView;
 
 
 /**
- * On this activity, the user sees the nearby searches of other users. He can search them, join them or add an own search.
+ * On this activity, the user sees the nearby searches of other users.
+ * He can search them, join them or add an own search.
  */
 public class SearchActivity extends Activity {
 
@@ -68,6 +69,10 @@ public class SearchActivity extends Activity {
         });
     }
 
+    /**
+     * Get searchAdapter
+     * @return searchAdapter
+     */
     public SearchAdapter getSearchAdapter() {
         // TODO
         return searchAdapter;
