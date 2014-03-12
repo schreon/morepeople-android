@@ -27,9 +27,14 @@ public class LocationWrapper {
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            fallbackTimer.cancel();
-            locationManager.removeUpdates(this);
+
             locationResponseHandler.gotNewLocation(location);
+            try {
+                fallbackTimer.cancel();
+                locationManager.removeUpdates(this);
+            } catch (Exception e) {
+
+            }
         }
 
         @Override

@@ -3,8 +3,10 @@ package morepeople.android.app;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -103,7 +105,6 @@ public class LocationWrapperTest {
         assertTrue(checkMap.get("gotInstantTemporaryLocation"));
 
         Robolectric.runUiThreadTasksIncludingDelayedTasks(); // wait for all async tasks to finish
-        Robolectric.runBackgroundTasks();
 
         assertTrue(checkMap.get("gotFallbackLocation"));
     }
@@ -121,18 +122,14 @@ public class LocationWrapperTest {
         final Location fakeLocation = new Location(LocationManager.NETWORK_PROVIDER);
         fakeLocation.setLongitude(123);
         fakeLocation.setLatitude(456);
+        fakeLocation.setTime(0);
         slm.setLastKnownLocation(LocationManager.NETWORK_PROVIDER, fakeLocation);
 
 
         final Location changedLocation = new Location(LocationManager.NETWORK_PROVIDER);
         changedLocation.setLongitude(666);
         changedLocation.setLatitude(333);
-//        changedLocation.setBearing(0);
-//        changedLocation.setSpeed(0);
-//        changedLocation.setAltitude(0);
-//        changedLocation.setTime(new Date().getTime());
-//        changedLocation.setProvider(LocationManager.NETWORK_PROVIDER);
-//        changedLocation.setAccuracy(1);
+        changedLocation.setTime(1000000);
 
         LocationResponseHandler locationResponseHandler = new LocationResponseHandler(){
             @Override
@@ -145,7 +142,7 @@ public class LocationWrapperTest {
             @Override
             public void gotFallbackLocation(Location location) {
                 // should not get here!
-                fail();
+                checkMap.put("gotFallbackLocation", true);
             }
 
             @Override
@@ -158,16 +155,11 @@ public class LocationWrapperTest {
 
         locationWrapper.requestLocation(activity.getBaseContext(),locationResponseHandler, 60000);
 
-        assertTrue(checkMap.get("gotInstantTemporaryLocation"));
-
-        Robolectric.runUiThreadTasksIncludingDelayedTasks(); // wait for all async tasks to finish
-        Robolectric.runBackgroundTasks();
-
         slm.simulateLocation(changedLocation);
 
-        Robolectric.runUiThreadTasksIncludingDelayedTasks(); // wait for all async tasks to finish
-        Robolectric.runBackgroundTasks();
+        assertFalse(checkMap.keySet().contains("gotFallbackLocation"));
+        assertTrue(checkMap.keySet().contains("gotInstantTemporaryLocation"));
+        assertTrue(checkMap.keySet().contains("gotNewLocation"));
 
-        assertTrue(checkMap.get("gotNewLocation"));
     }
 }
