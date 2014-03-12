@@ -3,6 +3,8 @@ package morepeople.android.app;
 import android.content.Context;
 import android.content.Intent;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,5 +41,8 @@ public class GcmBroadcastReceiverTest {
         service.onCreate();
         service.onStartCommand(intent, 0, 42);
         service.onDestroy();
+
+        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(Robolectric.application);
+        String messageType = gcm.getMessageType(intent);
     }
 }

@@ -86,18 +86,21 @@ if (gradle.startParameter.taskNames.contains("robotium")) {
         // Libraries which are necessary for compilation
         compile 'com.android.support:appcompat-v7:+'
         compile 'com.google.code.gson:gson:2.2.+'
+        compile 'com.google.android.gms:play-services:4.+'
 
         // Libraries which are necessary for unit testing
         testCompile 'junit:junit:4.10'
         testCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
         testCompile 'com.squareup:fest-android:1.0.+'
         testCompile 'com.jayway.android.robotium:robotium-solo:5.0.1'
+        testCompile 'com.google.android.gms:play-services:4.+'
 
         // This is needed so Android Studio recognizes the imports in the test source folders
         instrumentTestCompile 'junit:junit:4.10'
         instrumentTestCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
         instrumentTestCompile 'com.squareup:fest-android:1.0.+'
         instrumentTestCompile 'com.jayway.android.robotium:robotium-solo:5.0.1'
+        instrumentTestCompile 'com.google.android.gms:play-services:4.+'
     }
 }
 
