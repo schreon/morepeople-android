@@ -12,10 +12,17 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+/**
+ * ConfirmationActivity is shown if enough users were found to start an activity
+ */
 public class ConfirmationActivity extends Activity {
 
     private ParticipantsAdapter participantsAdapter;
 
+    /**
+     * OnCreate method
+     * @param savedInstanceState contains the previous state of the activity if it was existent before.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +85,10 @@ public class ConfirmationActivity extends Activity {
         });
     }
 
+    /**
+     * Returns participants adapter
+     * @return participantsAdapter
+     */
     public ParticipantsAdapter getParticipantsAdapter() {
         return participantsAdapter;
     }
