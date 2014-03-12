@@ -36,12 +36,29 @@ public class SearchActivity extends Activity {
         layoutAddSearch.setVisibility(View.GONE);
 
         final EditText inputSearch = (EditText) this.findViewById(R.id.input_search);
+
+        /**
+         * addtextchangedListener for inputSearch provides methods for text change
+         */
         inputSearch.addTextChangedListener(new TextWatcher() {
+            /**
+             * What happens before text changed
+             * @param charSequence
+             * @param i
+             * @param i2
+             * @param i3
+             */
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
 
-            }
-
+            /**
+             * What happens if text gets changed
+             * Set layoutAddSearch to visible if textinput is not empty
+             * @param charSequence
+             * @param i
+             * @param i2
+             * @param i3
+             */
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 if(charSequence.length() > 0) {
@@ -51,13 +68,18 @@ public class SearchActivity extends Activity {
                 }
             }
 
+            /**
+             * What happens after text has been changed
+             * @param editable
+             */
             @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
+            public void afterTextChanged(Editable editable) {}
         });
 
         Button buttonSendSearch = (Button) this.findViewById(R.id.button_send_search);
+        /**
+         * onClickListener for buttoSendSearch adds, searchentry and resets text and changes layout visibility
+         */
         buttonSendSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -35,6 +35,11 @@ public class ConfirmationActivity extends Activity {
         final LinearLayout layoutConfirmWait = (LinearLayout) this.findViewById(R.id.confirm_wait_layout);
         final LinearLayout layoutConfirmButtons = (LinearLayout) this.findViewById(R.id.confirm_button_layout);
         Button buttonConfirm = (Button) this.findViewById(R.id.button_confirm);
+
+        /**
+         * OnClickListener for confirm button.
+         * Changes layout visibility.
+         */
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,6 +52,11 @@ public class ConfirmationActivity extends Activity {
         final ConfirmationActivity self = this;
 
         Button buttonReject = (Button) this.findViewById(R.id.button_reject);
+
+        /**
+         * OnClickListener for reject button.
+         * Opens up alert dialog where the user can cancel the search or go on with the search.
+         */
         buttonReject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

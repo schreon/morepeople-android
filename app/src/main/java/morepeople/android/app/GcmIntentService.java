@@ -4,13 +4,21 @@ import android.app.IntentService;
 import android.content.Intent;
 
 /**
- * Created by schreon on 3/12/14.
+ * GcmIntentService extends IntentService and provides onHandleIntent method
  */
 public class GcmIntentService extends IntentService {
+
+    /**
+     * Constructor of GcmIntentService class
+     */
     public GcmIntentService() {
         super("GcmIntentService");
     }
 
+    /**
+     * OnHandleIntent
+     * @param intent
+     */
     @Override
     protected void onHandleIntent(Intent intent) {
 

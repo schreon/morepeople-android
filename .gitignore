@@ -36,3 +36,7 @@ proguard/
 # log files
 *log.txt
 
+gradle/gradle/wrapper/gradle-wrapper.jar
+gradle/gradle/wrapper/gradle-wrapper.properties
+gradle/gradlew
+gradle/gradlew.bat

@@ -13,7 +13,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Created by schreon on 3/12/14.
+ * LocationWrapper provides functions for locations and providers
  */
 public class LocationWrapper {
 
@@ -24,6 +24,9 @@ public class LocationWrapper {
     private Timer fallbackTimer;
     private Handler timerHandler;
 
+    /**
+     * locationListener provides mtehods for providers
+     */
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -37,16 +40,33 @@ public class LocationWrapper {
             }
         }
 
+        /**
+         * provider status changed
+         * @param provider
+         * @param i
+         * @param bundle
+         */
         @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {}
+        public void onStatusChanged(String provider, int i, Bundle bundle) {}
 
+        /**
+         * provider is activated
+         * @param provider
+         */
         @Override
-        public void onProviderEnabled(String s) {}
+        public void onProviderEnabled(String provider) {}
 
+        /**
+         * provider is disabled
+         * @param provider
+         */
         @Override
-        public void onProviderDisabled(String s) {}
+        public void onProviderDisabled(String provider) {}
     };
 
+    /**
+     * Runnable lastKnownLocationFallback
+     */
     private final Runnable lastKnownLocationFallback = new Runnable() {
         @Override
         public void run() {
@@ -60,10 +80,17 @@ public class LocationWrapper {
         }
     };
 
+    /**
+     * Constructor of LocationWrapper class
+     */
     public LocationWrapper() {
         timerHandler = new Handler();
     }
 
+    /**
+     * Get the last known location
+     * @return last known location
+     */
     private Location getLastKnownLocation() {
         Location gpsLocation = null;
         Location networkLocation = null;
@@ -95,6 +122,12 @@ public class LocationWrapper {
         return null;
     }
 
+    /**
+     * Request location
+     * @param context
+     * @param locationResponseHandler
+     * @param waitMillis
+     */
     public void requestLocation(Context context, LocationResponseHandler locationResponseHandler, long waitMillis) {
         this.locationResponseHandler = locationResponseHandler;
 

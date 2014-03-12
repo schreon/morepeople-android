@@ -86,7 +86,6 @@ public class ChatAdapter extends BaseAdapter {
             throw new RuntimeException("message may not be empty!");
         }
 
-
         messageList.add(message);
         notifyDataSetChanged();
     }

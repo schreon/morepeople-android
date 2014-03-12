@@ -28,6 +28,10 @@ public class ChatActivity extends Activity {
         listView.smoothScrollToPosition(chatAdapterAdapter.getCount()-1);
 
         Button btn = (Button) findViewById(R.id.button_send_search);
+        /**
+         * OnClickListener for send search button.
+         * Adds search entry to the list.
+         */
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

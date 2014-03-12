@@ -7,9 +7,15 @@ import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 /**
- * Created by schreon on 3/12/14.
+ * GcmBroadcastReceiver extends WakefulBroadcastReceiver and provides the onReceive method
  */
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
+
+    /**
+     * OnReceive method sets wakeful service
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         ComponentName comp = new ComponentName(context.getPackageName(), GcmIntentService.class.getName());
