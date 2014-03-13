@@ -45,4 +45,8 @@ public class GcmBroadcastReceiverTest {
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(Robolectric.application);
         String messageType = gcm.getMessageType(intent);
     }
+
+    /**
+     * TODO: If a user sends a chat message, update
+     */
 }

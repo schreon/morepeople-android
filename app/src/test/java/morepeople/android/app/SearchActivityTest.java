@@ -150,5 +150,12 @@ public class SearchActivityTest {
 
     }
 
+    /**
+     * TODO: If the phone is active, it should poll the server for nearby events
+     */
+    @Test
+    public void shouldPollEnvironment() {
+
+    }
 
 }

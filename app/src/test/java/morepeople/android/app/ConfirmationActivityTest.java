@@ -141,4 +141,12 @@ public class ConfirmationActivityTest {
         Intent intent = shadowOf(activity).peekNextStartedActivity();
         assertEquals(SearchActivity.class.getCanonicalName(), intent.getComponent().getClassName());
     }
+
+    /**
+     * TODO: If a GCM message is received, indicating another user confirmed, update the activity.
+     */
+    @Test
+    public void shouldUpdateOnConfirmation() {
+
+    }
 }
