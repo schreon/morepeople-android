@@ -9,14 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.WakefulBroadcastReceiver;
-import android.util.ArrayMap;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -25,11 +19,9 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * ConfirmationActivity is shown if enough users were found to start an activity
@@ -40,6 +32,7 @@ public class ConfirmationActivity extends Activity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("GCM", "received fucking fuck");
             // TODO: extract participant list from intent and update participantsAdapter
             // write participant list into shared preferences
             SharedPreferences prefs = getBaseContext().getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
@@ -133,13 +126,13 @@ public class ConfirmationActivity extends Activity {
             }
         });
 
-        GcmRegistrar.registerInBackground(this);
+        MainRegistrar.requestRegistrationId(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+/*
         // read from shared preferences
         SharedPreferences sharedPrefs = getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
         String participantsListJson = sharedPrefs.getString("participantsListJson", null);
@@ -156,20 +149,21 @@ public class ConfirmationActivity extends Activity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConfirmationActivity.BROADCAST_CONFIRMATION);
         registerReceiver(foregroundReceiver, filter);
+        */
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
+        /*
         // enable static ConfirmationBackgroundReceiver
-        ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
-        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+//        ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
+//        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
         // unregister ConfirmationForegroundReceiver
         unregisterReceiver(foregroundReceiver);
-
-        super.onResume();
+        */
     }
 
     /**

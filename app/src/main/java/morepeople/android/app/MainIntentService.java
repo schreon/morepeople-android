@@ -8,15 +8,15 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 /**
- * GcmIntentService extends IntentService and provides onHandleIntent method
+ * MainIntentService extends IntentService and provides onHandleIntent method
  */
-public class GcmIntentService extends IntentService {
+public class MainIntentService extends IntentService {
 
     /**
-     * Constructor of GcmIntentService class
+     * Constructor of MainIntentService class
      */
-    public GcmIntentService() {
-        super("GcmIntentService");
+    public MainIntentService() {
+        super("MainIntentService");
     }
 
     /**

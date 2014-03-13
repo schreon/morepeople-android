@@ -8,9 +8,9 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
 /**
- * GcmBroadcastReceiver extends WakefulBroadcastReceiver and provides the onReceive method
+ * MainBroadcastReceiver extends WakefulBroadcastReceiver and provides the onReceive method
  */
-public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
+public class MainBroadcastReceiver extends WakefulBroadcastReceiver {
 
     /**
      * OnReceive method sets wakeful service
@@ -20,7 +20,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("GCM", "got a broadcast");
-        ComponentName comp = new ComponentName(context.getPackageName(), GcmIntentService.class.getName());
+        ComponentName comp = new ComponentName(context.getPackageName(), MainIntentService.class.getName());
         Intent startIntent = intent.setComponent(comp);
         startWakefulService(context, startIntent);
         setResultCode(Activity.RESULT_OK);

@@ -1,6 +1,5 @@
 package morepeople.android.app;
 
-import android.content.Context;
 import android.content.Intent;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -22,7 +21,7 @@ import static junit.framework.Assert.assertNotNull;
 /**
  * Created by schreon on 3/4/14.
  */
-public class GcmBroadcastReceiverTest {
+public class MainBroadcastReceiverTest {
     /**
      * Setup method
      */
@@ -36,8 +35,8 @@ public class GcmBroadcastReceiverTest {
 
     @Test
     public void shouldStartIntentService() {
-        Intent intent = new Intent(Robolectric.application, GcmIntentService.class);
-        GcmIntentService service = new GcmIntentService();
+        Intent intent = new Intent(Robolectric.application, MainIntentService.class);
+        MainIntentService service = new MainIntentService();
         service.onCreate();
         service.onStartCommand(intent, 0, 42);
         service.onDestroy();

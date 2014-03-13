@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 /**
  * Created by schreon on 3/13/14.
@@ -18,6 +19,7 @@ public class ConfirmationBackgroundService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d("GCM", "handle shit");
         // write participant list into shared preferences
         SharedPreferences prefs = this.getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
         String participantsListJson = (String) intent.getExtras().get("participantsListJson");

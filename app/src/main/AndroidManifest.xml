@@ -12,11 +12,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
-
-    <uses-permission android:name="morepeople.android.app.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.C2D_MESSAGE" />
-
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     <permission android:name="morepeople.android.app.permission.C2D_MESSAGE"
         android:protectionLevel="signature"/>
     <application
@@ -34,15 +30,15 @@
         <!--</receiver>-->
 
         <!-- TODO: ChatBroadcastReceiver -->
-        <receiver android:name=".GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.intent.SEND">
+        <receiver android:name=".MainBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <category android:name="morepeople.android.app"/>
             </intent-filter>
         </receiver>
-        <service android:name=".GcmIntentService" />
+        <service android:name=".MainIntentService" />
         <!-- TODO: GCM Broadcast Receiver -->
 
 

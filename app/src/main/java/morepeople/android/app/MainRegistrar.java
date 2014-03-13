@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by schreon on 3/13/14.
  */
-public class GcmRegistrar {
+public class MainRegistrar {
     public static final String PROPERTY_REG_ID = "REG_ID";
     private static final String PROPERTY_APP_VERSION = "APP_VERSION";
 
@@ -25,14 +25,17 @@ public class GcmRegistrar {
     private static GoogleCloudMessaging gcm;
     private static String regId;
 
-    private GcmRegistrar() {}
+    private MainRegistrar() {}
 
-    private static String getRegistrationId(Context context) {
+    public static String requestRegistrationId(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
         String regId = prefs.getString(PROPERTY_REG_ID, "");
         if (regId.isEmpty()) {
+            Log.d(TAG, "Requesting new regid");
+            registerInBackground(context);
             return "";
         }
+        Log.d(TAG, "found reg id: "+ regId);
         return regId;
     }
 
@@ -49,12 +52,12 @@ public class GcmRegistrar {
         }
     }
 
-    public static void registerInBackground(Context context) {
+    private static void registerInBackground(Context context) {
         final Context finContext = context;
         AsyncTask backgroundTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                String msg = "";
+                String msg;
                 try {
                     if (gcm == null) {
                         gcm = GoogleCloudMessaging.getInstance(finContext.getApplicationContext());
@@ -75,12 +78,14 @@ public class GcmRegistrar {
         backgroundTask.execute(null, null, null);
     }
 
-    private static void storeRegistrationId(Context applicationContext, String regid) {
+    private static void storeRegistrationId(Context applicationContext, String regId) {
+        Log.d(TAG, "storing reg id");
         final SharedPreferences prefs = getGCMPreferences(applicationContext);
         int appVersion = getAppVersion(applicationContext);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
         editor.putInt(PROPERTY_APP_VERSION, appVersion);
         editor.commit();
+        Log.d(TAG, "successfully stored regid");
     }
 }
