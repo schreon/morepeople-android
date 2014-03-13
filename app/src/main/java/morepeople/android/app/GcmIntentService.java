@@ -21,6 +21,9 @@ public class GcmIntentService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
+        // dependent on the gcm message type etc. broadcast another intent
 
+        // if the status code indicates, that no activity has intercepted the intent:
+        // create notification
     }
 }

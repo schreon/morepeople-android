@@ -29,6 +29,7 @@ public class ConfirmationActivity extends Activity {
         setContentView(R.layout.activity_confirmation);
 
         participantsAdapter = new ParticipantsAdapter();
+
         ListView listView = (ListView) this.findViewById(R.id.confirm_list_view);
         listView.setAdapter(participantsAdapter);
 
@@ -93,6 +94,26 @@ public class ConfirmationActivity extends Activity {
                 alertDialog.show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // read from shared preferences
+
+        // deregister ConfirmationBackgroundReceiver
+
+        // register ConfirmationForegroundReceiver
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // deregister ConfirmationForegroundReceiver
+
+        // register ConfirmationBackgroundReceiver
     }
 
     /**
