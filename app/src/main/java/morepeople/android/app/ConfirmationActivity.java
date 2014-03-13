@@ -2,9 +2,17 @@ package morepeople.android.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,8 +25,26 @@ import android.widget.ListView;
  */
 public class ConfirmationActivity extends Activity {
 
-    private ParticipantsAdapter participantsAdapter;
+    private BroadcastReceiver foregroundReceiver = new BroadcastReceiver() {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO: extract participant list from intent and update participantsAdapter
+            // write participant list into shared preferences
+            SharedPreferences prefs = getBaseContext().getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
+            String participantsListJson = (String) intent.getExtras().get("participantsListJson");
+            prefs.edit().putString("participantsList", participantsListJson);
+            prefs.edit().commit();
+
+            // updates the running activity
+            // deserialize participantList json
+            
+        }
+    };
+
+    public static String BROADCAST_CONFIRMATION = "morepeople.android.app.BROADCAST_CONFIRMATION";
+
+    private ParticipantsAdapter participantsAdapter;
     /**
      * OnCreate method
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -101,19 +127,30 @@ public class ConfirmationActivity extends Activity {
         super.onResume();
 
         // read from shared preferences
+        // TODO
 
-        // deregister ConfirmationBackgroundReceiver
+        // disable static ConfirmationBackgroundReceiver
+        ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
+        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
         // register ConfirmationForegroundReceiver
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConfirmationActivity.BROADCAST_CONFIRMATION);
+        registerReceiver(foregroundReceiver, filter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        // deregister ConfirmationForegroundReceiver
+        // enable static ConfirmationBackgroundReceiver
+        ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
+        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
-        // register ConfirmationBackgroundReceiver
+        // unregister ConfirmationForegroundReceiver
+        unregisterReceiver(foregroundReceiver);
+
+        super.onResume();
     }
 
     /**

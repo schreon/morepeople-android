@@ -18,6 +18,20 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <!-- Local Broadcast Receivers -->
+        <receiver android:name=".ConfirmationBackgroundReceiver">
+            <intent-filter>
+                <action android:name="morepeople.android.app.CONFIRM"/>
+                <category android:name="morepeople.android.app"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- TODO: ChatBroadcastReceiver -->
+
+        <!-- TODO: GCM Broadcast Receiver -->
+
+
         <activity
             android:name="morepeople.android.app.SearchActivity"
             android:label="@string/app_name" >
