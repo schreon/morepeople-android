@@ -167,4 +167,12 @@ public class ChatActivityTest {
 
     // TODO: if the user restarts the application, the chat history should be still there
     // and it should be scrolled down to the bottom so the last message is visible
+
+    /**
+     * TODO: If a GCM message containing a new chat message is received, update the activity
+     */
+    @Test
+    public void shouldUpdateOnChat() {
+
+    }
 }
