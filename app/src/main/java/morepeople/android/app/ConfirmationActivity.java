@@ -13,12 +13,23 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.ArrayMap;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * ConfirmationActivity is shown if enough users were found to start an activity
@@ -38,7 +49,8 @@ public class ConfirmationActivity extends Activity {
 
             // updates the running activity
             // deserialize participantList json
-            
+            readParticipantJson(participantsListJson);
+
         }
     };
 
@@ -127,7 +139,12 @@ public class ConfirmationActivity extends Activity {
         super.onResume();
 
         // read from shared preferences
-        // TODO
+        SharedPreferences sharedPrefs = getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
+        String participantsListJson = sharedPrefs.getString("participantsListJson", null);
+
+        if(participantsListJson != null) {
+            readParticipantJson(participantsListJson);
+        }
 
         // disable static ConfirmationBackgroundReceiver
         ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
@@ -159,5 +176,30 @@ public class ConfirmationActivity extends Activity {
      */
     public ParticipantsAdapter getParticipantsAdapter() {
         return participantsAdapter;
+    }
+
+    private void readParticipantJson(String participantsListJson) {
+
+        /**
+         *   [{
+         *      'id' : '13',
+         *      'name' : 'depp',
+         *      'state': 'OPEN',
+         *   }]
+         */
+
+        //id, name, status
+        Gson gson = new Gson();
+        List<Object> jsonList = gson.fromJson(participantsListJson, ArrayList.class);
+
+        for(Object entry : jsonList ) {
+            Map<String, String> entryMap = (HashMap<String, String>)entry;
+            String id = entryMap.get("id");
+            String name = entryMap.get("name");
+            String state = entryMap.get("state");
+
+            Participant participant = new Participant(id, name, state);
+            participantsAdapter.add(participant);
+        }
     }
 }
