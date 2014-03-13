@@ -40,13 +40,15 @@ public class MainIntentService extends IntentService {
             // kick off broadcast stuff
             if (extras.get("MP_MESSAGE_TYPE").equals("CONFIRMATION")) {
                 Log.d("GCM", "CONFIRMATION");
-                Intent localIntent = new Intent(ConfirmationActivity.BROADCAST_CONFIRMATION);
+                Intent mIntent = new Intent(ConfirmationActivity.BROADCAST_CONFIRMATION);
 
-                localIntent.putExtra("participantsListJson", "[{'id':'test', 'name':'test', 'status':'OPEN'}]");
-                LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
+                mIntent.putExtra("participantsListJson", "[{'id':'test', 'name':'test', 'status':'OPEN'}]");
+
+                sendBroadcast(mIntent);
             }
         }
 
+        MainBroadcastReceiver.completeWakefulIntent(intent);
         // TODO: the same with chat messages
     }
 }

@@ -146,8 +146,13 @@ public class ConfirmationActivity extends Activity {
         ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
+        Log.d("GCM", "disabled static confirmation background receiver");
+
         // register ConfirmationForegroundReceiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(foregroundReceiver,
+        //LocalBroadcastManager.getInstance(this).registerReceiver(foregroundReceiver,
+        //        new IntentFilter(ConfirmationActivity.BROADCAST_CONFIRMATION));
+
+        registerReceiver(foregroundReceiver,
                 new IntentFilter(ConfirmationActivity.BROADCAST_CONFIRMATION));
 
     }
@@ -156,13 +161,17 @@ public class ConfirmationActivity extends Activity {
     protected void onPause() {
         super.onPause();
 
-
-        // enable static ConfirmationBackgroundReceiver
-//        ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
-//        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-
         // unregister ConfirmationForegroundReceiver
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(foregroundReceiver);
+        // LocalBroadcastManager.getInstance(this).unregisterReceiver(foregroundReceiver);
+
+        unregisterReceiver(foregroundReceiver);
+
+        //enable static ConfirmationBackgroundReceiver
+        ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
+        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+
+        Log.d("GCM", "re enabled static confirmation background receiver");
+
 
     }
 

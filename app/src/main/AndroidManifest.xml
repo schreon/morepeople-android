@@ -43,7 +43,6 @@
             </intent-filter>
         </receiver>
         <service android:name=".MainIntentService" />
-        <service android:name=".ConfirmationBackgroundService" />
         <!-- TODO: GCM Broadcast Receiver -->
 
 
