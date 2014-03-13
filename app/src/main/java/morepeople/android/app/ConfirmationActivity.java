@@ -132,6 +132,8 @@ public class ConfirmationActivity extends Activity {
                 alertDialog.show();
             }
         });
+
+        GcmRegistrar.registerInBackground(this);
     }
 
     @Override

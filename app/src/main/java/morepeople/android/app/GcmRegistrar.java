@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -17,13 +18,12 @@ public class GcmRegistrar {
     public static final String PROPERTY_REG_ID = "REG_ID";
     private static final String PROPERTY_APP_VERSION = "APP_VERSION";
 
-    public static final String SENDER_ID = "10391907765751";
+    public static final String SENDER_ID = "1039190776751";
 
     private final static String TAG = "GCM";
 
     private static GoogleCloudMessaging gcm;
     private static String regId;
-    private static Application app;
 
     private GcmRegistrar() {}
 
@@ -49,24 +49,25 @@ public class GcmRegistrar {
         }
     }
 
-    private static void registerInBackground() {
+    public static void registerInBackground(Context context) {
+        final Context finContext = context;
         AsyncTask backgroundTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
                 String msg = "";
                 try {
                     if (gcm == null) {
-                        gcm = GoogleCloudMessaging.getInstance(app.getApplicationContext());
+                        gcm = GoogleCloudMessaging.getInstance(finContext.getApplicationContext());
                     }
 
                     regId = gcm.register(SENDER_ID);
                     msg = "Device registered, registration ID=" + regId;
-
-                    storeRegistrationId(app.getApplicationContext(), regId);
+                    storeRegistrationId(finContext.getApplicationContext(), regId);
 
                 } catch (IOException ex) {
                     msg = "Error:" + ex.getMessage();
                 }
+                Log.d(TAG, msg);
                 return msg;
             }
         };

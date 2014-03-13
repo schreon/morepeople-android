@@ -3,6 +3,7 @@ package morepeople.android.app;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -24,6 +25,7 @@ public class GcmIntentService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d("GCM", "got an intent");
         // dependent on the gcm message type etc. broadcast another intent
 
         // if the status code indicates, that no activity has intercepted the intent:
