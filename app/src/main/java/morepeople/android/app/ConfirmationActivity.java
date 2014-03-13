@@ -38,7 +38,7 @@ public class ConfirmationActivity extends Activity {
 
             // updates the running activity
             // deserialize participantList json
-            
+
         }
     };
 
