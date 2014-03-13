@@ -3,6 +3,7 @@ package morepeople.android.app;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -39,11 +40,10 @@ public class MainIntentService extends IntentService {
             // kick off broadcast stuff
             if (extras.get("MP_MESSAGE_TYPE").equals("CONFIRMATION")) {
                 Log.d("GCM", "CONFIRMATION");
-                Intent localIntent = new Intent();
-                localIntent.getExtras().putString("participantsListJson", "[{'id':'test', 'name':'test', 'status':'OPEN'}]");
-                localIntent.setAction(ConfirmationActivity.BROADCAST_CONFIRMATION);
+                Intent localIntent = new Intent(ConfirmationActivity.BROADCAST_CONFIRMATION);
 
-                sendBroadcast(intent);
+                localIntent.putExtra("participantsListJson", "[{'id':'test', 'name':'test', 'status':'OPEN'}]");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
             }
         }
 

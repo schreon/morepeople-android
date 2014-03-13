@@ -24,7 +24,7 @@
         <!-- Local Broadcast Receivers -->
         <receiver android:name=".ConfirmationBackgroundReceiver">
             <intent-filter>
-                <action android:name="morepeople.android.app.CONFIRM"/>
+                <action android:name="morepeople.android.app.BROADCAST_CONFIRMATION"/>
                 <category android:name="morepeople.android.app"/>
             </intent-filter>
         </receiver>
@@ -39,6 +39,7 @@
             </intent-filter>
         </receiver>
         <service android:name=".MainIntentService" />
+        <service android:name=".ConfirmationBackgroundService" />
         <!-- TODO: GCM Broadcast Receiver -->
 
 

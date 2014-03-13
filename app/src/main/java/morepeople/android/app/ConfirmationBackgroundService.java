@@ -13,8 +13,9 @@ import android.util.Log;
  * Created by schreon on 3/13/14.
  */
 public class ConfirmationBackgroundService extends IntentService {
-    public ConfirmationBackgroundService(String name) {
-        super(name);
+
+    public ConfirmationBackgroundService() {
+        super("ConfirmationBackgroundService");
     }
 
     @Override

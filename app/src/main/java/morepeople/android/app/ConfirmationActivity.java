@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,7 @@ public class ConfirmationActivity extends Activity {
             // TODO: extract participant list from intent and update participantsAdapter
             // write participant list into shared preferences
             SharedPreferences prefs = getBaseContext().getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
-            String participantsListJson = (String) intent.getExtras().get("participantsListJson");
+            String participantsListJson = intent.getStringExtra("participantsListJson");
             prefs.edit().putString("participantsList", participantsListJson);
             prefs.edit().commit();
 
@@ -146,9 +147,8 @@ public class ConfirmationActivity extends Activity {
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
         // register ConfirmationForegroundReceiver
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConfirmationActivity.BROADCAST_CONFIRMATION);
-        registerReceiver(foregroundReceiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(foregroundReceiver,
+                new IntentFilter(ConfirmationActivity.BROADCAST_CONFIRMATION));
 
     }
 
@@ -162,7 +162,7 @@ public class ConfirmationActivity extends Activity {
 //        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
         // unregister ConfirmationForegroundReceiver
-        unregisterReceiver(foregroundReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(foregroundReceiver);
 
     }
 
@@ -189,7 +189,7 @@ public class ConfirmationActivity extends Activity {
         List<Object> jsonList = gson.fromJson(participantsListJson, ArrayList.class);
 
         for(Object entry : jsonList ) {
-            Map<String, String> entryMap = (HashMap<String, String>)entry;
+            Map<String, String> entryMap = (Map<String, String>)entry;
             String id = entryMap.get("id");
             String name = entryMap.get("name");
             String state = entryMap.get("state");
