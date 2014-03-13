@@ -22,12 +22,12 @@
         android:theme="@style/AppTheme" >
 
         <!-- Local Broadcast Receivers -->
-        <!--<receiver android:name=".ConfirmationBackgroundReceiver">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="morepeople.android.app.CONFIRM"/>-->
-                <!--<category android:name="morepeople.android.app"/>-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+        <receiver android:name=".ConfirmationBackgroundReceiver">
+            <intent-filter>
+                <action android:name="morepeople.android.app.CONFIRM"/>
+                <category android:name="morepeople.android.app"/>
+            </intent-filter>
+        </receiver>
 
         <!-- TODO: ChatBroadcastReceiver -->
         <receiver android:name=".MainBroadcastReceiver"

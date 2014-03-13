@@ -14,7 +14,7 @@ public class ConfirmationBackgroundReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("GCM", "received shit");
+        Log.d("GCM", "ConfirmationBackgroundReceiver.onReceive");
         ComponentName confirmationBackgroundService = new ComponentName(context, ConfirmationBackgroundReceiver.class);
         startWakefulService(context, (intent.setComponent(confirmationBackgroundService)));
         setResultCode(Activity.RESULT_OK);

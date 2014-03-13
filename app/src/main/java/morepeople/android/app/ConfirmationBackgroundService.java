@@ -19,7 +19,7 @@ public class ConfirmationBackgroundService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d("GCM", "handle shit");
+        Log.d("GCM", "ConfirmationBackgroundService.onHandleIntent");
         // write participant list into shared preferences
         SharedPreferences prefs = this.getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
         String participantsListJson = (String) intent.getExtras().get("participantsListJson");

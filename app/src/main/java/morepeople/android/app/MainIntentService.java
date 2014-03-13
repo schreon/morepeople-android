@@ -37,8 +37,10 @@ public class MainIntentService extends IntentService {
 
         if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             // kick off broadcast stuff
-            if (extras.get("message_type").equals("CONFIRMATION")) {
+            if (extras.get("MP_MESSAGE_TYPE").equals("CONFIRMATION")) {
+                Log.d("GCM", "CONFIRMATION");
                 intent.setAction(ConfirmationActivity.BROADCAST_CONFIRMATION);
+
                 sendBroadcast(intent);
             }
         }

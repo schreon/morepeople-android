@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +33,7 @@ public class ConfirmationActivity extends Activity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("GCM", "received fucking fuck");
+            Log.d("GCM", "ConfirmationActivity.foregroundReceiver");
             // TODO: extract participant list from intent and update participantsAdapter
             // write participant list into shared preferences
             SharedPreferences prefs = getBaseContext().getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
@@ -43,7 +44,6 @@ public class ConfirmationActivity extends Activity {
             // updates the running activity
             // deserialize participantList json
             readParticipantJson(participantsListJson);
-
         }
     };
 
@@ -132,7 +132,7 @@ public class ConfirmationActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-/*
+
         // read from shared preferences
         SharedPreferences sharedPrefs = getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
         String participantsListJson = sharedPrefs.getString("participantsListJson", null);
@@ -149,21 +149,21 @@ public class ConfirmationActivity extends Activity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConfirmationActivity.BROADCAST_CONFIRMATION);
         registerReceiver(foregroundReceiver, filter);
-        */
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        /*
+
         // enable static ConfirmationBackgroundReceiver
 //        ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
 //        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
         // unregister ConfirmationForegroundReceiver
         unregisterReceiver(foregroundReceiver);
-        */
+
     }
 
     /**
