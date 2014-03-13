@@ -39,7 +39,9 @@ public class MainIntentService extends IntentService {
             // kick off broadcast stuff
             if (extras.get("MP_MESSAGE_TYPE").equals("CONFIRMATION")) {
                 Log.d("GCM", "CONFIRMATION");
-                intent.setAction(ConfirmationActivity.BROADCAST_CONFIRMATION);
+                Intent localIntent = new Intent();
+                localIntent.getExtras().putString("participantsListJson", "[{'id':'test', 'name':'test', 'status':'OPEN'}]");
+                localIntent.setAction(ConfirmationActivity.BROADCAST_CONFIRMATION);
 
                 sendBroadcast(intent);
             }
