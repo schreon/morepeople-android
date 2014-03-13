@@ -70,6 +70,8 @@ public class GcmRegistrar {
                 return msg;
             }
         };
+
+        backgroundTask.execute(null, null, null);
     }
 
     private static void storeRegistrationId(Context applicationContext, String regid) {
