@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -62,6 +63,7 @@ public class MainRegistrar {
         (new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
+                Looper.prepare();
                 String msg;
                 try {
                     if (gcm == null) {
@@ -76,6 +78,7 @@ public class MainRegistrar {
                     msg = "Error:" + ex.getMessage();
                 }
                 Log.d(TAG, msg);
+                Looper.loop();
                 return null;
             }
 

@@ -9,5 +9,8 @@
     <string name="title_activity_confirmation">ConfirmationActivity</string>
     <string name="please_confirm_cancel">Möchtest Du wirklich absagen?</string>
     <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="title_activity_evaluation">EvaluationActivity</string>
+    <string name="title_activity_cancel">CancelActivity</string>
+    <string name="title_activity_enter_user_name">EnterUserNameActivity</string>
 
 </resources>

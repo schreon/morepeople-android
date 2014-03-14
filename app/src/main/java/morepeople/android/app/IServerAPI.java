@@ -1,9 +1,7 @@
 package morepeople.android.app;
 
-import java.util.Map;
-
 /**
- * Should be called from within async tasks
+ *
  */
 public interface IServerAPI {
     public static final String MATCH_ID = "MATCH_ID";
@@ -19,50 +17,50 @@ public interface IServerAPI {
      * This should be run after errors occured or the app has been restarted.
      * @return the current state of the User
      */
-    public Map<String, Object> getState();
+    public void loadState(DataCallback onSuccess, DataCallback onError);
 
     /**
      * This should be polled only from active activities.
      * @return nearby searches, or 'queues', by other users.
      */
-    public Map<String, Object> searchEnvironment();
+    public void searchEnvironment(DataCallback onSuccess, DataCallback onErrork);
 
     /**
      * Request: Change state to QUEUED or update the search.
      * @param matchTag the tag the user is searching for.
      * @return contains the new state of the user, determined by the server.
      */
-    public Map<String, Object> queue(String matchTag);
+    public void queue(String matchTag, DataCallback onSuccess, DataCallback onError);
 
     /**
      * Request a transition to the CANCELLED state.
      * @return contains the new state of the user, determined by the server.
      */
-    public Map<String, Object> cancel();
+    public void cancel(DataCallback onSuccess, DataCallback onError);
 
     /**
      * Request a transition from the CANCELLED state to the OFFLINE state.
      * @return contains the new state of the user, determined by the server.
      */
-    public Map<String, Object> cancelconfirm();
+    public void confirmCancel(DataCallback onSuccess, DataCallback onError);
 
     /**
      * Request a transition from the OPEN to the ACCEPTED state.
      * @return contains the new state of the user, determined by the server.
      */
-    public Map<String, Object> accept();
+    public void accept(DataCallback onSuccess, DataCallback onError);
 
     /**
      * Request a transition from the RUNNING to the EVALUATION state.
      * @return contains the new state of the user, determined by the server.
      */
-    public Map<String,Object> finish();
+    public void finish(DataCallback onSuccess, DataCallback onError);
 
     /**
      * Request a transition from the EVALUATION to the OFFLINE state.
      * @return contains the new state of the user, determined by the server.
      */
-    public Map<String,Object> evaluate();
+    public void evaluate(DataCallback onSuccess, DataCallback onErrork);
 
 
 }
