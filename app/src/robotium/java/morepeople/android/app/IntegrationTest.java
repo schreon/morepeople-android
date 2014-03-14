@@ -35,7 +35,7 @@ public class IntegrationTest<T extends Activity> extends ActivityInstrumentation
         super(activityClass);
     }
 
-    public JSONObject getRequest(String url) {
+    public JSONObject doGetRequest(String url) {
         url = this.url + url;
 
         BasicResponseHandler handler = new BasicResponseHandler();
@@ -62,11 +62,11 @@ public class IntegrationTest<T extends Activity> extends ActivityInstrumentation
         return jsonObject;
     }
 
-    public void postRequest(String url) {
-        postRequest(url, new JSONObject());
+    public void doPostRequest(String url) {
+        doPostRequest(url, new JSONObject());
     }
 
-    public JSONObject postRequest(String url,JSONObject obj) {
+    public JSONObject doPostRequest(String url,JSONObject obj) {
         url = this.url + url;
 
         BasicResponseHandler handler = new BasicResponseHandler();

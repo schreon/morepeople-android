@@ -37,8 +37,20 @@ public class SearchEnvironmentTest extends IntegrationTest<SearchActivity> {
     protected void setUp() throws Exception {
         super.setUp();
 
-        Log.i("http", "http: " + getRequest("/reset").toString());
-        Log.i("http", "after http");
+        doGetRequest("/reset");
+    }
+
+    public void testNoItemsInListIfReseted() throws Exception {
+        solo = new Solo(getInstrumentation(), getActivity());
+
+        ListView listView = solo.getCurrentViews(ListView.class).get(0);
+        List<TextView> textViewsInList = solo.getCurrentViews(TextView.class, listView);
+
+        // there should be only one item in the list
+        assertEquals(0, textViewsInList.size());
+
+        // finish activity
+        solo.finishOpenedActivities();
     }
 
     public void testCancelSearchedEntry() throws Exception {
@@ -58,13 +70,10 @@ public class SearchEnvironmentTest extends IntegrationTest<SearchActivity> {
         userJson.put("MATCH_TAG", "bier");
         userJson.put("TIME_LEFT", 1000);
 
-        Log.i("http", "http: " + postRequest("/queue", userJson).toString());
+        doPostRequest("/queue", userJson);
 
         solo = new Solo(getInstrumentation(), getActivity());
 
-        Thread.sleep(2000);
-
-        // 2. click on the search entry
         ListView listView = solo.getCurrentViews(ListView.class).get(0);
         List<TextView> textViewsInList = solo.getCurrentViews(TextView.class, listView);
 
@@ -73,31 +82,40 @@ public class SearchEnvironmentTest extends IntegrationTest<SearchActivity> {
 
         solo.clickInList(0);
 
-        // the dialog opens
+        // the confirmation dialog appears
         solo.waitForDialogToOpen();
 
         // click on the confirm button
         solo.clickOnButton("yes");
 
-        // the dialog closes
+        // the confirmation dialog closes
         solo.waitForDialogToClose();
 
         // check if there is a view with the text "you are waiting"
-        assertNotNull(solo.getText("you are waiting", true));
+        assertTrue(solo.searchText("you are waiting"));
 
         textViewsInList = solo.getCurrentViews(TextView.class, listView);
 
         // there should be only one item in the list
         assertEquals(2, textViewsInList.size());
 
-        solo.finishOpenedActivities();
-    }
+        // click on cancel button
+        solo.clickOnButton("cancel");
 
-    public void testActivity2() throws Exception {
-        // robotium assert
-        // solo.assertCurrentActivity("Welcome Screen", OverviewActivity.class);
-        // junit assert
-        assertTrue(false);
+        // the confirmation dialog appears
+        solo.waitForDialogToOpen();
+
+        // click on confirm button
+        solo.clickOnButton("yes");
+
+        // the confirmation dialog closes
+        solo.waitForDialogToClose();
+
+        // there should be no view with the text "you are waiting"
+        assertFalse(solo.searchText("you are waiting"));
+
+        // finish activity
+        solo.finishOpenedActivities();
     }
 
     @Override
