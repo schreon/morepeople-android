@@ -2,12 +2,31 @@ package morepeople.android.app;
 
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.robotium.solo.Solo;
+
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import morepeople.android.app.SearchActivity;
 
-public class SearchEnvironmentTest extends ActivityInstrumentationTestCase2<SearchActivity> {
+public class SearchEnvironmentTest extends IntegrationTest<SearchActivity> {
     private Solo solo;
 
     public SearchEnvironmentTest() {
@@ -18,14 +37,60 @@ public class SearchEnvironmentTest extends ActivityInstrumentationTestCase2<Sear
     protected void setUp() throws Exception {
         super.setUp();
 
-        solo = new Solo(getInstrumentation(), getActivity());
+        Log.i("http", "http: " + getRequest("/reset").toString());
+        Log.i("http", "after http");
     }
 
-    public void testActivity() throws Exception {
+    public void testCancelSearchedEntry() throws Exception {
         // robotium assert
         // solo.assertCurrentActivity("Welcome Screen", OverviewActivity.class);
         // junit assert
-        assertTrue(true);
+
+        // 1. other user searches for event
+        String userIdentifier = "test_user_"+System.currentTimeMillis();
+        JSONObject userJson = new JSONObject();
+        userJson.put("USER_ID", userIdentifier);
+        userJson.put("USER_NAME", userIdentifier);
+        JSONObject locJson = new JSONObject();
+        locJson.put("LONGITUDE", 9.1+0.1*Math.random());
+        locJson.put("LATITUDE", 48.7+0.1*Math.random());
+        userJson.put("LOC", locJson);
+        userJson.put("MATCH_TAG", "bier");
+        userJson.put("TIME_LEFT", 1000);
+
+        Log.i("http", "http: " + postRequest("/queue", userJson).toString());
+
+        solo = new Solo(getInstrumentation(), getActivity());
+
+        Thread.sleep(2000);
+
+        // 2. click on the search entry
+        ListView listView = solo.getCurrentViews(ListView.class).get(0);
+        List<TextView> textViewsInList = solo.getCurrentViews(TextView.class, listView);
+
+        // there should be only one item in the list
+        assertEquals(1, textViewsInList.size());
+
+        solo.clickInList(0);
+
+        // the dialog opens
+        solo.waitForDialogToOpen();
+
+        // click on the confirm button
+        solo.clickOnButton("yes");
+
+        // the dialog closes
+        solo.waitForDialogToClose();
+
+        // check if there is a view with the text "you are waiting"
+        assertNotNull(solo.getText("you are waiting", true));
+
+        textViewsInList = solo.getCurrentViews(TextView.class, listView);
+
+        // there should be only one item in the list
+        assertEquals(2, textViewsInList.size());
+
+        solo.finishOpenedActivities();
     }
 
     public void testActivity2() throws Exception {
@@ -37,7 +102,7 @@ public class SearchEnvironmentTest extends ActivityInstrumentationTestCase2<Sear
 
     @Override
     public void tearDown() throws Exception {
-        solo.finishOpenedActivities();
+        super.tearDown();
     }
 
     // 1. start app
