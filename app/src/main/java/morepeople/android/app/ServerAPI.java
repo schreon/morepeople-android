@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -76,13 +77,60 @@ public class ServerAPI implements IServerAPI {
         mHandler.post(mCallback);
         Looper.loop();
     }
-    private void postRequest(String path, StringEntity data, DataCallback onSuccess, DataCallback onError) {
+
+    private void getRequest(String path, HashMap<String, String> data, DataCallback onSuccess, DataCallback onError) {
+
+        final DataCallback fOnSuccess = onSuccess;
+        final DataCallback fOnError = onError;
+
+        // Url rewriting \m/
+        String url = hostName;
+        if (data != null) {
+           if (data.size() > 0) {
+               url += "?";
+               for (String key : data.keySet()) {
+                   url += key + "=" + data.get(key) + "&";
+               }
+           }
+        }
+        final HttpGet get = new HttpGet(url);
+        get.setHeader("Accept", "application/json");
+        get.setHeader("Content-type", "application/json");
+        Log.d("ServerAPI -> url", url);
+        Log.d("ServerAPI -> path", path);
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Map<String, Object> responseMap;
+                try {
+                    BasicResponseHandler response = new BasicResponseHandler();
+                    responseMap = gson.fromJson(client.execute(get, response), HashMap.class);
+                    postCallback(fOnSuccess, responseMap);
+                } catch (ClientProtocolException e) {
+                    Log.e("DataCallback", e.getMessage());
+                    responseMap = new HashMap<String, Object>();
+                    responseMap.put("ERROR", e.getMessage());
+                    postCallback(fOnError, responseMap);
+
+                } catch (IOException e) {
+                    Log.e("DataCallback", e.getMessage());
+                    responseMap = new HashMap<String, Object>();
+                    responseMap.put("ERROR", e.getMessage());
+                    postCallback(fOnError, responseMap);
+                }
+                return null;
+            }
+        };
+        task.execute();
+    }
+
+    private void postRequest(String path, HashMap<String, Object> data, DataCallback onSuccess, DataCallback onError) {
 
         final DataCallback fOnSuccess = onSuccess;
         final DataCallback fOnError = onError;
 
         final HttpPost post = new HttpPost(hostName + path);
-        post.setEntity(data);
+        post.setEntity(toJson(data));
         post.setHeader("Accept", "application/json");
         post.setHeader("Content-type", "application/json");
         Log.d("ServerAPI -> hostName", hostName);
@@ -118,13 +166,21 @@ public class ServerAPI implements IServerAPI {
         final DataCallback fOnSuccess = onSuccess;
         final DataCallback fOnError = onError;
         HashMap<String, Object> userInfo = MainApplication.getUserInfo();
-        StringEntity data = toJson(userInfo);
-        postRequest("/state", data, onSuccess, onError);
+        for (String key : userInfo.keySet()) {
+            Log.d("ServerAPI", "-> userInfo." + key + " = " + userInfo.get(key));
+        }
+        postRequest("/state", userInfo, onSuccess, onError);
     }
 
     @Override
-    public void searchEnvironment(DataCallback onSuccess, DataCallback onErrork) {
-
+    public void searchEnvironment(DataCallback onSuccess, DataCallback onError) {
+        HashMap<String, String> rewrite = new HashMap<String, String>();
+        HashMap<String, Object> userInfo = MainApplication.getUserInfo();
+        HashMap<String, String> loc = (HashMap<String, String>) userInfo.get("LOC");
+        rewrite.put("LON", loc.get("LONGITUDE"));
+        rewrite.put("LAT", loc.get("LATITUDE"));
+        rewrite.put("RAD", "1000");
+        getRequest("/queue", rewrite, onSuccess, onError);
     }
 
     @Override

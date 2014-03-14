@@ -1,6 +1,7 @@
 package morepeople.android.app;
 
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -91,6 +92,10 @@ public class SearchActivity extends Activity {
         });
     }
 
+
+    private void requestSearchAndUpdate() {
+
+    }
     /**
      * Get searchAdapter
      * @return searchAdapter
@@ -101,4 +106,33 @@ public class SearchActivity extends Activity {
     }
 
     // TODO: remove search button (instant search) and add dynamic "add search" entry
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+        LocationWrapper lw = new LocationWrapper();
+        lw.requestLocation(this, new LocationResponseHandler() {
+            @Override
+            public void gotInstantTemporaryLocation(Location location) {
+                requestSearchAndUpdate();
+            }
+
+            @Override
+            public void gotFallbackLocation(Location location) {
+                requestSearchAndUpdate();
+            }
+
+            @Override
+            public void gotNewLocation(Location location) {
+                requestSearchAndUpdate();
+            }
+        }, 60000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 }

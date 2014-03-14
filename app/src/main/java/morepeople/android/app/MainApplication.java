@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Looper;
 import android.provider.ContactsContract;
@@ -117,6 +118,25 @@ public class MainApplication extends Application {
         return sp1.getString("appUsername", "no username defined");
     }
 
+    private Map<String, Object> getLastLocation() {
+        LocationWrapper locWrapper = new LocationWrapper();
+        Location loc = locWrapper.getLastKnownLocation();
+        HashMap<String, Object> locMap = new HashMap<String, Object>();
+        if (loc != null) {
+            locMap.put("LONGITUDE", loc.getLongitude());
+            locMap.put("LATITUDE", loc.getLatitude());
+        } else {
+            locMap.put("LONGITUDE", 0);
+            locMap.put("LATITUDE", 0);
+        }
+        return locMap;
+    };
+
+    private String getRegistrationId() {
+        SharedPreferences prefs = getSharedPreferences("GCM_PREFERENCES", Context.MODE_PRIVATE);
+        return prefs.getString(MainRegistrar.PROPERTY_REG_ID, "BAD_ID");
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -129,19 +149,27 @@ public class MainApplication extends Application {
                 // As soon as the reg id is there, read the username
                 readUserName();
 
+                // Put everything into userInfo
+                userInfo.put("USER_ID", getRegistrationId());
+                userInfo.put("USER_NAME", getUserName());
+                userInfo.put("LOC", getLastLocation());
+
+                DataCallback loadStateSuccess = new DataCallback() {
+                    @Override
+                    public void run(Map<String, Object> data) {
+                        handleStateTransition(UserState.valueOf((String) data.get("STATE")));
+                    }
+                };
+
+                DataCallback loadStateError = new DataCallback() {
+                    @Override
+                    public void run(Map<String, Object> data) {
+                        Toast.makeText(instance, "Fehler: " + data.get("ERROR").toString(), Toast.LENGTH_LONG).show();
+                    }
+                };
+
                 // Load state from server
-                serverAPI.loadState(new DataCallback() {
-                                @Override
-                                public void run(Map<String, Object> data) {
-                                    handleStateTransition(UserState.valueOf((String) data.get("STATE")));
-                                }
-                            }, new DataCallback() {
-                                @Override
-                                public void run(Map<String, Object> data) {
-                                    Toast.makeText(instance, "Fehler: " + data.get("ERROR").toString(), Toast.LENGTH_LONG).show();
-                                }
-                            }
-                );
+                serverAPI.loadState(loadStateSuccess, loadStateError);
             }
         });
     }

@@ -91,7 +91,7 @@ public class LocationWrapper {
      * Get the last known location
      * @return last known location
      */
-    private Location getLastKnownLocation() {
+    public Location getLastKnownLocation() {
         Location gpsLocation = null;
         Location networkLocation = null;
 
