@@ -3,7 +3,7 @@ package morepeople.android.app;
 import java.util.Map;
 
 /**
- * Created by schreon on 3/14/14.
+ * Should be called from within async tasks
  */
 public interface IServerAPI {
     public static final String MATCH_ID = "MATCH_ID";

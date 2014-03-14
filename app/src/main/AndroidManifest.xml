@@ -11,48 +11,49 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="morepeople.android.app.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="com.google.android.c2dm.permission.C2D_MESSAGE" />
 
-    <permission android:name="morepeople.android.app.permission.C2D_MESSAGE"
-        android:protectionLevel="signature"/>
+    <permission
+        android:name="morepeople.android.app.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
     <application
+        android:name="morepeople.android.app.MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
         <!-- Local Broadcast Receivers -->
-        <receiver android:name=".ConfirmationBackgroundReceiver">
+        <receiver android:name="morepeople.android.app.ConfirmationBackgroundReceiver" >
             <intent-filter>
-                <action android:name="morepeople.android.app.BROADCAST_CONFIRMATION"/>
-                <category android:name="morepeople.android.app"/>
+                <action android:name="morepeople.android.app.BROADCAST_CONFIRMATION" />
+
+                <category android:name="morepeople.android.app" />
             </intent-filter>
         </receiver>
 
         <!-- TODO: ChatBroadcastReceiver -->
-        <receiver android:name=".MainBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+        <receiver
+            android:name="morepeople.android.app.MainBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <category android:name="morepeople.android.app"/>
+
+                <category android:name="morepeople.android.app" />
             </intent-filter>
         </receiver>
-        <service android:name=".MainIntentService" />
-        <!-- TODO: GCM Broadcast Receiver -->
 
+        <service android:name="morepeople.android.app.MainIntentService" />
+        <!-- TODO: GCM Broadcast Receiver -->
 
         <activity
             android:name="morepeople.android.app.SearchActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="morepeople.android.app.ChatActivity"
@@ -61,6 +62,14 @@
         <activity
             android:name="morepeople.android.app.ConfirmationActivity"
             android:label="@string/title_activity_confirmation" >
+        </activity>
+        <activity
+            android:name="morepeople.android.app.WelcomeActivity"
+            android:label="@string/title_activity_welcome" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -126,8 +126,6 @@ public class ConfirmationActivity extends Activity {
                 alertDialog.show();
             }
         });
-
-        MainRegistrar.requestRegistrationId(this);
     }
 
     @Override

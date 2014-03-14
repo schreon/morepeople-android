@@ -1,6 +1,5 @@
 package morepeople.android.app;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -27,16 +26,21 @@ public class MainRegistrar {
 
     private MainRegistrar() {}
 
-    public static String requestRegistrationId(Context context) {
+    /**
+     * Requests a GCM registration id and puts it into the shared preferences
+     * @param context
+     * @param callback will be called as soon as the reg id is available
+     */
+    public static void requestRegistrationId(Context context, Runnable callback) {
         final SharedPreferences prefs = getGCMPreferences(context);
         String regId = prefs.getString(PROPERTY_REG_ID, "");
         if (regId.isEmpty()) {
             Log.d(TAG, "Requesting new regid");
-            registerInBackground(context);
-            return "";
+            registerInBackground(context, callback);
+        } else {
+            Log.d(TAG, "Found reg id: "+ regId);
+            callback.run();
         }
-        Log.d(TAG, "found reg id: "+ regId);
-        return regId;
     }
 
     private static SharedPreferences getGCMPreferences(Context context) {
@@ -52,11 +56,12 @@ public class MainRegistrar {
         }
     }
 
-    private static void registerInBackground(Context context) {
+    private static void registerInBackground(Context context, Runnable callback) {
         final Context finContext = context;
-        AsyncTask backgroundTask = new AsyncTask() {
+        final Runnable fCallback = callback;
+        (new AsyncTask<Void, Void, Void>() {
             @Override
-            protected Object doInBackground(Object[] objects) {
+            protected Void doInBackground(Void... voids) {
                 String msg;
                 try {
                     if (gcm == null) {
@@ -71,11 +76,15 @@ public class MainRegistrar {
                     msg = "Error:" + ex.getMessage();
                 }
                 Log.d(TAG, msg);
-                return msg;
+                return null;
             }
-        };
 
-        backgroundTask.execute(null, null, null);
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                fCallback.run();
+            }
+        }).execute();
     }
 
     private static void storeRegistrationId(Context applicationContext, String regId) {
