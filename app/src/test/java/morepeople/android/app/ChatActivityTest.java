@@ -1,15 +1,19 @@
 package morepeople.android.app;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowPreferenceManager;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -26,6 +30,11 @@ import static org.junit.Assert.assertFalse;
 @RunWith(TestRunner.class)
 public class ChatActivityTest {
     private ChatActivity activity;
+
+    @BeforeClass
+    public static void sharedPrefs() {
+        ApplicationTest.sharedPrefs();
+    }
 
     /**
      * Setup method

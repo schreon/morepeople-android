@@ -1,6 +1,7 @@
 package morepeople.android.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -46,6 +48,11 @@ import static org.robolectric.Robolectric.shadowOf;
 public class LocationWrapperTest {
     SearchActivity activity;
     LocationWrapper locationWrapper;
+
+    @BeforeClass
+    public static void sharedPrefs() {
+        ApplicationTest.sharedPrefs();
+    }
 
     /**
      * Setup method

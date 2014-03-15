@@ -56,7 +56,7 @@ public class MainApplication extends Application {
         String userName = null;
 
         //get username from shared preferences
-        SharedPreferences sp1 = getSharedPreferences("MorePeople", 0);
+        SharedPreferences sp1 = getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
         if (sp1.contains("appUsername")) {
             userName = sp1.getString("appUsername", null);
 
@@ -100,7 +100,7 @@ public class MainApplication extends Application {
         //save username in prefs
         if (userName != null) {
             Log.d("ACCOUNT", "found username in profile:"+userName);
-            SharedPreferences sp = getSharedPreferences("MorePeople", 0);
+            SharedPreferences sp = getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
             SharedPreferences.Editor Ed = sp.edit();
             Ed.putString("appUsername",userName);
             Ed.commit();
@@ -114,7 +114,7 @@ public class MainApplication extends Application {
      * Get the user name, if null start EnterUserName activity.
      */
     private String getUserName() {
-        SharedPreferences sp1 = this.getSharedPreferences("MorePeople", 0);
+        SharedPreferences sp1 = this.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
         return sp1.getString("appUsername", "no username defined");
     }
 
@@ -133,21 +133,20 @@ public class MainApplication extends Application {
     };
 
     private String getRegistrationId() {
-        SharedPreferences prefs = getSharedPreferences("GCM_PREFERENCES", Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
         return prefs.getString(MainRegistrar.PROPERTY_REG_ID, "BAD_ID");
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    public void init() {
         instance = this;
         serverAPI = new ServerAPI();
+
+        // As soon as the reg id is there, read the username
+        readUserName();
 
         MainRegistrar.requestRegistrationId(this, new Runnable() {
             @Override
             public void run() {
-                // As soon as the reg id is there, read the username
-                readUserName();
 
                 // Put everything into userInfo
                 userInfo.put("USER_ID", getRegistrationId());
@@ -172,6 +171,19 @@ public class MainApplication extends Application {
                 serverAPI.loadState(loadStateSuccess, loadStateError);
             }
         });
+    }
+
+    public static Runnable beforeClassJob = null;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if (beforeClassJob != null) {
+            beforeClassJob.run();
+        }
+
+        init();
     }
 
     public static void handleStateTransition(UserState userState) {

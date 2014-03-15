@@ -1,9 +1,12 @@
 package morepeople.android.app;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -28,12 +31,17 @@ import static org.junit.Assert.assertSame;
 public class ChatAdapterTest {
     ChatAdapter chatAdapter;
     ChatActivity activity;
+
+    @BeforeClass
+    public static void sharedPrefs() {
+        ApplicationTest.sharedPrefs();
+    }
+
     /**
      * Setup method
      */
     @Before
     public void setUp(){
-        activity = Robolectric.buildActivity(ChatActivity.class).create().get();
         chatAdapter = new ChatAdapter();
     }
 

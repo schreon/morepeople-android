@@ -33,19 +33,19 @@ public class MainRegistrar {
      * @param callback will be called as soon as the reg id is available
      */
     public static void requestRegistrationId(Context context, Runnable callback) {
-        final SharedPreferences prefs = getGCMPreferences(context);
+        final SharedPreferences prefs = context.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
         String regId = prefs.getString(PROPERTY_REG_ID, "");
         if (regId.isEmpty()) {
+            for (String key : prefs.getAll().keySet()) {
+                Log.d(TAG, "-> " + key + " = " + prefs.getAll().get(key));
+            }
+
             Log.d(TAG, "Requesting new regid");
             registerInBackground(context, callback);
         } else {
             Log.d(TAG, "Found reg id: "+ regId);
             callback.run();
         }
-    }
-
-    private static SharedPreferences getGCMPreferences(Context context) {
-        return context.getSharedPreferences("GCM_PREFERENCES", Context.MODE_PRIVATE);
     }
 
     private static int getAppVersion(Context context) {
@@ -92,7 +92,7 @@ public class MainRegistrar {
 
     private static void storeRegistrationId(Context applicationContext, String regId) {
         Log.d(TAG, "storing reg id");
-        final SharedPreferences prefs = getGCMPreferences(applicationContext);
+        final SharedPreferences prefs = applicationContext.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);;
         int appVersion = getAppVersion(applicationContext);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
