@@ -1,6 +1,9 @@
 package morepeople.android.app;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -41,6 +44,7 @@ public class SearchAdapter extends BaseAdapter {
     public void addAll(Collection<SearchEntry> searchEntries) {
         searchEntryList.addAll(searchEntries);
         notifyDataSetChanged();
+
     }
 
     /**
@@ -89,7 +93,7 @@ public class SearchAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        Context context = viewGroup.getContext();
+        final Context context = viewGroup.getContext();
         LinearLayout group;
         TextView creatorView;
         TextView descriptionView;
@@ -104,6 +108,41 @@ public class SearchAdapter extends BaseAdapter {
             group.addView(descriptionView);
             group.addView(creatorView);
             group.addView(participantsView);
+
+            final LinearLayout fGroup = group;
+            group.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SearchEntry entry = (SearchEntry)fGroup.getTag();
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                    // set title
+                    alertDialogBuilder.setTitle("Beitreten");
+
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("Möchtest Du " + entry.description + " beitreten?")
+                            .setCancelable(false)
+                            .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // TODO
+                                }
+                            })
+                            .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
+                }
+            });
         } else {
             group = (LinearLayout) view;
             descriptionView = (TextView)group.getChildAt(0);

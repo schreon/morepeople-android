@@ -77,7 +77,6 @@
             android:launchMode="singleInstance" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -88,10 +87,6 @@
         <activity
             android:name="morepeople.android.app.CancelActivity"
             android:label="@string/title_activity_cancel" >
-        </activity>
-        <activity
-            android:name="morepeople.android.app.EnterUserNameActivity"
-            android:label="@string/title_activity_enter_user_name" >
         </activity>
     </application>
 

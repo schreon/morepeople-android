@@ -1,5 +1,7 @@
 package morepeople.android.app;
 
+import android.location.Location;
+
 /**
  *
  */
@@ -23,7 +25,7 @@ public interface IServerAPI {
      * This should be polled only from active activities.
      * @return nearby searches, or 'queues', by other users.
      */
-    public void searchEnvironment(DataCallback onSuccess, DataCallback onErrork);
+    public void searchEnvironment(Location location, DataCallback onSuccess, DataCallback onErrork);
 
     /**
      * Request: Change state to QUEUED or update the search.

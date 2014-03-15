@@ -67,7 +67,8 @@ public class MainRegistrar {
                 String msg;
                 try {
                     if (gcm == null) {
-                        gcm = GoogleCloudMessaging.getInstance(finContext.getApplicationContext());
+                        Context appContext = finContext.getApplicationContext();
+                        gcm = GoogleCloudMessaging.getInstance(appContext);
                     }
 
                     regId = gcm.register(SENDER_ID);
@@ -85,6 +86,7 @@ public class MainRegistrar {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                Log.d("MainRegistrar", "onPostExecute");
                 fCallback.run();
             }
         }).execute();

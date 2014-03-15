@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -22,6 +27,7 @@ public class SearchActivity extends Activity {
 
     private SearchAdapter searchAdapter;
     private LocationWrapper locationWrapper;
+    private ServerAPI api;
 
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -29,7 +35,7 @@ public class SearchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        api = new ServerAPI();
         locationWrapper = new LocationWrapper();
 
         setContentView(R.layout.activity_search);
@@ -98,8 +104,41 @@ public class SearchActivity extends Activity {
     }
 
 
-    private void requestSearchAndUpdate() {
+    private void requestSearchAndUpdate(Location location) {
+        DataCallback onSuccess = new DataCallback() {
 
+            @Override
+            public void run(Map<String, Object> data) {
+                // TODO: update list
+                List<Object> results = (List<Object>)data.get("results");
+                Log.d("SearchActivity", results.toString());
+
+                final List<SearchEntry> resultList = new ArrayList<SearchEntry>();
+                for (Object entry : results ) {
+                    Map<String, Object> res = (Map<String, Object>) entry;
+                    String description = (String)res.get("MATCH_TAG");
+                    String id = (String)res.get("USER_ID");
+                    String creator = "-";
+                    String participants = "-";
+                    resultList.add(new SearchEntry(id, description, creator, participants));
+                }
+                SearchActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchAdapter.emptySilent();
+                        searchAdapter.addAll(resultList);
+                    }
+                });
+            }
+        };
+        DataCallback onError = new DataCallback() {
+
+            @Override
+            public void run(Map<String, Object> data) {
+                Log.e("SearchActivity", "Could not search environment:" + data.get("ERROR"));
+            }
+        };
+        api.searchEnvironment(location, onSuccess, onError);
     }
     /**
      * Get searchAdapter
@@ -118,17 +157,17 @@ public class SearchActivity extends Activity {
         locationWrapper.requestLocation(this, new LocationResponseHandler() {
             @Override
             public void gotInstantTemporaryLocation(Location location) {
-                requestSearchAndUpdate();
+                requestSearchAndUpdate(location);
             }
 
             @Override
             public void gotFallbackLocation(Location location) {
-                requestSearchAndUpdate();
+                requestSearchAndUpdate(location);
             }
 
             @Override
             public void gotNewLocation(Location location) {
-                requestSearchAndUpdate();
+                requestSearchAndUpdate(location);
             }
         }, 60000);
     }

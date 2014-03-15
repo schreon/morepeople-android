@@ -116,9 +116,7 @@ public class MainApplication extends Application {
         return sp1.getString("appUsername", "no username defined");
     }
 
-    private Map<String, Object> getLastLocation() {
-        LocationWrapper locWrapper = new LocationWrapper();
-        Location loc = locWrapper.getLastKnownLocation();
+    private Map<String, Object> convertLocation(Location loc) {
         HashMap<String, Object> locMap = new HashMap<String, Object>();
         if (loc != null) {
             locMap.put("LONGITUDE", loc.getLongitude());
@@ -135,6 +133,41 @@ public class MainApplication extends Application {
         return prefs.getString(MainRegistrar.PROPERTY_REG_ID, "BAD_ID");
     }
 
+    public void loadStateFromServer(Location location) {
+
+        // Put everything into userInfo
+        userInfo.put("USER_ID", getRegistrationId());
+        userInfo.put("USER_NAME", getUserName());
+        userInfo.put("LOC", convertLocation(location));
+
+        DataCallback loadStateSuccess = new DataCallback() {
+            @Override
+            public void run(Map<String, Object> data) {
+                Log.d("MainApplication", "loadStateSuccess");
+                handleStateTransition(UserState.valueOf((String) data.get("STATE")));
+            }
+        };
+
+        DataCallback loadStateError = new DataCallback() {
+            @Override
+            public void run(final Map<String, Object> data) {
+
+                Log.d("MainApplication", "loadStateError");
+                Handler mainHandler = new Handler(instance.getMainLooper());
+
+                Runnable runOnUI = new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(instance, "Fehler: " + data.get("ERROR").toString(), Toast.LENGTH_LONG).show();
+                    }
+                }; // This is your code
+                mainHandler.post(runOnUI);
+            }
+        };
+
+        // Load state from server
+        serverAPI.loadState(loadStateSuccess, loadStateError);
+    }
     public void init() {
         instance = this;
         serverAPI = new ServerAPI();
@@ -146,36 +179,25 @@ public class MainApplication extends Application {
             @Override
             public void run() {
 
-                // Put everything into userInfo
-                userInfo.put("USER_ID", getRegistrationId());
-                userInfo.put("USER_NAME", getUserName());
-                userInfo.put("LOC", getLastLocation());
 
-                DataCallback loadStateSuccess = new DataCallback() {
+                LocationWrapper lw = new LocationWrapper();
+                lw.requestLocation(instance, new LocationResponseHandler() {
                     @Override
-                    public void run(Map<String, Object> data) {
-                        handleStateTransition(UserState.valueOf((String) data.get("STATE")));
+                    public void gotInstantTemporaryLocation(Location location) {
+                        // nothing
                     }
-                };
 
-                DataCallback loadStateError = new DataCallback() {
                     @Override
-                    public void run(final Map<String, Object> data) {
-
-                        Handler mainHandler = new Handler(instance.getMainLooper());
-
-                        Runnable runOnUI = new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(instance, "Fehler: " + data.get("ERROR").toString(), Toast.LENGTH_LONG).show();
-                            }
-                        }; // This is your code
-                        mainHandler.post(runOnUI);
+                    public void gotFallbackLocation(Location location) {
+                        loadStateFromServer(location);
                     }
-                };
 
-                // Load state from server
-                serverAPI.loadState(loadStateSuccess, loadStateError);
+                    @Override
+                    public void gotNewLocation(Location location) {
+                        loadStateFromServer(location);
+                    }
+                }, 10000);
+
             }
         });
     }

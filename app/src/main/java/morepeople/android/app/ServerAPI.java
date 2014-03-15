@@ -2,6 +2,7 @@ package morepeople.android.app;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -71,7 +72,7 @@ public class ServerAPI implements IServerAPI {
         final DataCallback fOnError = onError;
 
         // Url rewriting \m/
-        String url = hostName;
+        String url = hostName + path;
         if (data != null) {
            if (data.size() > 0) {
                url += "?";
@@ -91,7 +92,9 @@ public class ServerAPI implements IServerAPI {
                 Map<String, Object> responseMap;
                 try {
                     BasicResponseHandler response = new BasicResponseHandler();
-                    responseMap = gson.fromJson(client.execute(get, response), HashMap.class);
+                    String responseString = client.execute(get, response);
+                    Log.d("ServerAPI", "responseString = "+responseString);
+                    responseMap = gson.fromJson(responseString, HashMap.class);
                     fOnSuccess.run(responseMap);
                 } catch (ClientProtocolException e) {
                     Log.e("DataCallback", e.getMessage());
@@ -160,12 +163,10 @@ public class ServerAPI implements IServerAPI {
     }
 
     @Override
-    public void searchEnvironment(DataCallback onSuccess, DataCallback onError) {
+    public void searchEnvironment(Location location, DataCallback onSuccess, DataCallback onError) {
         HashMap<String, String> rewrite = new HashMap<String, String>();
-        HashMap<String, Object> userInfo = MainApplication.getUserInfo();
-        HashMap<String, String> loc = (HashMap<String, String>) userInfo.get("LOC");
-        rewrite.put("LON", loc.get("LONGITUDE"));
-        rewrite.put("LAT", loc.get("LATITUDE"));
+        rewrite.put("LON", String.valueOf(location.getLongitude()));
+        rewrite.put("LAT", String.valueOf(location.getLatitude()));
         rewrite.put("RAD", "1000");
         getRequest("/queue", rewrite, onSuccess, onError);
     }
