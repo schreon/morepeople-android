@@ -1,7 +1,5 @@
 package morepeople.android.app;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -10,7 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Looper;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
@@ -162,8 +160,17 @@ public class MainApplication extends Application {
 
                 DataCallback loadStateError = new DataCallback() {
                     @Override
-                    public void run(Map<String, Object> data) {
-                        Toast.makeText(instance, "Fehler: " + data.get("ERROR").toString(), Toast.LENGTH_LONG).show();
+                    public void run(final Map<String, Object> data) {
+
+                        Handler mainHandler = new Handler(instance.getMainLooper());
+
+                        Runnable runOnUI = new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(instance, "Fehler: " + data.get("ERROR").toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }; // This is your code
+                        mainHandler.post(runOnUI);
                     }
                 };
 
@@ -173,14 +180,14 @@ public class MainApplication extends Application {
         });
     }
 
-    public static Runnable beforeClassJob = null;
+    public static Runnable initJob = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        if (beforeClassJob != null) {
-            beforeClassJob.run();
+        if (initJob != null) {
+            initJob.run();
         }
 
         init();

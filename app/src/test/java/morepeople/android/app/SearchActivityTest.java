@@ -2,6 +2,8 @@ package morepeople.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,6 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.message.BasicHttpResponse;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,7 +37,26 @@ public class SearchActivityTest {
 
     @BeforeClass
     public static void sharedPrefs() {
-        ApplicationTest.sharedPrefs();
+        MainApplication.initJob = new Runnable() {
+            @Override
+            public void run() {
+                // insert reg id, user name
+                SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
+                sharedPreferences.edit().putString(MainRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
+
+                ApplicationInfo ai = null;
+                try {
+                    ai = Robolectric.application.getPackageManager().getApplicationInfo(MainApplication.getInstance().getPackageName(), PackageManager.GET_META_DATA);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                String hostName = (String) ai.metaData.get("morepeople.android.app.HOSTNAME");
+
+                // add HTTP request which will be
+                Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+MainApplication.UserState.OFFLINE.toString()+"' }");
+            }
+        };
     }
 
     /**

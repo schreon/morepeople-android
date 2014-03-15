@@ -64,19 +64,6 @@ public class ServerAPI implements IServerAPI {
             return null;
         }
     }
-    private void postCallback(DataCallback callback, Map<String, Object> data) {
-        Looper.prepare();
-        final DataCallback fCallback = callback;
-        final Map<String, Object> fData = data;
-        final Handler mHandler = new Handler();
-        final Runnable mCallback = new Runnable() {
-            public void run() {
-                fCallback.run(fData);
-            }
-        };
-        mHandler.post(mCallback);
-        Looper.loop();
-    }
 
     private void getRequest(String path, HashMap<String, String> data, DataCallback onSuccess, DataCallback onError) {
 
@@ -105,18 +92,18 @@ public class ServerAPI implements IServerAPI {
                 try {
                     BasicResponseHandler response = new BasicResponseHandler();
                     responseMap = gson.fromJson(client.execute(get, response), HashMap.class);
-                    postCallback(fOnSuccess, responseMap);
+                    fOnSuccess.run(responseMap);
                 } catch (ClientProtocolException e) {
                     Log.e("DataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
-                    postCallback(fOnError, responseMap);
+                    fOnError.run(responseMap);
 
                 } catch (IOException e) {
                     Log.e("DataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
-                    postCallback(fOnError, responseMap);
+                    fOnError.run(responseMap);
                 }
                 return null;
             }
@@ -142,18 +129,18 @@ public class ServerAPI implements IServerAPI {
                 try {
                     BasicResponseHandler response = new BasicResponseHandler();
                     responseMap = gson.fromJson(client.execute(post, response), HashMap.class);
-                    postCallback(fOnSuccess, responseMap);
+                    fOnSuccess.run(responseMap);
                 } catch (ClientProtocolException e) {
                     Log.e("DataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
-                    postCallback(fOnError, responseMap);
+                    fOnError.run(responseMap);
 
                 } catch (IOException e) {
                     Log.e("DataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
-                    postCallback(fOnError, responseMap);
+                    fOnError.run(responseMap);
                 }
                 return null;
             }

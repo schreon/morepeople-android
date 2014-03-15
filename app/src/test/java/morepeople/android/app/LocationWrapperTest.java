@@ -2,28 +2,23 @@ package morepeople.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.location.Criteria;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
-import android.os.Bundle;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.message.BasicHttpResponse;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowContext;
 import org.robolectric.shadows.ShadowLocationManager;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.lang.Thread.sleep;
@@ -51,7 +46,26 @@ public class LocationWrapperTest {
 
     @BeforeClass
     public static void sharedPrefs() {
-        ApplicationTest.sharedPrefs();
+        MainApplication.initJob = new Runnable() {
+            @Override
+            public void run() {
+                // insert reg id, user name
+                SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
+                sharedPreferences.edit().putString(MainRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
+
+                ApplicationInfo ai = null;
+                try {
+                    ai = Robolectric.application.getPackageManager().getApplicationInfo(MainApplication.getInstance().getPackageName(), PackageManager.GET_META_DATA);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                String hostName = (String) ai.metaData.get("morepeople.android.app.HOSTNAME");
+
+                // add HTTP request which will be
+                Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+MainApplication.UserState.OFFLINE.toString()+"' }");
+            }
+        };
     }
 
     /**

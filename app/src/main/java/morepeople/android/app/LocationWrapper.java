@@ -4,13 +4,10 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * LocationWrapper provides functions for locations and providers
@@ -70,13 +67,11 @@ public class LocationWrapper {
     private final Runnable lastKnownLocationFallback = new Runnable() {
         @Override
         public void run() {
-            Looper.prepare();
 
             locationManager.removeUpdates(locationListener);
 
             locationResponseHandler.gotFallbackLocation(getLastKnownLocation());
 
-            Looper.loop();
         }
     };
 
