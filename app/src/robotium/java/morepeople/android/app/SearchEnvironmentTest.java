@@ -23,6 +23,7 @@ public class SearchEnvironmentTest extends IntegrationTest<WelcomeActivity> {
     protected void setUp() throws Exception {
         super.setUp();
 
+        Log.d("robotium", "reset test server state.");
         doGetRequest("/reset");
 
         Log.d("robotium", "creating solo");
