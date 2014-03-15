@@ -21,12 +21,17 @@ import android.widget.ListView;
 public class SearchActivity extends Activity {
 
     private SearchAdapter searchAdapter;
+    private LocationWrapper locationWrapper;
+
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        locationWrapper = new LocationWrapper();
+
         setContentView(R.layout.activity_search);
         searchAdapter = new SearchAdapter();
         final ListView listView = (ListView) findViewById(R.id.list_search);
@@ -110,10 +115,7 @@ public class SearchActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
-
-        LocationWrapper lw = new LocationWrapper();
-        lw.requestLocation(this, new LocationResponseHandler() {
+        locationWrapper.requestLocation(this, new LocationResponseHandler() {
             @Override
             public void gotInstantTemporaryLocation(Location location) {
                 requestSearchAndUpdate();
@@ -134,5 +136,6 @@ public class SearchActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        locationWrapper.stopListening();
     }
 }

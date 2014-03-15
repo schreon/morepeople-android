@@ -23,6 +23,7 @@ public class LocationWrapper {
 
     public void stopListening() {
         locationManager.removeUpdates(locationListener);
+        timerHandler.removeCallbacks(lastKnownLocationFallback);
     }
 
     /**
