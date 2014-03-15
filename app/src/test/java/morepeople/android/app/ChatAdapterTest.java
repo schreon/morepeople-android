@@ -66,6 +66,7 @@ public class ChatAdapterTest {
      */
     @Before
     public void setUp(){
+        activity = Robolectric.buildActivity(ChatActivity.class).create().get();
         chatAdapter = new ChatAdapter();
     }
 

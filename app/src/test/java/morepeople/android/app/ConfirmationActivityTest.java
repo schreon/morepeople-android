@@ -1,6 +1,7 @@
 package morepeople.android.app;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -62,7 +63,7 @@ public class ConfirmationActivityTest {
                 String hostName = (String) ai.metaData.get("morepeople.android.app.HOSTNAME");
 
                 // add HTTP request which will be
-                Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+MainApplication.UserState.OPEN.toString()+"' }");
+                Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '" + MainApplication.UserState.OPEN.toString() + "' }");
             }
         };
     }
@@ -156,7 +157,9 @@ public class ConfirmationActivityTest {
                 equalTo(activity.getString(R.string.please_confirm_cancel)));
 
         alert.getButton(DialogInterface.BUTTON_NEGATIVE).performClick();
-        assertNull(shadowOf(activity).getNextStartedActivity());
+        Intent activityIntent = shadowOf(activity).getNextStartedActivity();
+        // Should still be the same
+        assertEquals(activityIntent.getComponent(), new ComponentName(activity, ConfirmationActivity.class));
 
         // now do it actually
         buttonReject.performClick();
