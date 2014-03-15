@@ -180,14 +180,14 @@ public class MainApplication extends Application {
         });
     }
 
-    public static Runnable initJob = null;
+    public static Runnable preInit = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        if (initJob != null) {
-            initJob.run();
+        if (preInit != null) {
+            preInit.run();
         }
 
         init();
