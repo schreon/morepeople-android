@@ -24,28 +24,12 @@ public class SearchEnvironmentTest extends IntegrationTest<WelcomeActivity> {
         super.setUp();
 
         doGetRequest("/reset");
+
+        Log.d("robotium", "creating solo");
+        solo = new Solo(getInstrumentation(), getActivity());
     }
-//
-//    public void testNoItemsInListIfReseted() throws Exception {
-//        solo = new Solo(getInstrumentation(), getActivity());
-//
-//        ListView listView = solo.getCurrentViews(ListView.class).get(0);
-//        List<TextView> textViewsInList = solo.getCurrentViews(TextView.class, listView);
-//
-//        // there should be only one item in the list
-//        assertEquals(0, textViewsInList.size());
-//
-//        // finish activity
-//        solo.finishOpenedActivities();
-//    }
 
-    public void testCancelSearchedEntry() throws Exception {
-        // robotium assert
-        // solo.assertCurrentActivity("Welcome Screen", OverviewActivity.class);
-        // junit assert
-        Log.d("robotium", "testCancelSearchedEntry");
-
-        // 1. other user searches for event
+    public void addTestUser(String search_tag) throws Exception {
         String userIdentifier = "test_user_"+System.currentTimeMillis();
         JSONObject userJson = new JSONObject();
         userJson.put("USER_ID", userIdentifier);
@@ -54,41 +38,59 @@ public class SearchEnvironmentTest extends IntegrationTest<WelcomeActivity> {
         locJson.put("LONGITUDE", 9.1+0.1*Math.random());
         locJson.put("LATITUDE", 48.7+0.1*Math.random());
         userJson.put("LOC", locJson);
-        userJson.put("MATCH_TAG", "bier");
+        userJson.put("MATCH_TAG", search_tag);
         userJson.put("TIME_LEFT", 1000);
-
         doPostRequest("/queue", userJson);
+    }
 
-        Log.d("robotium", "creating solo");
-        solo = new Solo(getInstrumentation(), getActivity());
+    public void testNoItemsInListIfResetted() throws Exception {
+        Log.d("robotium", "testNoItemsInListIfResetted");
 
+        Log.d("robotium", "wait, until the search activity shows up");
         solo.waitForActivity(SearchActivity.class);
 
-        Log.d("robotium", "getting listview");
+        Log.d("robotium", "get the listview");
+        ListView listView = solo.getCurrentViews(ListView.class).get(0);
+
+        Log.d("robotium", "test that the list view is empty");
+        assertEquals(0, listView.getChildCount());
+    }
+
+    public void testSearchAndClickAndCancel() throws Exception {
+        Log.d("robotium", "testSearchAndClickAndCancel");
+
+        Log.d("robotium", "add test user");
+        addTestUser("bier");
+
+        Log.d("robotium", "wait, until the search activity shows up");
+        solo.waitForActivity(SearchActivity.class);
+
+        Log.d("robotium", "get the listview");
         final ListView listView = solo.getCurrentViews(ListView.class).get(0);
 
-        Log.d("robotium", "wait for listview to populate");
+        Log.d("robotium", "wait for listview to populate, with a timeout of 60 seconds");
         solo.waitForCondition(new Condition() {
             @Override
             public boolean isSatisfied() {
                 return listView.getChildCount() > 0;
             }
-        }, 10000);
+        }, 60000);
 
         Log.d("robotium", "assert that exactly 1 entry is in listview");
-        // there should be only one item in the list
         assertEquals(1, listView.getChildCount());
 
+        Log.d("robotium", "click first item in the list");
         solo.clickInList(0);
 
-        // the confirmation dialog appears
+        Log.d("robotium", "wait for the confirmation dialog to appear");
         solo.waitForDialogToOpen();
 
-        // click on the confirm button
-        solo.clickOnButton("Ja");
+        Log.d("robotium", "click on the cancel button");
+        solo.clickOnButton("Nein");
 
-        // the confirmation dialog closes
+        Log.d("robotium", "wait for the dialog to close");
         solo.waitForDialogToClose();
+    }
 
 //        // check if there is a view with the text "you are waiting"
 //        assertTrue(solo.searchText("you are waiting"));
@@ -110,8 +112,6 @@ public class SearchEnvironmentTest extends IntegrationTest<WelcomeActivity> {
 //
 //        // there should be no view with the text "you are waiting"
 //        assertFalse(solo.searchText("you are waiting"));
-
-    }
 
     @Override
     public void tearDown() throws Exception {
