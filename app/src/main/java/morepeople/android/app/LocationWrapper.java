@@ -6,6 +6,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.Timer;
 
@@ -18,23 +19,21 @@ public class LocationWrapper {
     private LocationManager locationManager;
     private boolean gpsEnabled = false;
     private boolean networkEnabled = false;
-    private Timer fallbackTimer;
     private Handler timerHandler;
 
+    public void stopListening() {
+        locationManager.removeUpdates(locationListener);
+    }
+
     /**
-     * locationListener provides mtehods for providers
+     * locationListener provides methods for providers
      */
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-
+            Log.d("Location", "run onLocationChanged");
+            timerHandler.removeCallbacks(lastKnownLocationFallback);
             locationResponseHandler.gotNewLocation(location);
-            try {
-                fallbackTimer.cancel();
-                locationManager.removeUpdates(this);
-            } catch (Exception e) {
-
-            }
         }
 
         /**
@@ -67,11 +66,8 @@ public class LocationWrapper {
     private final Runnable lastKnownLocationFallback = new Runnable() {
         @Override
         public void run() {
-
-            locationManager.removeUpdates(locationListener);
-
+            Log.d("Location", "run lastKnownLocationFallback");
             locationResponseHandler.gotFallbackLocation(getLastKnownLocation());
-
         }
     };
 
