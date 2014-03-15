@@ -187,15 +187,15 @@ public class LocationWrapperTest {
 
         // This simulates an location changed event
         shadowLocationManager.simulateLocation(newLocation);
-//
-//        // wait for all async tasks to finish
-//        Robolectric.runUiThreadTasks();
-//
-//        // Assert that the correct asynchronous event handlers have been called
-//        assertTrue(assertionMap.keySet().contains("gotInstantTemporaryLocation"));
-//        assertTrue(assertionMap.keySet().contains("gotNewLocation"));
-//
-//        // Cancel the delayed fallback task if it still is existent
-//        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+
+        // wait for all async tasks to finish
+        Robolectric.runUiThreadTasks();
+
+        // Assert that the correct asynchronous event handlers have been called
+        assertTrue(assertionMap.keySet().contains("gotInstantTemporaryLocation"));
+        assertTrue(assertionMap.keySet().contains("gotNewLocation"));
+
+        // Cancel the delayed fallback task if it still is existent
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
     }
 }
