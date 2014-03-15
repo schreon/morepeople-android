@@ -181,6 +181,5 @@ public class LocationWrapperTest {
         assertFalse(checkMap.keySet().contains("gotFallbackLocation"));
         assertTrue(checkMap.keySet().contains("gotInstantTemporaryLocation"));
         assertTrue(checkMap.keySet().contains("gotNewLocation"));
-
     }
 }

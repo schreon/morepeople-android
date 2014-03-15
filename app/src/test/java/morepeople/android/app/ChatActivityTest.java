@@ -114,7 +114,6 @@ public class ChatActivityTest {
             assertNotNull(displayedMessage);
             assertTrue(isDisplayed);
         }
-
     }
 
     // when the user hits the send button, the typed message should appear in the textbox
