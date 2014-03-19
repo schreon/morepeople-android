@@ -4,9 +4,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -31,7 +28,7 @@ import java.util.Map;
 /**
  * Created by schreon on 3/14/14.
  */
-public class ServerAPI implements IServerAPI {
+public class ServerApi implements IServerApi {
 
     /** the host name */
     private String hostName;
@@ -42,8 +39,8 @@ public class ServerAPI implements IServerAPI {
     /** new gson */
     private Gson gson = new Gson();
 
-    private static ServerAPI instance = null;
-    public ServerAPI() {
+    private static ServerApi instance = null;
+    public ServerApi() {
         // TODO: load this from config
         ApplicationInfo ai = null;
         try {
@@ -66,10 +63,10 @@ public class ServerAPI implements IServerAPI {
         }
     }
 
-    private void getRequest(String path, HashMap<String, String> data, DataCallback onSuccess, DataCallback onError) {
+    private void getRequest(String path, HashMap<String, String> data, IDataCallback onSuccess, IDataCallback onError) {
 
-        final DataCallback fOnSuccess = onSuccess;
-        final DataCallback fOnError = onError;
+        final IDataCallback fOnSuccess = onSuccess;
+        final IDataCallback fOnError = onError;
 
         // Url rewriting \m/
         String url = hostName + path;
@@ -84,8 +81,8 @@ public class ServerAPI implements IServerAPI {
         final HttpGet get = new HttpGet(url);
         get.setHeader("Accept", "application/json");
         get.setHeader("Content-type", "application/json");
-        Log.d("ServerAPI -> url", url);
-        Log.d("ServerAPI -> path", path);
+        Log.d("ServerApi -> url", url);
+        Log.d("ServerApi -> path", path);
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -93,17 +90,17 @@ public class ServerAPI implements IServerAPI {
                 try {
                     BasicResponseHandler response = new BasicResponseHandler();
                     String responseString = client.execute(get, response);
-                    Log.d("ServerAPI", "responseString = "+responseString);
+                    Log.d("ServerApi", "responseString = "+responseString);
                     responseMap = gson.fromJson(responseString, HashMap.class);
                     fOnSuccess.run(responseMap);
                 } catch (ClientProtocolException e) {
-                    Log.e("DataCallback", e.getMessage());
+                    Log.e("IDataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
                     fOnError.run(responseMap);
 
                 } catch (IOException e) {
-                    Log.e("DataCallback", e.getMessage());
+                    Log.e("IDataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
                     fOnError.run(responseMap);
@@ -114,17 +111,17 @@ public class ServerAPI implements IServerAPI {
         task.execute();
     }
 
-    private void postRequest(String path, HashMap<String, Object> data, DataCallback onSuccess, DataCallback onError) {
+    private void postRequest(String path, HashMap<String, Object> data, IDataCallback onSuccess, IDataCallback onError) {
 
-        final DataCallback fOnSuccess = onSuccess;
-        final DataCallback fOnError = onError;
+        final IDataCallback fOnSuccess = onSuccess;
+        final IDataCallback fOnError = onError;
 
         final HttpPost post = new HttpPost(hostName + path);
         post.setEntity(toJson(data));
         post.setHeader("Accept", "application/json");
         post.setHeader("Content-type", "application/json");
-        Log.d("ServerAPI -> hostName", hostName);
-        Log.d("ServerAPI -> path", path);
+        Log.d("ServerApi -> hostName", hostName);
+        Log.d("ServerApi -> path", path);
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -134,13 +131,13 @@ public class ServerAPI implements IServerAPI {
                     responseMap = gson.fromJson(client.execute(post, response), HashMap.class);
                     fOnSuccess.run(responseMap);
                 } catch (ClientProtocolException e) {
-                    Log.e("DataCallback", e.getMessage());
+                    Log.e("IDataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
                     fOnError.run(responseMap);
 
                 } catch (IOException e) {
-                    Log.e("DataCallback", e.getMessage());
+                    Log.e("IDataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
                     fOnError.run(responseMap);
@@ -152,18 +149,18 @@ public class ServerAPI implements IServerAPI {
     }
 
     @Override
-    public void loadState(DataCallback onSuccess, DataCallback onError) {
-        final DataCallback fOnSuccess = onSuccess;
-        final DataCallback fOnError = onError;
+    public void loadState(IDataCallback onSuccess, IDataCallback onError) {
+        final IDataCallback fOnSuccess = onSuccess;
+        final IDataCallback fOnError = onError;
         HashMap<String, Object> userInfo = MainApplication.getUserInfo();
         for (String key : userInfo.keySet()) {
-            Log.d("ServerAPI", "-> userInfo." + key + " = " + userInfo.get(key));
+            Log.d("ServerApi", "-> userInfo." + key + " = " + userInfo.get(key));
         }
         postRequest("/state", userInfo, onSuccess, onError);
     }
 
     @Override
-    public void searchEnvironment(Location location, DataCallback onSuccess, DataCallback onError) {
+    public void searchEnvironment(Location location, IDataCallback onSuccess, IDataCallback onError) {
         HashMap<String, String> rewrite = new HashMap<String, String>();
         rewrite.put("LON", String.valueOf(location.getLongitude()));
         rewrite.put("LAT", String.valueOf(location.getLatitude()));
@@ -172,32 +169,32 @@ public class ServerAPI implements IServerAPI {
     }
 
     @Override
-    public void queue(String matchTag, DataCallback onSuccess, DataCallback onError) {
+    public void queue(String matchTag, IDataCallback onSuccess, IDataCallback onError) {
 
     }
 
     @Override
-    public void cancel(DataCallback onSuccess, DataCallback onError) {
+    public void cancel(IDataCallback onSuccess, IDataCallback onError) {
 
     }
 
     @Override
-    public void confirmCancel(DataCallback onSuccess, DataCallback onError) {
+    public void confirmCancel(IDataCallback onSuccess, IDataCallback onError) {
 
     }
 
     @Override
-    public void accept(DataCallback onSuccess, DataCallback onError) {
+    public void accept(IDataCallback onSuccess, IDataCallback onError) {
 
     }
 
     @Override
-    public void finish(DataCallback onSuccess, DataCallback onError) {
+    public void finish(IDataCallback onSuccess, IDataCallback onError) {
 
     }
 
     @Override
-    public void evaluate(DataCallback onSuccess, DataCallback onErrork) {
+    public void evaluate(IDataCallback onSuccess, IDataCallback onErrork) {
 
     }
 }

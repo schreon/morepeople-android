@@ -5,7 +5,7 @@ import android.location.Location;
 /**
  *
  */
-public interface IServerAPI {
+public interface IServerApi {
     public static final String MATCH_ID = "MATCH_ID";
     public static final String USER_ID = "USER_ID";
     public static final String MATCH_TAG = "MATCH_TAG";
@@ -19,50 +19,50 @@ public interface IServerAPI {
      * This should be run after errors occured or the app has been restarted.
      * @return the current state of the User
      */
-    public void loadState(DataCallback onSuccess, DataCallback onError);
+    public void loadState(IDataCallback onSuccess, IDataCallback onError);
 
     /**
      * This should be polled only from active activities.
      * @return nearby searches, or 'queues', by other users.
      */
-    public void searchEnvironment(Location location, DataCallback onSuccess, DataCallback onErrork);
+    public void searchEnvironment(Location location, IDataCallback onSuccess, IDataCallback onErrork);
 
     /**
      * Request: Change state to QUEUED or update the search.
      * @param matchTag the tag the user is searching for.
      * @return contains the new state of the user, determined by the server.
      */
-    public void queue(String matchTag, DataCallback onSuccess, DataCallback onError);
+    public void queue(String matchTag, IDataCallback onSuccess, IDataCallback onError);
 
     /**
      * Request a transition to the CANCELLED state.
      * @return contains the new state of the user, determined by the server.
      */
-    public void cancel(DataCallback onSuccess, DataCallback onError);
+    public void cancel(IDataCallback onSuccess, IDataCallback onError);
 
     /**
      * Request a transition from the CANCELLED state to the OFFLINE state.
      * @return contains the new state of the user, determined by the server.
      */
-    public void confirmCancel(DataCallback onSuccess, DataCallback onError);
+    public void confirmCancel(IDataCallback onSuccess, IDataCallback onError);
 
     /**
      * Request a transition from the OPEN to the ACCEPTED state.
      * @return contains the new state of the user, determined by the server.
      */
-    public void accept(DataCallback onSuccess, DataCallback onError);
+    public void accept(IDataCallback onSuccess, IDataCallback onError);
 
     /**
      * Request a transition from the RUNNING to the EVALUATION state.
      * @return contains the new state of the user, determined by the server.
      */
-    public void finish(DataCallback onSuccess, DataCallback onError);
+    public void finish(IDataCallback onSuccess, IDataCallback onError);
 
     /**
      * Request a transition from the EVALUATION to the OFFLINE state.
      * @return contains the new state of the user, determined by the server.
      */
-    public void evaluate(DataCallback onSuccess, DataCallback onErrork);
+    public void evaluate(IDataCallback onSuccess, IDataCallback onErrork);
 
 
 }

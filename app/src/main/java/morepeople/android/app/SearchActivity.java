@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +25,7 @@ public class SearchActivity extends Activity {
 
     private SearchAdapter searchAdapter;
     private LocationWrapper locationWrapper;
-    private ServerAPI api;
+    private ServerApi api;
 
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -35,7 +33,7 @@ public class SearchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        api = new ServerAPI();
+        api = new ServerApi();
         locationWrapper = new LocationWrapper();
 
         setContentView(R.layout.activity_search);
@@ -105,7 +103,7 @@ public class SearchActivity extends Activity {
 
 
     private void requestSearchAndUpdate(Location location) {
-        DataCallback onSuccess = new DataCallback() {
+        IDataCallback onSuccess = new IDataCallback() {
 
             @Override
             public void run(Map<String, Object> data) {
@@ -131,7 +129,7 @@ public class SearchActivity extends Activity {
                 });
             }
         };
-        DataCallback onError = new DataCallback() {
+        IDataCallback onError = new IDataCallback() {
 
             @Override
             public void run(Map<String, Object> data) {
