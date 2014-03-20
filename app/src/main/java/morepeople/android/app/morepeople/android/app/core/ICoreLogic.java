@@ -1,4 +1,4 @@
-package morepeople.android.app;
+package morepeople.android.app.morepeople.android.app.core;
 
 import android.location.Location;
 
@@ -8,8 +8,6 @@ import java.util.Map;
  * Created by schreon on 3/19/14.
  */
 public interface ICoreLogic {
-    public static final String SHARED_PREFS_NAME = "morepeople.android.app.SHARED_PREFS";
-
     public static enum UserState {
         OFFLINE,
         QUEUED,
@@ -20,6 +18,8 @@ public interface ICoreLogic {
         CANCELLED
     }
 
+    public static final String SHARED_PREFS = "morepeople.android.app.SHARED_PREFS";
+
     public static final String KEY_USER_ID = "USER_ID";
     public static final String KEY_USER_NAME = "USER_NAME";
     public static final String KEY_LOC = "LOC";
@@ -29,28 +29,13 @@ public interface ICoreLogic {
     public static final String KEY_MATCH_TAG = "MATCH_TAG";
     public static final String KEY_TIMESTAMP = "TIMESTAMP";
     public static final String KEY_RESULTS = "RESULTS";
+    public static final String KEY_STATE = "STATE";
 
     /**
      * Load the state from the persistence layer
-     * @param onSuccess
      * @param onError
      */
-    public void load(IDataCallback onSuccess, IDataCallback onError);
-
-    /**
-     * Example:
-     *
-     * {
-     *      'USER_ID' : 'nsdfkuaernvkdjfgheknrvkdfjh02123nbsdfv',
-     *      'USER_NAME' : 'Torsten Test',
-     *      'LOC' : {
-     *          'LONGITUDE' : 123,
-     *          'LATITUDE' : 456
-     *      }
-     * }
-     * @return a Map containing information about the location, id and name of the user.
-     */
-    public Map<String, Object> getUserInfo();
+    public void load(IDataCallback onError);
 
     /**
      * Search the environment for other users with similar intents

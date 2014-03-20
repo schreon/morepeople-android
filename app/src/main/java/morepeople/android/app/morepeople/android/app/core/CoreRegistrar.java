@@ -1,10 +1,9 @@
-package morepeople.android.app;
+package morepeople.android.app.morepeople.android.app.core;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
-import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -14,19 +13,33 @@ import java.io.IOException;
 /**
  * Created by schreon on 3/20/14.
  */
-public class Registrar implements IRegistrar {
+public class CoreRegistrar implements ICoreRegistrar {
+    private final static String TAG = "CoreRegistrar";
     private Context context;
-    private final static String TAG = "Registrar";
     private GoogleCloudMessaging gcm;
     private String regId;
 
-    public Registrar(Context context) {
+    public CoreRegistrar(Context context) {
         this.context = context;
     }
 
     @Override
+    public String getRegistrationId() {
+        final SharedPreferences prefs = context.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
+        String regId = prefs.getString(PROPERTY_REG_ID, "");
+        if (regId.isEmpty()) {
+            for (String key : prefs.getAll().keySet()) {
+                Log.d(TAG, "-> " + key + " = " + prefs.getAll().get(key));
+            }
+            return null;
+        } else {
+            return regId;
+        }
+    }
+
+    @Override
     public void requestRegistrationId(IDataCallback onSuccess, IDataCallback onError) {
-        final SharedPreferences prefs = context.getSharedPreferences(ICoreLogic.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences prefs = context.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
         String regId = prefs.getString(PROPERTY_REG_ID, "");
         if (regId.isEmpty()) {
             for (String key : prefs.getAll().keySet()) {
@@ -36,7 +49,7 @@ public class Registrar implements IRegistrar {
             Log.d(TAG, "Requesting new regid");
             registerInBackground(context, onSuccess, onError);
         } else {
-            Log.d(TAG, "Found reg id: "+ regId);
+            Log.d(TAG, "Found reg id: " + regId);
             onSuccess.run(regId);
         }
     }
@@ -84,7 +97,8 @@ public class Registrar implements IRegistrar {
 
     private void storeRegistrationId(Context applicationContext, String regId) {
         Log.d(TAG, "storing reg id");
-        final SharedPreferences prefs = applicationContext.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);;
+        final SharedPreferences prefs = applicationContext.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
+        ;
         int appVersion = getAppVersion(applicationContext);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);

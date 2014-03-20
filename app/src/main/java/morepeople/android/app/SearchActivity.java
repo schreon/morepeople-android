@@ -1,8 +1,10 @@
 package morepeople.android.app;
 
 import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -11,10 +13,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import morepeople.android.app.morepeople.android.app.core.CoreLocation;
+import morepeople.android.app.morepeople.android.app.core.CoreLogic;
+import morepeople.android.app.morepeople.android.app.core.ICoreLocation;
+import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
+import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 
 
 /**
@@ -24,8 +33,12 @@ import java.util.Map;
 public class SearchActivity extends Activity {
 
     private SearchAdapter searchAdapter;
-    private LocationWrapper locationWrapper;
-    private ServerApi api;
+    private ICoreLocation coreLocation;
+    private IDataCallback onLocationUpdate;
+    private ICoreLogic coreLogic;
+    private Location userLocation;
+
+    private EditText inputSearch;
 
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -33,9 +46,6 @@ public class SearchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        api = new ServerApi();
-        locationWrapper = new LocationWrapper();
-
         setContentView(R.layout.activity_search);
         searchAdapter = new SearchAdapter();
         final ListView listView = (ListView) findViewById(R.id.list_search);
@@ -44,8 +54,7 @@ public class SearchActivity extends Activity {
         final LinearLayout layoutWaiting = (LinearLayout) findViewById(R.id.layout_waiting);
         final LinearLayout layoutSearchInput = (LinearLayout) findViewById(R.id.layout_search_input);
         layoutAddSearch.setVisibility(View.GONE);
-
-        final EditText inputSearch = (EditText) this.findViewById(R.id.input_search);
+        inputSearch = (EditText) this.findViewById(R.id.input_search);
 
         /**
          * addtextchangedListener for inputSearch provides methods for text change
@@ -99,45 +108,78 @@ public class SearchActivity extends Activity {
                 layoutSearchInput.setVisibility(View.GONE);
             }
         });
+
+        coreLocation = new CoreLocation(this);
+
+        ICoreLogic.UserState currentState = null;
+        currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.KEY_STATE));
+        coreLogic = new CoreLogic(this, currentState);
+
+        onLocationUpdate = new IDataCallback() {
+            @Override
+            public void run(Object rawData) {
+                userLocation = (Location) rawData;
+                searchAndUpdate();
+            }
+        };
+
+        userLocation = null;
     }
 
+    private void searchAndUpdate() {
+        // TODO: deal with concurrency in the right way (with a semaphore for example)
+        if (userLocation != null) {
+            String searchTerm = inputSearch.getText().toString();
+            if (searchTerm.isEmpty()) {
+                searchTerm = null;
+            }
+            final Context context = this;
+            coreLogic.search(userLocation, 1000, searchTerm, new IDataCallback() {
+                @Override
+                public void run(Object rawData) {
+                    // onSuccess
+                    Map<String, Object> data = (Map<String, Object>) rawData;
+                    // TODO: update list
+                    List<Object> results = (List<Object>)data.get("results");
+                    Log.d("SearchActivity", results.toString());
 
-    private void requestSearchAndUpdate(Location location) {
-        IDataCallback onSuccess = new IDataCallback() {
-
-            @Override
-            public void run(Map<String, Object> data) {
-                // TODO: update list
-                List<Object> results = (List<Object>)data.get("results");
-                Log.d("SearchActivity", results.toString());
-
-                final List<SearchEntry> resultList = new ArrayList<SearchEntry>();
-                for (Object entry : results ) {
-                    Map<String, Object> res = (Map<String, Object>) entry;
-                    String description = (String)res.get("MATCH_TAG");
-                    String id = (String)res.get("USER_ID");
-                    String creator = "-";
-                    String participants = "-";
-                    resultList.add(new SearchEntry(id, description, creator, participants));
-                }
-                SearchActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        searchAdapter.emptySilent();
-                        searchAdapter.addAll(resultList);
+                    final List<SearchEntry> resultList = new ArrayList<SearchEntry>();
+                    for (Object entry : results ) {
+                        Map<String, Object> res = (Map<String, Object>) entry;
+                        String description = (String)res.get("MATCH_TAG");
+                        String id = (String)res.get("USER_ID");
+                        String creator = "-";
+                        String participants = "-";
+                        resultList.add(new SearchEntry(id, description, creator, participants));
                     }
-                });
-            }
-        };
-        IDataCallback onError = new IDataCallback() {
+                    SearchActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            searchAdapter.emptySilent();
+                            searchAdapter.addAll(resultList);
+                        }
+                    });
+                }
+            }, new IDataCallback() {
+                @Override
+                public void run(final Object data) {
+                    // onError
+                    Handler mainHandler = new Handler(context.getMainLooper());
 
-            @Override
-            public void run(Map<String, Object> data) {
-                Log.e("SearchActivity", "Could not search environment:" + data.get("ERROR"));
-            }
-        };
-        api.searchEnvironment(location, onSuccess, onError);
+                    Runnable runOnUI = new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, data.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    };
+                    mainHandler.post(runOnUI);
+                }
+            });
+
+        }
+
     }
+
     /**
      * Get searchAdapter
      * @return searchAdapter
@@ -152,27 +194,15 @@ public class SearchActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        locationWrapper.requestLocation(this, new LocationResponseHandler() {
-            @Override
-            public void gotInstantTemporaryLocation(Location location) {
-                requestSearchAndUpdate(location);
-            }
-
-            @Override
-            public void gotFallbackLocation(Location location) {
-                requestSearchAndUpdate(location);
-            }
-
-            @Override
-            public void gotNewLocation(Location location) {
-                requestSearchAndUpdate(location);
-            }
-        }, 60000);
+        // TODO: poll search
+        coreLocation.setLocationUpdateHandler(onLocationUpdate);
+        coreLocation.setPolling(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        locationWrapper.stopListening();
+        coreLocation.setPolling(false);
+        // TODO: stop poll
     }
 }

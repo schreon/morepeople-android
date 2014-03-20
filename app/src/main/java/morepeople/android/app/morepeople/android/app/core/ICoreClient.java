@@ -1,4 +1,4 @@
-package morepeople.android.app;
+package morepeople.android.app.morepeople.android.app.core;
 
 import java.util.HashMap;
 
@@ -7,5 +7,5 @@ import java.util.HashMap;
  */
 public interface ICoreClient {
     public void doGetRequest(String path, HashMap<String, String> data, IDataCallback onSuccess, IDataCallback onError);
-    public void doPostRequest(String path, HashMap<String, String> data, IDataCallback onSuccess, IDataCallback onError);
+    public void doPostRequest(String path, HashMap<String, Object> data, IDataCallback onSuccess, IDataCallback onError);
 }

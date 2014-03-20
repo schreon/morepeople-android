@@ -1,4 +1,4 @@
-package morepeople.android.app;
+package morepeople.android.app.morepeople.android.app.core;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -50,6 +50,7 @@ public class CoreClient implements ICoreClient {
             return null;
         }
     }
+
     @Override
     public void doGetRequest(String path, HashMap<String, String> data, IDataCallback onSuccess, IDataCallback onError) {
 
@@ -100,7 +101,7 @@ public class CoreClient implements ICoreClient {
     }
 
     @Override
-    public void doPostRequest(String path, HashMap<String, String> data, IDataCallback onSuccess, IDataCallback onError) {
+    public void doPostRequest(String path, HashMap<String, Object> data, IDataCallback onSuccess, IDataCallback onError) {
 
         final IDataCallback fOnSuccess = onSuccess;
         final IDataCallback fOnError = onError;

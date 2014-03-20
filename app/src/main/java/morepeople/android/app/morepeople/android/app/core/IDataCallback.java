@@ -1,4 +1,4 @@
-package morepeople.android.app;
+package morepeople.android.app.morepeople.android.app.core;
 
 import java.util.Map;
 

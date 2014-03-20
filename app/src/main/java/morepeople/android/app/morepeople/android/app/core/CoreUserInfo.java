@@ -1,10 +1,8 @@
-package morepeople.android.app;
+package morepeople.android.app.morepeople.android.app.core;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
@@ -17,74 +15,36 @@ import java.util.Map;
 /**
  * Created by schreon on 3/20/14.
  */
-public class CoreLogic implements ICoreLogic {
+public class CoreUserInfo implements ICoreUserInfo {
+
+    private boolean finishedLocation;
+    private boolean finishedRegistration;
+
+    private ICoreRegistrar registrar;
+    private ICoreLocation location;
+
+    private Location userLocation;
+    private String regId;
+    private String userName;
+
     private Context context;
-    private CoreClient client;
-    private Map<String, Object> userInfo;
 
-    public CoreLogic(Context context) {
+    public CoreUserInfo(ICoreRegistrar registrar, ICoreLocation location, Context context) {
+        this.registrar = registrar;
+        this.location = location;
+
+        finishedLocation = false;
+        finishedRegistration = false;
         this.context = context;
-        client = new CoreClient(readHostName());
-        readUserName();
-        userInfo = new HashMap<String, Object>();
-    }
 
-    @Override
-    public void load(IDataCallback onSuccess, IDataCallback onError) {
+        // set last known location
+        this.userLocation = location.getLastKnownLocation();
 
-        // TODO: read user info if necessary and store it in shared prefs
-        // TODO: load state from server
+        // get reg id
+        this.regId = registrar.getRegistrationId();
 
-    }
-
-    @Override
-    public Map<String, Object> getUserInfo() {
-        return null;
-    }
-
-    @Override
-    public void search(Location location, long radius, String searchTerm, IDataCallback onSuccess, IDataCallback onError) {
-
-    }
-
-    @Override
-    public void queue(String searchTerm, IDataCallback onSuccess, IDataCallback onError) {
-
-    }
-
-    @Override
-    public void cancel(IDataCallback onSuccess, IDataCallback onError) {
-
-    }
-
-    @Override
-    public void accept(IDataCallback onSuccess, IDataCallback onError) {
-
-    }
-
-    @Override
-    public void finish(IDataCallback onSuccess, IDataCallback onError) {
-
-    }
-
-    @Override
-    public void evaluate(Map<String, Object> evaluation, IDataCallback onSuccess, IDataCallback onError) {
-
-    }
-
-    @Override
-    public void confirmCancel(IDataCallback onSuccess, IDataCallback onError) {
-
-    }
-
-    private String readHostName() {
-        ApplicationInfo ai = null;
-        try {
-            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return (String) ai.metaData.get("morepeople.android.app.HOSTNAME");
+        // get userName
+        this.userName = readUserName();
     }
 
     /**
@@ -149,5 +109,63 @@ public class CoreLogic implements ICoreLogic {
 
         Log.d("ACCOUNT", "could not determine username. returning null, expecting app will prompt for username later");
         return null;
+    }
+
+    private synchronized void checkFinishedIdAndLoc(final IDataCallback onSuccess) {
+        if ( finishedLocation && finishedRegistration ) {
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(ICoreLogic.KEY_LOC, userLocation);
+            data.put(ICoreLogic.KEY_USER_ID, regId);
+            data.put(ICoreLogic.KEY_USER_NAME, userName);
+            onSuccess.run(data);
+        }
+    }
+
+    @Override
+    public void load(final IDataCallback onSuccess, final IDataCallback onError) {
+        // read the username
+        userName = readUserName();
+
+        // request location
+        Location loc = location.getLastKnownLocation();
+        if ( loc != null) {
+            finishedLocation = true;
+        } else {
+            location.setLocationUpdateHandler(new IDataCallback() {
+                @Override
+                public void run(Object data) {
+                    location.setPolling(false);
+                    finishedLocation = true;
+                    userLocation = (Location) data;
+                    checkFinishedIdAndLoc(onSuccess);
+                }
+            });
+            location.setPolling(true);
+        }
+
+        // request regId
+        registrar.requestRegistrationId(new IDataCallback() {
+            @Override
+            public void run(Object data) {
+                regId = (String) data;
+                finishedRegistration = true;
+                checkFinishedIdAndLoc(onSuccess);
+            }
+        }, onError);
+    }
+
+    @Override
+    public String getUserName() {
+        return userName;
+    }
+
+    @Override
+    public String getUserId() {
+        return regId;
+    }
+
+    @Override
+    public Location getUserLocation() {
+        return userLocation;
     }
 }
