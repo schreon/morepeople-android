@@ -6,5 +6,5 @@ import java.util.Map;
  * Created by schreon on 3/14/14.
  */
 public interface IDataCallback {
-    public void run(Map<String, Object> data);
+    public void run(Object data);
 }

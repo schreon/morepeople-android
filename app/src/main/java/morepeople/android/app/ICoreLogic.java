@@ -8,6 +8,8 @@ import java.util.Map;
  * Created by schreon on 3/19/14.
  */
 public interface ICoreLogic {
+    public static final String SHARED_PREFS_NAME = "morepeople.android.app.SHARED_PREFS";
+
     public static enum UserState {
         OFFLINE,
         QUEUED,
@@ -27,6 +29,13 @@ public interface ICoreLogic {
     public static final String KEY_MATCH_TAG = "MATCH_TAG";
     public static final String KEY_TIMESTAMP = "TIMESTAMP";
     public static final String KEY_RESULTS = "RESULTS";
+
+    /**
+     * Load the state from the persistence layer
+     * @param onSuccess
+     * @param onError
+     */
+    public void load(IDataCallback onSuccess, IDataCallback onError);
 
     /**
      * Example:
