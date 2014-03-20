@@ -78,6 +78,15 @@ public class CoreLocation implements ICoreLocation{
 
     @Override
     public Location getLastKnownLocation() {
+        if (locationManager == null) {
+            locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        }
+
+        // find out if gps is enabled
+        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        // find out if network is enabled
+        networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
         Location gpsLocation = null;
         Location networkLocation = null;
 

@@ -44,10 +44,9 @@ import static org.robolectric.Robolectric.shadowOf;
 public class ConfirmationActivityTest {
     private ConfirmationActivity activity;
 
-    @BeforeClass
     public static void sharedPrefs() {
         // Insert registration id and the user name into SharedPreferences
-        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
         sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
     }
@@ -57,6 +56,7 @@ public class ConfirmationActivityTest {
      */
     @Before
     public void setUp(){
+        sharedPrefs();
         activity = Robolectric.buildActivity(ConfirmationActivity.class).create().get();
     }
 
@@ -141,9 +141,8 @@ public class ConfirmationActivityTest {
                 equalTo(activity.getString(R.string.please_confirm_cancel)));
 
         alert.getButton(DialogInterface.BUTTON_NEGATIVE).performClick();
-        Intent activityIntent = shadowOf(activity).getNextStartedActivity();
-        // Should still be the same
-        assertEquals(activityIntent.getComponent(), new ComponentName(activity, ConfirmationActivity.class));
+        // There should be no started activity
+        assertNull(shadowOf(activity).getNextStartedActivity());
 
         // now do it actually
         buttonReject.performClick();

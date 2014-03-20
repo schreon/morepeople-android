@@ -56,7 +56,7 @@ public class CoreUserInfo implements ICoreUserInfo {
         String userName = null;
 
         //get username from shared preferences
-        SharedPreferences sp1 = context.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
+        SharedPreferences sp1 = context.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
         if (sp1.contains("appUsername")) {
             userName = sp1.getString("appUsername", null);
 
@@ -100,7 +100,7 @@ public class CoreUserInfo implements ICoreUserInfo {
         //save username in prefs
         if (userName != null) {
             Log.d("ACCOUNT", "found username in profile:" + userName);
-            SharedPreferences sp = context.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
+            SharedPreferences sp = context.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
             SharedPreferences.Editor Ed = sp.edit();
             Ed.putString("appUsername", userName);
             Ed.commit();

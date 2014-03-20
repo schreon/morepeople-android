@@ -44,10 +44,9 @@ import static org.robolectric.Robolectric.shadowOf;
 public class LocationWrapperTest {
     ICoreLocation coreLocation;
 
-    @BeforeClass
     public static void sharedPrefs() {
         // Insert registration id and the user name into SharedPreferences
-        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
         sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
 
@@ -61,6 +60,7 @@ public class LocationWrapperTest {
      */
     @Before
     public void setUp(){
+        sharedPrefs();
         coreLocation = new CoreLocation(Robolectric.application);
     }
 
