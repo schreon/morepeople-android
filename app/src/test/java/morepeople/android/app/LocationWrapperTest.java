@@ -2,8 +2,6 @@ package morepeople.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -17,6 +15,12 @@ import org.robolectric.shadows.ShadowLocationManager;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import morepeople.android.app.morepeople.android.app.core.CoreLocation;
+import morepeople.android.app.morepeople.android.app.core.ICoreLocation;
+import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
+import morepeople.android.app.morepeople.android.app.core.ICoreRegistrar;
+import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 
 import static java.lang.Thread.sleep;
 import static junit.framework.Assert.assertEquals;
@@ -38,24 +42,18 @@ import static org.robolectric.Robolectric.shadowOf;
  * Created by schreon on 3/4/14.
  */
 public class LocationWrapperTest {
-    SearchActivity activity;
-    LocationWrapper locationWrapper;
+    ICoreLocation coreLocation;
 
     @BeforeClass
     public static void sharedPrefs() {
-        MainApplication.preInit = new Runnable() {
-            @Override
-            public void run() {
-                // Insert registration id and the user name into SharedPreferences
-                SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
-                sharedPreferences.edit().putString(MainRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
+        // Insert registration id and the user name into SharedPreferences
+        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
+        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
 
-                // Add pending HTTP response which will be served as soon as the application
-                // sends the first HTTP request (no matter which request that will be).
-                Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+MainApplication.UserState.OFFLINE.toString()+"' }");
-            }
-        };
+        // Add pending HTTP response which will be served as soon as the application
+        // sends the first HTTP request (no matter which request that will be).
+        Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+ ICoreLogic.UserState.RUNNING.toString()+"' }");
     }
 
     /**
@@ -63,22 +61,21 @@ public class LocationWrapperTest {
      */
     @Before
     public void setUp(){
-        activity = Robolectric.buildActivity(SearchActivity.class).create().get();
-        locationWrapper = new LocationWrapper();
+        coreLocation = new CoreLocation(Robolectric.application);
     }
 
     @Test
     public void shouldNotBeNull() {
-        assertNotNull(activity);
+        assertNotNull(coreLocation);
     }
 
     @Test
     public void shouldProvideFallbackLocation() throws InterruptedException {
         final Map<String, Boolean> checkMap = new HashMap<String, Boolean>();
 
-        Context context = activity.getBaseContext();
+        Context context = Robolectric.application;
 
-        LocationManager instanceOfLocationManager = (LocationManager) Robolectric.application.getSystemService(context.LOCATION_SERVICE);
+        LocationManager instanceOfLocationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
         ShadowLocationManager slm = shadowOf(instanceOfLocationManager);
         slm.setProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
 
@@ -88,37 +85,9 @@ public class LocationWrapperTest {
 
         slm.setLastKnownLocation(LocationManager.NETWORK_PROVIDER, fakeLocation);
 
-        LocationResponseHandler locationResponseHandler = new LocationResponseHandler(){
-            @Override
-            public void gotInstantTemporaryLocation(Location location) {
-                assertNotNull(location);
-                assertEquals(fakeLocation, location);
-                checkMap.put("gotInstantTemporaryLocation", true);
-            }
-
-            @Override
-            public void gotFallbackLocation(Location location) {
-                assertNotNull(location);
-                assertEquals(fakeLocation, location);
-                // should not end up here
-                checkMap.put("gotFallbackLocation", true);
-            }
-
-            @Override
-            public void gotNewLocation(Location location) {
-                // should not get here!
-                fail();
-            }
-        };
-
-        locationWrapper.requestLocation(activity.getBaseContext(),locationResponseHandler, 60000);
-
-        assertTrue(checkMap.get("gotInstantTemporaryLocation"));
-
-        // wait for all async tasks to finish
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-
-        assertTrue(checkMap.get("gotFallbackLocation"));
+        Location retrievedLocation = coreLocation.getLastKnownLocation();
+        assertNotNull(retrievedLocation);
+        assertEquals(fakeLocation, retrievedLocation);
     }
 
     @Test
@@ -150,30 +119,18 @@ public class LocationWrapperTest {
 
         shadowLocationManager.setLastKnownLocation(LocationManager.NETWORK_PROVIDER, currentLocation);
 
-        LocationResponseHandler locationResponseHandler = new LocationResponseHandler(){
+        coreLocation.setLocationUpdateHandler(new IDataCallback() {
             @Override
-            public void gotInstantTemporaryLocation(Location location) {
-                assertNotNull(location);
-                assertEquals(currentLocation, location);
-                assertionMap.put("gotInstantTemporaryLocation", true);
-            }
-
-            @Override
-            public void gotFallbackLocation(Location location) {
-                // Should not get here!
-                fail();
-            }
-
-            @Override
-            public void gotNewLocation(Location location) {
+            public void run(Object data) {
+                Location location = (Location) data;
                 assertNotNull(location);
                 assertEquals(newLocation, location);
                 assertionMap.put("gotNewLocation", true);
             }
-        };
+        });
 
         // This starts the asynchronous location request
-        locationWrapper.requestLocation(activity.getBaseContext(), locationResponseHandler, 60000);
+        coreLocation.setPolling(true);
 
         // This simulates a location changed event
         shadowLocationManager.simulateLocation(newLocation);
@@ -182,10 +139,11 @@ public class LocationWrapperTest {
         Robolectric.runUiThreadTasks();
 
         // Assert that the correct asynchronous event handlers have been called
-        assertTrue(assertionMap.keySet().contains("gotInstantTemporaryLocation"));
         assertTrue(assertionMap.keySet().contains("gotNewLocation"));
 
         // Immediately run the delayed fallback task if it still is existent
         Robolectric.runUiThreadTasksIncludingDelayedTasks();
+
+        coreLocation.setPolling(false);
     }
 }

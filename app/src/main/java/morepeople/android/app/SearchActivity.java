@@ -68,7 +68,8 @@ public class SearchActivity extends Activity {
              * @param i3
              */
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             /**
              * What happens if text gets changed
@@ -80,7 +81,7 @@ public class SearchActivity extends Activity {
              */
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if(charSequence.length() > 0) {
+                if (charSequence.length() > 0) {
                     layoutAddSearch.setVisibility(View.VISIBLE);
                 } else {
                     layoutAddSearch.setVisibility(View.GONE);
@@ -92,7 +93,8 @@ public class SearchActivity extends Activity {
              * @param editable
              */
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(Editable editable) {
+            }
         });
 
         Button buttonSendSearch = (Button) this.findViewById(R.id.button_send_search);
@@ -102,17 +104,36 @@ public class SearchActivity extends Activity {
         buttonSendSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String searchTerm = inputSearch.getText().toString();
                 searchAdapter.add(new SearchEntry("testid", inputSearch.getText().toString(), "Hans Dampf", "1/3"));
                 inputSearch.setText("");
                 layoutWaiting.setVisibility(View.VISIBLE);
                 layoutSearchInput.setVisibility(View.GONE);
+                coreLogic.queue(searchTerm,
+                        new IDataCallback() {
+                            @Override
+                            public void run(Object data) {
+
+                            }
+                        },
+                        new IDataCallback() {
+                            @Override
+                            public void run(Object data) {
+
+                            }
+                        }
+                );
             }
         });
 
         coreLocation = new CoreLocation(this);
 
         ICoreLogic.UserState currentState = null;
-        currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.KEY_STATE));
+        try {
+            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.KEY_STATE));
+        } catch (Exception e) {
+            Log.e("SearchActivity", e.getMessage());
+        }
         coreLogic = new CoreLogic(this, currentState);
 
         onLocationUpdate = new IDataCallback() {
@@ -135,46 +156,47 @@ public class SearchActivity extends Activity {
             }
             final Context context = this;
             coreLogic.search(userLocation, 1000, searchTerm, new IDataCallback() {
-                @Override
-                public void run(Object rawData) {
-                    // onSuccess
-                    Map<String, Object> data = (Map<String, Object>) rawData;
-                    // TODO: update list
-                    List<Object> results = (List<Object>)data.get("results");
-                    Log.d("SearchActivity", results.toString());
+                        @Override
+                        public void run(Object rawData) {
+                            // onSuccess
+                            Map<String, Object> data = (Map<String, Object>) rawData;
+                            // TODO: update list
+                            List<Object> results = (List<Object>) data.get("results");
+                            Log.d("SearchActivity", results.toString());
 
-                    final List<SearchEntry> resultList = new ArrayList<SearchEntry>();
-                    for (Object entry : results ) {
-                        Map<String, Object> res = (Map<String, Object>) entry;
-                        String description = (String)res.get("MATCH_TAG");
-                        String id = (String)res.get("USER_ID");
-                        String creator = "-";
-                        String participants = "-";
-                        resultList.add(new SearchEntry(id, description, creator, participants));
+                            final List<SearchEntry> resultList = new ArrayList<SearchEntry>();
+                            for (Object entry : results) {
+                                Map<String, Object> res = (Map<String, Object>) entry;
+                                String description = (String) res.get("MATCH_TAG");
+                                String id = (String) res.get("USER_ID");
+                                String creator = "-";
+                                String participants = "-";
+                                resultList.add(new SearchEntry(id, description, creator, participants));
+                            }
+                            SearchActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    searchAdapter.emptySilent();
+                                    searchAdapter.addAll(resultList);
+                                }
+                            });
+                        }
+                    }, new IDataCallback() {
+                        @Override
+                        public void run(final Object data) {
+                            // onError
+                            Handler mainHandler = new Handler(context.getMainLooper());
+
+                            Runnable runOnUI = new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, data.toString(), Toast.LENGTH_LONG).show();
+                                }
+                            };
+                            mainHandler.post(runOnUI);
+                        }
                     }
-                    SearchActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            searchAdapter.emptySilent();
-                            searchAdapter.addAll(resultList);
-                        }
-                    });
-                }
-            }, new IDataCallback() {
-                @Override
-                public void run(final Object data) {
-                    // onError
-                    Handler mainHandler = new Handler(context.getMainLooper());
-
-                    Runnable runOnUI = new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, data.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    };
-                    mainHandler.post(runOnUI);
-                }
-            });
+            );
 
         }
 
@@ -182,6 +204,7 @@ public class SearchActivity extends Activity {
 
     /**
      * Get searchAdapter
+     *
      * @return searchAdapter
      */
     public SearchAdapter getSearchAdapter() {

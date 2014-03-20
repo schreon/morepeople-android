@@ -16,6 +16,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 
+import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
+import morepeople.android.app.morepeople.android.app.core.ICoreRegistrar;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -32,21 +35,11 @@ import static org.junit.Assert.assertFalse;
 public class ChatActivityTest {
     private ChatActivity activity;
 
-    @BeforeClass
     public static void sharedPrefs() {
-        MainApplication.preInit = new Runnable() {
-            @Override
-            public void run() {
-                // Insert registration id and the user name into SharedPreferences
-                SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
-                sharedPreferences.edit().putString(MainRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
-
-                // Add pending HTTP response which will be served as soon as the application
-                // sends the first HTTP request (no matter which request that will be).
-                Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+MainApplication.UserState.RUNNING.toString()+"' }");
-            }
-        };
+        // Insert registration id and the user name into SharedPreferences
+        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences("MorePeople", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
+        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
     }
 
     /**
@@ -54,6 +47,7 @@ public class ChatActivityTest {
      */
     @Before
     public void setUp(){
+        sharedPrefs();
         activity = Robolectric.buildActivity(ChatActivity.class).create().get();
     }
 
