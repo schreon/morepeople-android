@@ -49,7 +49,8 @@ public class SearchEnvironmentTest extends IntegrationTest<WelcomeActivity> {
 
         Log.d("robotium", "wait, until the search activity shows up");
         solo.waitForActivity(SearchActivity.class);
-
+        solo.waitForActivity(solo.getCurrentActivity().toString());
+        
         Log.d("robotium", "get the listview");
         ListView listView = solo.getCurrentViews(ListView.class).get(0);
 
@@ -65,6 +66,7 @@ public class SearchEnvironmentTest extends IntegrationTest<WelcomeActivity> {
 
         Log.d("robotium", "wait, until the search activity shows up");
         solo.waitForActivity(SearchActivity.class);
+        solo.waitForActivity(solo.getCurrentActivity().toString());
 
         Log.d("robotium", "get the listview");
         final ListView listView = solo.getCurrentViews(ListView.class).get(0);

@@ -41,7 +41,7 @@ import static org.robolectric.Robolectric.shadowOf;
 /**
  * Created by schreon on 3/4/14.
  */
-public class LocationWrapperTest {
+public class CoreLocationTest {
     ICoreLocation coreLocation;
 
     public static void sharedPrefs() {
