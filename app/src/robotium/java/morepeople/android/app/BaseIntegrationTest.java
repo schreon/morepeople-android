@@ -24,11 +24,11 @@ import java.io.IOException;
 /**
  * Created by friedolin on 3/14/14.
  */
-public class IntegrationTest<T extends Activity> extends ActivityInstrumentationTestCase2<T> {
+public class BaseIntegrationTest<T extends Activity> extends ActivityInstrumentationTestCase2<T> {
 
     private String url = "http://109.230.231.200";
 
-    public IntegrationTest(Class<T> activityClass) {
+    public BaseIntegrationTest(Class<T> activityClass) {
         super(activityClass);
     }
 

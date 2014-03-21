@@ -40,15 +40,15 @@ public class CoreLogic implements ICoreLogic {
     private Map<String, Object> decorateWithUserInfo(Map<String, Object> data, String userId, String userName, Location loc) {
         HashMap<String, Object> userLoc = new HashMap<String, Object>();
         if (loc != null) {
-            userLoc.put(ICoreLogic.KEY_LONGITUDE, loc.getLongitude());
-            userLoc.put(ICoreLogic.KEY_LATITUDE, loc.getLatitude());
+            userLoc.put(ICoreLogic.PROPERTY_LONGITUDE, loc.getLongitude());
+            userLoc.put(ICoreLogic.PROPERTY_LATITUDE, loc.getLatitude());
         } else {
-            userLoc.put(ICoreLogic.KEY_LONGITUDE, 0);
-            userLoc.put(ICoreLogic.KEY_LATITUDE, 0);
+            userLoc.put(ICoreLogic.PROPERTY_LONGITUDE, 0);
+            userLoc.put(ICoreLogic.PROPERTY_LATITUDE, 0);
         }
-        data.put(ICoreLogic.KEY_LOC, userLoc);
-        data.put(ICoreLogic.KEY_USER_ID, userId);
-        data.put(ICoreLogic.KEY_USER_NAME, userName);
+        data.put(ICoreLogic.PROPERTY_LOC, userLoc);
+        data.put(ICoreLogic.PROPERTY_USER_ID, userId);
+        data.put(ICoreLogic.PROPERTY_USER_NAME, userName);
         return data;
     }
 
@@ -58,7 +58,7 @@ public class CoreLogic implements ICoreLogic {
             @Override
             public void run(Object data) {
                 // call state state handler with loaded state
-                String userState = ((Map<String, String>) data).get(KEY_STATE);
+                String userState = ((Map<String, String>) data).get(PROPERTY_STATE);
                 stateHandler.transferToState(UserState.valueOf(userState));
             }
         };
@@ -87,7 +87,11 @@ public class CoreLogic implements ICoreLogic {
 
     @Override
     public void queue(String searchTerm, IDataCallback onSuccess, IDataCallback onError) {
-
+        Map<String, Object> payload = new HashMap<String, Object>();
+        decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
+        payload.put(PROPERTY_MATCH_TAG, searchTerm);
+        // TODO: enqueue
+        client.doPostRequest("/queue", payload, onSuccess, onError);
     }
 
     @Override

@@ -9,8 +9,6 @@ import morepeople.android.app.ChatActivity;
 import morepeople.android.app.ConfirmationActivity;
 import morepeople.android.app.EvaluationActivity;
 import morepeople.android.app.SearchActivity;
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreStateHandler;
 
 /**
  * Created by schreon on 3/20/14.
@@ -77,7 +75,7 @@ public class CoreStateHandler implements ICoreStateHandler {
                 break;
         }
         // put the state into the intent
-        intent.putExtra(ICoreLogic.KEY_STATE, newState.toString());
+        intent.putExtra(ICoreLogic.PROPERTY_STATE, newState.toString());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

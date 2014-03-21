@@ -3,16 +3,13 @@ package morepeople.android.app;
 
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.robotium.solo.Condition;
 import com.robotium.solo.Solo;
 
 import org.json.JSONObject;
 
-import java.util.List;
-
-public class SearchEnvironmentTest extends IntegrationTest<WelcomeActivity> {
+public class SearchEnvironmentTest extends BaseIntegrationTest<WelcomeActivity> {
     private Solo solo;
 
     public SearchEnvironmentTest() {
@@ -50,7 +47,7 @@ public class SearchEnvironmentTest extends IntegrationTest<WelcomeActivity> {
         Log.d("robotium", "wait, until the search activity shows up");
         solo.waitForActivity(SearchActivity.class);
         solo.waitForActivity(solo.getCurrentActivity().toString());
-        
+
         Log.d("robotium", "get the listview");
         ListView listView = solo.getCurrentViews(ListView.class).get(0);
 

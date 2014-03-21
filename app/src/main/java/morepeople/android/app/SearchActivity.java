@@ -46,8 +46,25 @@ public class SearchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        coreLocation = new CoreLocation(this);
+        ICoreLogic.UserState currentState = null;
+        try {
+            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
+        } catch (Exception e) {
+            Log.e("SearchActivity", e.getMessage());
+        }
+        coreLogic = new CoreLogic(this, currentState);
+        userLocation = null;
+        onLocationUpdate = new IDataCallback() {
+            @Override
+            public void run(Object rawData) {
+                userLocation = (Location) rawData;
+                searchAndUpdate();
+            }
+        };
         setContentView(R.layout.activity_search);
-        searchAdapter = new SearchAdapter();
+        searchAdapter = new SearchAdapter(coreLogic);
         final ListView listView = (ListView) findViewById(R.id.list_search);
         listView.setAdapter(searchAdapter);
         final LinearLayout layoutAddSearch = (LinearLayout) findViewById(R.id.layout_add_search);
@@ -126,25 +143,6 @@ public class SearchActivity extends Activity {
             }
         });
 
-        coreLocation = new CoreLocation(this);
-
-        ICoreLogic.UserState currentState = null;
-        try {
-            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.KEY_STATE));
-        } catch (Exception e) {
-            Log.e("SearchActivity", e.getMessage());
-        }
-        coreLogic = new CoreLogic(this, currentState);
-
-        onLocationUpdate = new IDataCallback() {
-            @Override
-            public void run(Object rawData) {
-                userLocation = (Location) rawData;
-                searchAndUpdate();
-            }
-        };
-
-        userLocation = null;
     }
 
     private void searchAndUpdate() {

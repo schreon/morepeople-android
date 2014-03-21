@@ -15,19 +15,44 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import morepeople.android.app.morepeople.android.app.core.ICoreLocation;
+import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
+import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+
 /**
  * SearchAdapter extends BaseAdapter and provides functions for managing the searchEntryList.
  */
 public class SearchAdapter extends BaseAdapter {
 
     private List<SearchEntry> searchEntryList;
+    private ICoreLogic coreLogic;
+
+    public IDataCallback getOnQueueSuccess() {
+        return onQueueSuccess;
+    }
+
+    public void setOnQueueSuccess(IDataCallback onQueueSuccess) {
+        this.onQueueSuccess = onQueueSuccess;
+    }
+
+    public IDataCallback getOnQueueError() {
+        return onQueueError;
+    }
+
+    public void setOnQueueError(IDataCallback onQueueError) {
+        this.onQueueError = onQueueError;
+    }
+
+    private IDataCallback onQueueSuccess = null;
+    private IDataCallback onQueueError = null;
 
     /**
      * Constructor of SearchAdapter class.
      * Inits new searchEntryList.
      */
-    public SearchAdapter() {
+    public SearchAdapter(ICoreLogic coreLogic) {
         searchEntryList = new ArrayList<SearchEntry>();
+        this.coreLogic = coreLogic;
     }
 
     /**
@@ -85,7 +110,9 @@ public class SearchAdapter extends BaseAdapter {
     }
 
     /**
-     * Get the view
+     * Get the view of a single search entry.
+     *
+     * TODO: mark the own search entry!
      * @param i -> position
      * @param view
      * @param viewGroup
@@ -113,7 +140,7 @@ public class SearchAdapter extends BaseAdapter {
             group.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SearchEntry entry = (SearchEntry)fGroup.getTag();
+                    final SearchEntry entry = (SearchEntry)fGroup.getTag();
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
                     // set title
@@ -125,7 +152,8 @@ public class SearchAdapter extends BaseAdapter {
                             .setCancelable(false)
                             .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    // TODO
+                                    // enqueue for the same match tag
+                                    coreLogic.queue(entry.description, onQueueSuccess, onQueueError);
                                 }
                             })
                             .setNegativeButton("Nein", new DialogInterface.OnClickListener() {

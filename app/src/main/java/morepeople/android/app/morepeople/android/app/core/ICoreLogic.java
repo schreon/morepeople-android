@@ -19,17 +19,16 @@ public interface ICoreLogic {
     }
 
     public static final String SHARED_PREFS = "morepeople.android.app.SHARED_PREFS";
-
-    public static final String KEY_USER_ID = "USER_ID";
-    public static final String KEY_USER_NAME = "USER_NAME";
-    public static final String KEY_LOC = "LOC";
-    public static final String KEY_LONGITUDE = "LONGITUDE";
-    public static final String KEY_LATITUDE = "LATITUDE";
-    public static final String KEY_MATCH_ID = "MATCH_ID";
-    public static final String KEY_MATCH_TAG = "MATCH_TAG";
-    public static final String KEY_TIMESTAMP = "TIMESTAMP";
-    public static final String KEY_RESULTS = "RESULTS";
-    public static final String KEY_STATE = "STATE";
+    public static final String PROPERTY_USER_ID = "USER_ID";
+    public static final String PROPERTY_USER_NAME = "USER_NAME";
+    public static final String PROPERTY_LOC = "LOC";
+    public static final String PROPERTY_LONGITUDE = "LONGITUDE";
+    public static final String PROPERTY_LATITUDE = "LATITUDE";
+    public static final String PROPERTY_MATCH_ID = "MATCH_ID";
+    public static final String PROPERTY_MATCH_TAG = "MATCH_TAG";
+    public static final String PROPERTY_TIMESTAMP = "TIMESTAMP";
+    public static final String PROPERTY_RESULTS = "RESULTS";
+    public static final String PROPERTY_STATE = "STATE";
 
     /**
      * Load the state from the persistence layer

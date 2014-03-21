@@ -52,7 +52,7 @@ public class CoreClient implements ICoreClient {
     }
 
     @Override
-    public void doGetRequest(String path, HashMap<String, String> data, IDataCallback onSuccess, IDataCallback onError) {
+    public void doGetRequest(String path, Map<String, String> data, IDataCallback onSuccess, IDataCallback onError) {
 
         final IDataCallback fOnSuccess = onSuccess;
         final IDataCallback fOnError = onError;
@@ -101,10 +101,7 @@ public class CoreClient implements ICoreClient {
     }
 
     @Override
-    public void doPostRequest(String path, HashMap<String, Object> data, IDataCallback onSuccess, IDataCallback onError) {
-
-        final IDataCallback fOnSuccess = onSuccess;
-        final IDataCallback fOnError = onError;
+    public void doPostRequest(String path, Map<String, Object> data, final IDataCallback onSuccess, final IDataCallback onError) {
 
         final HttpPost post = new HttpPost(hostName + path);
         post.setEntity(toJson(data));
@@ -119,18 +116,23 @@ public class CoreClient implements ICoreClient {
                 try {
                     BasicResponseHandler response = new BasicResponseHandler();
                     responseMap = gson.fromJson(client.execute(post, response), HashMap.class);
-                    fOnSuccess.run(responseMap);
+                    if (onSuccess != null) {
+                        onSuccess.run(responseMap);
+                    }
                 } catch (ClientProtocolException e) {
                     Log.e("IDataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
-                    fOnError.run(responseMap);
-
+                    if (onError != null) {
+                        onError.run(responseMap);
+                    }
                 } catch (IOException e) {
                     Log.e("IDataCallback", e.getMessage());
                     responseMap = new HashMap<String, Object>();
                     responseMap.put("ERROR", e.getMessage());
-                    fOnError.run(responseMap);
+                    if (onError != null) {
+                        onError.run(responseMap);
+                    }
                 }
                 return null;
             }
