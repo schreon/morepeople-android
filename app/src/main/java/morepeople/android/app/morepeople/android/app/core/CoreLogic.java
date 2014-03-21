@@ -130,6 +130,7 @@ public class CoreLogic implements ICoreLogic {
     @Override
     public void evaluate(Map<String, Object> evaluation, IDataCallback onSuccess, IDataCallback onError) {
         Map<String, Object> payload = new HashMap<String, Object>();
+        payload.put(PROPERTY_EVALUATION, evaluation);
         decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
         client.doPostRequest("/evaluate", payload, onSuccess, onError);
     }

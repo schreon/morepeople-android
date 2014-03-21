@@ -29,6 +29,7 @@ public interface ICoreLogic {
     public static final String PROPERTY_TIMESTAMP = "TIMESTAMP";
     public static final String PROPERTY_RESULTS = "RESULTS";
     public static final String PROPERTY_STATE = "STATE";
+    public static final String PROPERTY_EVALUATION = "EVALUATION";
 
     public void getLobby(IDataCallback onSuccess, IDataCallback onError);
 

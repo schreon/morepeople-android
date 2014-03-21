@@ -65,6 +65,8 @@ public class ConfirmationActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
 
+        getActionBar().setTitle("Es geht los!");
+
         ICoreLogic.UserState currentState = null;
         try {
             currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
@@ -198,6 +200,7 @@ public class ConfirmationActivity extends Activity {
         registerReceiver(foregroundReceiver,
                 new IntentFilter(ConfirmationActivity.BROADCAST_CONFIRMATION));
 
+        coreLogic.load(null);
         updateLobby();
     }
 

@@ -2,10 +2,17 @@ package morepeople.android.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import java.util.Map;
+
+import morepeople.android.app.morepeople.android.app.core.CoreLogic;
+import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
+import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 
 /**
  * This activity is shown when the match the user joined previously has started. There is a chat
@@ -14,6 +21,7 @@ import android.widget.ListView;
 public class ChatActivity extends Activity {
 
     private ChatAdapter chatAdapterAdapter;
+    private ICoreLogic coreLogic;
 
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -21,7 +29,15 @@ public class ChatActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActionBar().setTitle("morepeople");
         setContentView(R.layout.activity_chat);
+        ICoreLogic.UserState currentState = null;
+        try {
+            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
+        } catch (Exception e) {
+            Log.e("ConfirmationActivity", e.getMessage());
+        }
+        coreLogic = new CoreLogic(this, currentState);
         chatAdapterAdapter = new ChatAdapter();
         ListView listView = (ListView) findViewById(R.id.chat_history);
         listView.setAdapter(chatAdapterAdapter);
@@ -44,6 +60,21 @@ public class ChatActivity extends Activity {
                 // scroll
                 ListView listView = (ListView) findViewById(R.id.chat_history);
                 listView.smoothScrollToPosition(chatAdapterAdapter.getCount() - 1);
+            }
+        });
+
+        Button btn_finish = (Button) findViewById(R.id.button_end_match);
+        btn_finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                coreLogic.finish(new IDataCallback() {
+                    @Override
+                    public void run(Object rawData) {
+                        Map<String, Object> data = (Map<String, Object>) rawData;
+                        // set state
+                        coreLogic.setState(ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE)));
+                    }
+                }, null);
             }
         });
     }

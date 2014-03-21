@@ -21,6 +21,9 @@ public class WelcomeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+
+        getActionBar().setTitle("morepeople");
+
         mDialog = new ProgressDialog(this);
         // Start CoreLogic with no start state
         coreLogic = new CoreLogic(this, null);

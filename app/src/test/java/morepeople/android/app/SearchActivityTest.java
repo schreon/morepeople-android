@@ -105,9 +105,9 @@ public class SearchActivityTest {
     // TODO: should display wait-view if search is submitted
     @Test
     public void shouldDisplayAddSearchButton() {
-        final LinearLayout layoutAddSearch = (LinearLayout) activity.findViewById(R.id.layout_add_search);
-        final LinearLayout layoutSearchInput = (LinearLayout) activity.findViewById(R.id.layout_search_input);
-        final LinearLayout layoutWaiting = (LinearLayout) activity.findViewById(R.id.layout_waiting);
+        final View layoutAddSearch = activity.findViewById(R.id.button_send_search);
+        final View layoutSearchInput = activity.findViewById(R.id.layout_search_input);
+        final View layoutWaiting = activity.findViewById(R.id.layout_waiting);
 
         EditText inputSearch = (EditText) activity.findViewById(R.id.input_search);
 

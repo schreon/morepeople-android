@@ -20,7 +20,7 @@ public class CancelActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cancel);
-
+        getActionBar().setTitle("morepeople");
         ICoreLogic.UserState currentState = null;
         try {
             currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
