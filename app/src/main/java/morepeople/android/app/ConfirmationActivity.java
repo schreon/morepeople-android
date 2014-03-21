@@ -265,6 +265,12 @@ public class ConfirmationActivity extends Activity {
                         // onSuccess
                         final Map<String, Object> data = (Map<String, Object>) rawData;
 
+                        if(data.keySet().contains(ICoreLogic.PROPERTY_STATE)) {
+                            ICoreLogic.UserState state;
+                            state = ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE));
+                            coreLogic.setState(state);
+                            return;
+                        }
                         // TODO: update list
                         List<Object> participants = (List<Object>) data.get("participants");
                         Log.d("ConfirmationActivity", participants.toString());
@@ -304,6 +310,7 @@ public class ConfirmationActivity extends Activity {
                     }
                 }
         );
+
 
     }
 

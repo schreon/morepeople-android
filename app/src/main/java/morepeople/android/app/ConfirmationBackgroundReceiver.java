@@ -38,7 +38,7 @@ public class ConfirmationBackgroundReceiver extends WakefulBroadcastReceiver {
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle("Teilnahme bestätigt!")
                         .setStyle(new NotificationCompat.BigTextStyle().bigText("Teilnahme bestätigt!"))
-                        .setContentText("Jemand hat seine Teilnahme verbindlich bestätigt.")
+                        .setContentText("Jemand hat seine Teilnahme verbindlich bestätigt :)")
                         .setVibrate(vibrate);
         mBuilder.setContentIntent(contentIntent);
         manager.notify(1, mBuilder.build());
