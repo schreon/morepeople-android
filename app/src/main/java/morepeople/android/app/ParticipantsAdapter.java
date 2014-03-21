@@ -3,10 +3,12 @@ package morepeople.android.app;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -94,26 +96,30 @@ public class ParticipantsAdapter extends BaseAdapter {
         final Context context = viewGroup.getContext();
         assert context != null;
 
-        LinearLayout group;
+        RelativeLayout group;
         TextView nameView;
         TextView statusView;
 
         if (view == null) {
-            group = new LinearLayout(context);
-            nameView = new TextView(context);
-            statusView = new TextView(context);
-
-            group.addView(nameView);
-            group.addView(statusView);
+            group = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.listitem_confirm, null);
+            nameView = (TextView) group.findViewById(R.id.user_name);
+            statusView = (TextView) group.findViewById(R.id.user_status);
         } else {
-            group = (LinearLayout) view;
-            nameView = (TextView) group.getChildAt(0);
-            statusView = (TextView) group.getChildAt(1);
+            group = (RelativeLayout) view;
+            nameView = (TextView) group.findViewById(R.id.user_name);
+            statusView = (TextView) group.findViewById(R.id.user_status);
         }
 
         Participant participant = participantList.get(i);
         nameView.setText(participant.name);
-        statusView.setText(participant.status);
+        switch(ICoreLogic.UserState.valueOf(participant.status)) {
+            case OPEN:
+                statusView.setText("Überlegt noch ...");
+                break;
+            case ACCEPTED:
+                statusView.setText("Bestätigt!");
+                break;
+        }
 
         group.setTag(participant);
 

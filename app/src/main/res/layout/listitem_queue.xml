@@ -3,47 +3,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
     android:divider="#353535"
-    android:padding="5dp">
+    android:padding="1dp">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="#d5d5d5"
-        android:padding="5dp">
+        android:layout_height="fill_parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text='"Suchbegriff"'
-            android:id="@+id/search_term" />
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:text="Suchbegriff"
+            android:id="@+id/search_term"
+            android:textIsSelectable="true" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:text="Creator"
-                android:id="@+id/search_creator"
-                android:textColor="#353535" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="right">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="sucht danach."
-                android:id="@+id/textView3"
-                android:paddingLeft="7dp"
-                android:paddingRight="7dp"
-                android:textColor="#353535" />
-        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            android:text="Benutzer"
+            android:id="@+id/search_creator"
+            android:textColor="#353535"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
 </LinearLayout>

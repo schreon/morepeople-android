@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -188,7 +189,7 @@ public class ConfirmationActivity extends Activity {
         ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
-        Log.d("GCM", "disabled static confirmation background receiver");
+        Log.d("GCM", "disabled confirmation background receiver");
 
         // register ConfirmationForegroundReceiver
         //LocalBroadcastManager.getInstance(this).registerReceiver(foregroundReceiver,
@@ -259,7 +260,7 @@ public class ConfirmationActivity extends Activity {
                     @Override
                     public void run(Object rawData) {
                         // onSuccess
-                        Map<String, Object> data = (Map<String, Object>) rawData;
+                        final Map<String, Object> data = (Map<String, Object>) rawData;
 
                         // TODO: update list
                         List<Object> participants = (List<Object>) data.get("participants");
@@ -268,16 +269,18 @@ public class ConfirmationActivity extends Activity {
                         final List<Participant> resultList = new ArrayList<Participant>();
                         for (Object rawEntry : participants) {
                             Map<String, Object> entry = (Map<String, Object>) rawEntry;
-                            String id = (String) entry.get("USER_ID");
-                            String status = (String) entry.get("STATUS");
-                            String name = (String) entry.get("USER_NAME");
-                            resultList.add(new Participant(id, status, name));
+                            String id = (String) entry.get(ICoreLogic.PROPERTY_USER_ID);
+                            String status = (String) entry.get(ICoreLogic.PROPERTY_STATE);
+                            String name = (String) entry.get(ICoreLogic.PROPERTY_USER_NAME);
+                            resultList.add(new Participant(id, name, status));
                         }
                         ConfirmationActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 participantsAdapter.emptySilent();
                                 participantsAdapter.addAll(resultList);
+                                final TextView tx = (TextView) findViewById(R.id.text_confirm_queue);
+                                tx.setText((String)data.get("MATCH_TAG"));
                             }
                         });
                     }

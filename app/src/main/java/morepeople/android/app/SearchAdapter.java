@@ -66,9 +66,9 @@ public class SearchAdapter extends BaseAdapter {
      * @param searchEntries -> collection of searchEntries
      */
     public void addAll(Collection<SearchEntry> searchEntries) {
+        // TODO: sort by distance to the user
         searchEntryList.addAll(searchEntries);
         notifyDataSetChanged();
-
     }
 
     /**
@@ -130,14 +130,8 @@ public class SearchAdapter extends BaseAdapter {
 
         if (view == null) {
             group = (LinearLayout)LayoutInflater.from(context).inflate(R.layout.listitem_queue, null);
-            // group = new LinearLayout(context);
-            //creatorView = new TextView(context);
             creatorView = (TextView) group.findViewById(R.id.search_creator);
-            //descriptionView = new TextView(context);
             descriptionView = (TextView) group.findViewById(R.id.search_term);
-
-            //group.addView(descriptionView);
-            //group.addView(creatorView);
 
             final LinearLayout fGroup = group;
             group.setOnClickListener(new View.OnClickListener() {
@@ -176,10 +170,7 @@ public class SearchAdapter extends BaseAdapter {
             });
         } else {
             group = (LinearLayout) view;
-            // group = new LinearLayout(context);
-            //creatorView = new TextView(context);
             creatorView = (TextView) group.findViewById(R.id.search_creator);
-            //descriptionView = new TextView(context);
             descriptionView = (TextView) group.findViewById(R.id.search_term);
         }
 

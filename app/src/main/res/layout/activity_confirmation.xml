@@ -9,12 +9,39 @@
     tools:context="morepeople.android.app.ConfirmationActivity">
 
     <LinearLayout
+        android:id="@+id/layout_confirm_intro"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/confirm_wait_layout"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/text_confirm_queue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Aktivität"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/text_confirm_intro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Möchtest Du das mit den folgenden Teilnehmern tun?"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/confirm_layout"
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/confirm_button_layout">
+        android:layout_above="@+id/confirm_button_layout"
+        android:layout_below="@+id/layout_confirm_intro"
+        android:orientation="horizontal">
 
         <ListView
             android:id="@+id/confirm_list_view"
@@ -64,4 +91,5 @@
             android:text="Du hast verbindlich zugesagt."
             android:id="@+id/confirm_wait_text" />
     </LinearLayout>
+
 </RelativeLayout>

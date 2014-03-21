@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -49,7 +48,6 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-
         coreLocation = new CoreLocation(this);
         ICoreLogic.UserState currentState = null;
         try {
@@ -64,18 +62,17 @@ public class SearchActivity extends Activity {
             @Override
             public void run(Object rawData) {
                 userLocation = (Location) rawData;
+                // search and refresh state
                 searchAndUpdate();
+                coreLogic.load(null);
             }
         };
         searchAdapter = new SearchAdapter(coreLogic);
         final ListView listView = (ListView) findViewById(R.id.list_search);
         listView.setAdapter(searchAdapter);
-        final LinearLayout layoutAddSearch = (LinearLayout) findViewById(R.id.layout_add_search);
-        final LinearLayout layoutWaiting = (LinearLayout) findViewById(R.id.layout_waiting);
-        final LinearLayout layoutSearchInput = (LinearLayout) findViewById(R.id.layout_search_input);
-        layoutAddSearch.setVisibility(View.GONE);
-        inputSearch = (EditText) this.findViewById(R.id.input_search);
 
+        final Button buttonSendSearch = (Button) this.findViewById(R.id.button_send_search);
+        inputSearch = (EditText) this.findViewById(R.id.input_search);
         /**
          * addtextchangedListener for inputSearch provides methods for text change
          */
@@ -102,9 +99,9 @@ public class SearchActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 if (charSequence.length() > 0) {
-                    layoutAddSearch.setVisibility(View.VISIBLE);
+                    buttonSendSearch.setVisibility(View.VISIBLE);
                 } else {
-                    layoutAddSearch.setVisibility(View.GONE);
+                    buttonSendSearch.setVisibility(View.GONE);
                 }
             }
 
@@ -117,7 +114,7 @@ public class SearchActivity extends Activity {
             }
         });
 
-        Button buttonSendSearch = (Button) this.findViewById(R.id.button_send_search);
+
         /**
          * onClickListener for buttoSendSearch adds, searchentry and resets text and changes layout visibility
          */
@@ -125,12 +122,7 @@ public class SearchActivity extends Activity {
             @Override
             public void onClick(View view) {
                 String searchTerm = inputSearch.getText().toString();
-                InputMethodManager imm = (InputMethodManager)getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                inputSearch.setText("");
-                imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
-                layoutWaiting.setVisibility(View.VISIBLE);
-                layoutSearchInput.setVisibility(View.GONE);
+                hideControls();
                 coreLogic.queue(searchTerm,
                         new IDataCallback() {
                             @Override
@@ -142,22 +134,90 @@ public class SearchActivity extends Activity {
             }
         });
 
-        // Hide the controls if alreade queued
-        if (currentState.equals(ICoreLogic.UserState.QUEUED)) {
-            layoutWaiting.setVisibility(View.VISIBLE);
-            layoutSearchInput.setVisibility(View.GONE);
-            InputMethodManager imm = (InputMethodManager)getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            inputSearch.setText("");
-            imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
+        // Hide the controls if already queued
+        if (ICoreLogic.UserState.QUEUED.equals(currentState)) {
+            hideControls();
+        } else {
+            showControls();
         }
 
         searchAdapter.setOnQueueSuccess(new IDataCallback() {
             @Override
-            public void run(Object data) {
-                coreLogic.load(null);
+            public void run(Object rawData) {
+                hideControls();
+                Map<String, Object> data = (Map<String, Object>) rawData;
+                // set state
+                coreLogic.setState(ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE)));
+                searchAndUpdate();
             }
         });
+
+        Button buttonCancelSearch = (Button) this.findViewById(R.id.button_cancel_search);
+        /**
+         * onClickListener for buttoSendSearch adds, searchentry and resets text and changes layout visibility
+         */
+        buttonCancelSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                coreLogic.cancel(
+                        new IDataCallback() {
+                            @Override
+                            public void run(Object rawData) {
+                                Map<String, Object> data = (Map<String, Object>) rawData;
+                                // set state
+                                ICoreLogic.UserState state = ICoreLogic.UserState.valueOf((String) data.get(ICoreLogic.PROPERTY_STATE));
+                                adaptViewToState(state);
+                                coreLogic.setState(state);
+                            }
+                        },
+                        null
+                );
+            }
+        });
+    }
+
+    private void hideControls() {
+        Handler mainHandler = new Handler(this.getMainLooper());
+
+        Runnable runOnUI = new Runnable() {
+            @Override
+            public void run() {
+                final View layoutWaiting = findViewById(R.id.layout_waiting);
+                final View layoutSearchInput = findViewById(R.id.layout_search_input);
+                layoutWaiting.setVisibility(View.VISIBLE);
+                layoutSearchInput.setVisibility(View.GONE);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                inputSearch.setText("");
+                imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
+            }
+        };
+        mainHandler.post(runOnUI);
+
+    }
+
+    private void showControls() {
+        Handler mainHandler = new Handler(this.getMainLooper());
+
+        Runnable runOnUI = new Runnable() {
+            @Override
+            public void run() {
+                final View layoutWaiting = findViewById(R.id.layout_waiting);
+                final View layoutSearchInput = findViewById(R.id.layout_search_input);
+                layoutWaiting.setVisibility(View.GONE);
+                layoutSearchInput.setVisibility(View.VISIBLE);
+            }
+        };
+        mainHandler.post(runOnUI);
+    }
+
+    private void adaptViewToState(ICoreLogic.UserState state) {
+        // Hide the controls if already queued
+        if (ICoreLogic.UserState.QUEUED.equals(state)) {
+            hideControls();
+        } else {
+            showControls();
+        }
     }
 
     private void searchAndUpdate() {
@@ -233,6 +293,8 @@ public class SearchActivity extends Activity {
         coreLocation.setPolling(true);
         // do a search
         searchAndUpdate();
+        // update status
+        coreLogic.load(null);
     }
 
     @Override

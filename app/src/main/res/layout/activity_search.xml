@@ -15,75 +15,110 @@
         android:layout_alignParentEnd="false"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_above="@+id/layout_add_search" >
+        android:layout_above="@+id/layout_search_foot"
+        android:layout_alignParentTop="true"
+        android:visibility="visible">
 
         <ListView
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/list_search"
             android:stackFromBottom="false"
-            android:choiceMode="none" />
+            android:choiceMode="none"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentTop="true"
+            android:visibility="visible" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_search_input"
+    <RelativeLayout
+        android:id="@+id/layout_search_foot"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentRight="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        android:visibility="visible">
 
-        <EditText
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/layout_search_input"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/input_search"
-            android:editable="true"
-            android:enabled="true"
+            android:layout_alignParentLeft="false"
+            android:layout_marginLeft="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp"
             android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:clickable="true"
-            android:layout_weight=".95" />
+            android:focusableInTouchMode="true">
 
-    </LinearLayout>
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Create new search"
+                android:id="@+id/button_send_search"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_alignParentTop="true" />
 
-    <LinearLayout
-        android:id="@+id/layout_add_search"
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="false"
-        android:layout_above="@+id/layout_search_input"
-        android:gravity="center"
-        android:visibility="gone">
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/input_search"
+                android:editable="true"
+                android:enabled="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:clickable="false"
+                android:layout_weight=".95"
+                android:layout_alignParentLeft="false"
+                android:layout_marginLeft="0dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
+                android:layout_alignParentBottom="false"
+                android:visibility="visible"
+                android:layout_below="@+id/button_send_search"
+                android:hint="Worauf hast Du spontan Lust?" />
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/layout_waiting"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Create new search"
-            android:id="@+id/button_send_search"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:visibility="visible" />
-    </LinearLayout>
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="false"
+            android:layout_marginLeft="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp">
 
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/layout_waiting"
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Du bist in die Suche eingereiht."
+                android:id="@+id/textView"
+                android:visibility="visible"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="false" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Du wartest."
-            android:id="@+id/textView" />
-    </LinearLayout>
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="abbrechen"
+                android:id="@+id/button_cancel_search"
+                android:layout_alignParentLeft="false"
+                android:layout_marginLeft="144dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
+                android:layout_alignParentRight="true"
+                android:visibility="visible" />
+        </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>
