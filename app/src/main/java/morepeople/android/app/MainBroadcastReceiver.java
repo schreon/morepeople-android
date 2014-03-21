@@ -14,6 +14,7 @@ public class MainBroadcastReceiver extends WakefulBroadcastReceiver {
 
     /**
      * OnReceive method sets wakeful service
+     *
      * @param context
      * @param intent
      */

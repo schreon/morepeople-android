@@ -9,5 +9,6 @@ public interface ICoreRegistrar {
     public static final String SENDER_ID = "1039190776751";
 
     public String getRegistrationId();
+
     public void requestRegistrationId(IDataCallback onSuccess, IDataCallback onError);
 }

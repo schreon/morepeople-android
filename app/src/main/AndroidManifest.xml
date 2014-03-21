@@ -35,7 +35,14 @@
         <receiver android:name="morepeople.android.app.ConfirmationBackgroundReceiver" >
             <intent-filter>
                 <action android:name="morepeople.android.app.BROADCAST_CONFIRMATION" />
+                <category android:name="morepeople.android.app" />
+            </intent-filter>
+        </receiver>
 
+        <!-- Local Broadcast Receivers -->
+        <receiver android:name="morepeople.android.app.ConfirmationBackgroundReceiver" >
+            <intent-filter>
+                <action android:name="morepeople.android.app.BROADCAST_MATCH_FOUND" />
                 <category android:name="morepeople.android.app" />
             </intent-filter>
         </receiver>

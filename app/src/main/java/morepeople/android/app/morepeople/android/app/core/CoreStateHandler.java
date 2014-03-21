@@ -15,9 +15,10 @@ import morepeople.android.app.SearchActivity;
  */
 public class CoreStateHandler implements ICoreStateHandler {
     private static final String TAG = "CoreStateHandler";
-    
+
     private ICoreLogic.UserState currentState;
     private Context context;
+
     public CoreStateHandler(Context context, ICoreLogic.UserState currentState) {
         this.currentState = currentState;
         this.context = context;
@@ -30,7 +31,7 @@ public class CoreStateHandler implements ICoreStateHandler {
 
     @Override
     public void transferToState(ICoreLogic.UserState newState) {
-        if(newState != currentState){
+        if (newState != currentState) {
             onStateChanged(newState);
         }
         currentState = newState;
@@ -63,7 +64,6 @@ public class CoreStateHandler implements ICoreStateHandler {
             case FINISHED:
                 Log.d(TAG, "launch EvaluationActivity");
                 intent = new Intent(context, EvaluationActivity.class);
-                ;
                 break;
             case CANCELLED:
                 Log.d(TAG, "launch CancelActivity");

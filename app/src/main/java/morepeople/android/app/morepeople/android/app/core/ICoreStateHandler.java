@@ -5,6 +5,8 @@ package morepeople.android.app.morepeople.android.app.core;
  */
 public interface ICoreStateHandler {
     public ICoreLogic.UserState getCurrentState();
+
     public void transferToState(ICoreLogic.UserState newState);
+
     public void onStateChanged(ICoreLogic.UserState newState);
 }

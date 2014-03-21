@@ -3,7 +3,6 @@ package morepeople.android.app;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -22,6 +21,7 @@ public class MainIntentService extends IntentService {
 
     /**
      * OnHandleIntent
+     *
      * @param intent
      */
     @Override

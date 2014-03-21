@@ -11,8 +11,9 @@ public class Participant {
 
     /**
      * Constructor of participant class
-     * @param id -> id of the user
-     * @param name -> name of the user
+     *
+     * @param id     -> id of the user
+     * @param name   -> name of the user
      * @param status -> status of the user (OPEN, WAITING, RUNNING, FINISHED)
      */
     public Participant(String id, String name, String status) {

@@ -7,7 +7,10 @@ import android.location.Location;
  */
 public interface ICoreUserInfo {
     public void load(IDataCallback onSuccess, IDataCallback onError);
+
     public String getUserName();
+
     public String getUserId();
+
     public Location getUserLocation();
 }

@@ -13,20 +13,19 @@ import android.util.Log;
 import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
 
 /**
- * Created by schreon on 3/13/14.
+ * Created by schreon on 3/21/14.
  */
-public class ConfirmationBackgroundReceiver extends WakefulBroadcastReceiver {
-
+public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("GCM", "ConfirmationBackgroundReceiver.onReceive");
+        Log.d("GCM", "MatchFoundBackgroundReceiver.onReceive");
 
         SharedPreferences prefs = context.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
         String participantsListJson = (String) intent.getExtras().get("participantsListJson");
         prefs.edit().putString("participantsList", participantsListJson);
         prefs.edit().commit();
 
-        // create notification which will start the activity if the notification is clicked
+        // create notification which will start activity if the notification is clicked
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent startConfirmationActivityIntent = new Intent(context, ConfirmationActivity.class);
@@ -36,9 +35,9 @@ public class ConfirmationBackgroundReceiver extends WakefulBroadcastReceiver {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("Teilnahme bestätigt!")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Teilnahme bestätigt!"))
-                        .setContentText("Jemand hat seine Teilnahme verbindlich bestätigt.")
+                        .setContentTitle("Teilnehmer gefunden!")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Teilnehmer gefunden!"))
+                        .setContentText("Wir haben Leute gefunden, die sich mit Dir treffen würden!")
                         .setVibrate(vibrate);
         mBuilder.setContentIntent(contentIntent);
         manager.notify(1, mBuilder.build());

@@ -46,6 +46,8 @@ public class SearchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+
 
         coreLocation = new CoreLocation(this);
         ICoreLogic.UserState currentState = null;
@@ -63,7 +65,6 @@ public class SearchActivity extends Activity {
                 searchAndUpdate();
             }
         };
-        setContentView(R.layout.activity_search);
         searchAdapter = new SearchAdapter(coreLogic);
         final ListView listView = (ListView) findViewById(R.id.list_search);
         listView.setAdapter(searchAdapter);
@@ -197,7 +198,6 @@ public class SearchActivity extends Activity {
             );
 
         }
-
     }
 
     /**
@@ -218,6 +218,8 @@ public class SearchActivity extends Activity {
         // TODO: poll search
         coreLocation.setLocationUpdateHandler(onLocationUpdate);
         coreLocation.setPolling(true);
+        // do a search
+        searchAndUpdate();
     }
 
     @Override

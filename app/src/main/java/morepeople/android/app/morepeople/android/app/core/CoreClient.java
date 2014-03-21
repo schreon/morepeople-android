@@ -26,13 +26,19 @@ import java.util.Map;
  * Created by schreon on 3/20/14.
  */
 public class CoreClient implements ICoreClient {
-    /** the host name */
+    /**
+     * the host name
+     */
     private String hostName;
 
-    /** the http client */
+    /**
+     * the http client
+     */
     private HttpClient client;
 
-    /** new gson */
+    /**
+     * new gson
+     */
     private Gson gson = new Gson();
 
     public CoreClient(String hostName) {
@@ -79,7 +85,7 @@ public class CoreClient implements ICoreClient {
                 try {
                     BasicResponseHandler response = new BasicResponseHandler();
                     String responseString = client.execute(get, response);
-                    Log.d("CoreClient", "responseString = "+responseString);
+                    Log.d("CoreClient", "responseString = " + responseString);
                     responseMap = gson.fromJson(responseString, HashMap.class);
                     fOnSuccess.run(responseMap);
                 } catch (ClientProtocolException e) {

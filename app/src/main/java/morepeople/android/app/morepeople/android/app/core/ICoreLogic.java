@@ -30,8 +30,11 @@ public interface ICoreLogic {
     public static final String PROPERTY_RESULTS = "RESULTS";
     public static final String PROPERTY_STATE = "STATE";
 
+    public void getLobby(IDataCallback onSuccess, IDataCallback onError);
+
     /**
      * Load the state from the persistence layer
+     *
      * @param onError
      */
     public void load(IDataCallback onError);
@@ -56,6 +59,7 @@ public interface ICoreLogic {
 
     /**
      * Cancel the search or the lobby
+     *
      * @param onSuccess
      * @param onError
      */
@@ -72,6 +76,7 @@ public interface ICoreLogic {
 
     /**
      * Finish a match
+     *
      * @param onSuccess
      * @param onError
      */
@@ -79,6 +84,7 @@ public interface ICoreLogic {
 
     /**
      * Send the evaluation about the match to the server
+     *
      * @param evaluation
      * @param onSuccess
      * @param onError
@@ -87,6 +93,7 @@ public interface ICoreLogic {
 
     /**
      * Confirm the cancel state
+     *
      * @param onSuccess
      * @param onError
      */

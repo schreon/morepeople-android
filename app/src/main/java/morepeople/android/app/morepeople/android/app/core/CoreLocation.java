@@ -9,7 +9,7 @@ import android.os.Bundle;
 /**
  * Created by schreon on 3/20/14.
  */
-public class CoreLocation implements ICoreLocation{
+public class CoreLocation implements ICoreLocation {
     private LocationManager locationManager;
     private boolean gpsEnabled;
     private boolean networkEnabled;
@@ -30,7 +30,7 @@ public class CoreLocation implements ICoreLocation{
         gpsLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if ( onLocationUpdate != null) {
+                if (onLocationUpdate != null) {
                     onLocationUpdate.run(location);
                 }
             }
@@ -54,7 +54,7 @@ public class CoreLocation implements ICoreLocation{
         networkLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if ( onLocationUpdate != null) {
+                if (onLocationUpdate != null) {
                     onLocationUpdate.run(location);
                 }
             }
@@ -99,18 +99,18 @@ public class CoreLocation implements ICoreLocation{
 
         // If both values are available, use the newest one
         if (gpsLocation != null && networkLocation != null) {
-            if(gpsLocation.getTime() > networkLocation.getTime()) {
+            if (gpsLocation.getTime() > networkLocation.getTime()) {
                 return gpsLocation;
             } else {
                 return networkLocation;
             }
         }
 
-        if(gpsLocation != null) {
+        if (gpsLocation != null) {
             return gpsLocation;
         }
 
-        if(networkLocation != null) {
+        if (networkLocation != null) {
             return networkLocation;
         }
 
@@ -127,7 +127,7 @@ public class CoreLocation implements ICoreLocation{
         if (!this.isPolling && isPolling) {
             turnOnLocationPolling();
         }
-        if(this.isPolling && !isPolling) {
+        if (this.isPolling && !isPolling) {
             turnOffLocationPolling();
         }
         this.isPolling = isPolling;

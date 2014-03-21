@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,6 +25,24 @@ public class ParticipantsAdapter extends BaseAdapter {
     }
 
     /**
+     * Clears the participantList without notifying and therefore reloading the complete data
+     */
+    public void emptySilent() {
+        participantList.clear();
+    }
+
+    /**
+     * Adds all participants to the list and notifies changed data
+     *
+     * @param participants -> collection of participants
+     */
+    public void addAll(Collection<Participant> participants) {
+        participantList.addAll(participants);
+        notifyDataSetChanged();
+
+    }
+
+    /**
      * @return size of participantList
      */
     @Override
@@ -33,6 +52,7 @@ public class ParticipantsAdapter extends BaseAdapter {
 
     /**
      * Returns an item at specific position
+     *
      * @param i -> position
      * @return -> item at position i
      */
@@ -43,6 +63,7 @@ public class ParticipantsAdapter extends BaseAdapter {
 
     /**
      * Gets item id at specific position
+     *
      * @param i -> position
      * @return -> id of item
      */
@@ -53,8 +74,9 @@ public class ParticipantsAdapter extends BaseAdapter {
 
     /**
      * Gets the view
-     * @param i -> position
-     * @param view -> view
+     *
+     * @param i         -> position
+     * @param view      -> view
      * @param viewGroup -> viewgroup
      * @return group
      */
@@ -67,7 +89,7 @@ public class ParticipantsAdapter extends BaseAdapter {
         TextView nameView;
         TextView statusView;
 
-        if ( view == null ) {
+        if (view == null) {
             group = new LinearLayout(context);
             nameView = new TextView(context);
             statusView = new TextView(context);
@@ -76,8 +98,8 @@ public class ParticipantsAdapter extends BaseAdapter {
             group.addView(statusView);
         } else {
             group = (LinearLayout) view;
-            nameView = (TextView)group.getChildAt(0);
-            statusView = (TextView)group.getChildAt(1);
+            nameView = (TextView) group.getChildAt(0);
+            statusView = (TextView) group.getChildAt(1);
         }
 
         Participant participant = participantList.get(i);
@@ -92,6 +114,7 @@ public class ParticipantsAdapter extends BaseAdapter {
     /**
      * Adds an participant to the participantList
      * and notifies the data change
+     *
      * @param participant
      */
     public void add(Participant participant) {

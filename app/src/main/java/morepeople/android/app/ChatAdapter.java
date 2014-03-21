@@ -50,9 +50,9 @@ public class ChatAdapter extends BaseAdapter {
 
 
     /**
-     * @param i the index of the desired chat message.
+     * @param i           the index of the desired chat message.
      * @param convertView if this is not null, it will be reused, else a new TextView instance will be created.
-     * @param viewGroup the calling ViewGroup. This may not be null.
+     * @param viewGroup   the calling ViewGroup. This may not be null.
      * @return the View of the desired chat message.
      */
     @Override
@@ -68,7 +68,7 @@ public class ChatAdapter extends BaseAdapter {
             }
             textView = new TextView(context);
         } else {
-            textView = (TextView)convertView;
+            textView = (TextView) convertView;
         }
         textView.setText(messageList.get(i));
         return textView;
@@ -78,11 +78,11 @@ public class ChatAdapter extends BaseAdapter {
      * @param message the new message which is to be added to the chat history. May not be null or empty!
      */
     public void addNewMessage(String message) {
-        if (message == null ) {
+        if (message == null) {
             throw new RuntimeException("message may not be null!");
         }
 
-        if (message.length() == 0 ) {
+        if (message.length() == 0) {
             throw new RuntimeException("message may not be empty!");
         }
 

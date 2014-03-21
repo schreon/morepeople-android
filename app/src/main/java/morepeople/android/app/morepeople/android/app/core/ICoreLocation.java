@@ -7,6 +7,8 @@ import android.location.Location;
  */
 public interface ICoreLocation {
     public Location getLastKnownLocation();
+
     public void setLocationUpdateHandler(IDataCallback onLocationUpdate);
+
     public void setPolling(boolean isPolling);
 }

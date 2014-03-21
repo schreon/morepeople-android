@@ -112,7 +112,7 @@ public class CoreUserInfo implements ICoreUserInfo {
     }
 
     private synchronized void checkFinishedIdAndLoc(final IDataCallback onSuccess) {
-        if ( finishedLocation && finishedRegistration ) {
+        if (finishedLocation && finishedRegistration) {
             Map<String, Object> data = new HashMap<String, Object>();
             data.put(ICoreLogic.PROPERTY_LOC, userLocation);
             data.put(ICoreLogic.PROPERTY_USER_ID, regId);
@@ -128,7 +128,7 @@ public class CoreUserInfo implements ICoreUserInfo {
 
         // request location
         Location loc = location.getLastKnownLocation();
-        if ( loc != null) {
+        if (loc != null) {
             finishedLocation = true;
         } else {
             location.setLocationUpdateHandler(new IDataCallback() {

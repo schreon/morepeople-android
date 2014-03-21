@@ -11,25 +11,31 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import morepeople.android.app.morepeople.android.app.core.CoreLogic;
+import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
+import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 
 /**
  * ConfirmationActivity is shown if enough users were found to start an activity
  */
 public class ConfirmationActivity extends Activity {
 
+    public static String BROADCAST_CONFIRMATION = "morepeople.android.app.BROADCAST_CONFIRMATION";
+    private ICoreLogic coreLogic;
     private BroadcastReceiver foregroundReceiver = new BroadcastReceiver() {
 
         @Override
@@ -47,18 +53,25 @@ public class ConfirmationActivity extends Activity {
             readParticipantJson(participantsListJson);
         }
     };
-
-    public static String BROADCAST_CONFIRMATION = "morepeople.android.app.BROADCAST_CONFIRMATION";
-
     private ParticipantsAdapter participantsAdapter;
+
     /**
      * OnCreate method
+     *
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
+
+        ICoreLogic.UserState currentState = null;
+        try {
+            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
+        } catch (Exception e) {
+            Log.e("ConfirmationActivity", e.getMessage());
+        }
+        coreLogic = new CoreLogic(this, currentState);
 
         participantsAdapter = new ParticipantsAdapter();
 
@@ -126,6 +139,7 @@ public class ConfirmationActivity extends Activity {
                 alertDialog.show();
             }
         });
+
     }
 
     @Override
@@ -136,12 +150,12 @@ public class ConfirmationActivity extends Activity {
         SharedPreferences sharedPrefs = getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
         String participantsListJson = sharedPrefs.getString("participantsListJson", null);
 
-        if(participantsListJson != null) {
+        if (participantsListJson != null) {
             readParticipantJson(participantsListJson);
         }
 
         // disable static ConfirmationBackgroundReceiver
-        ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
+        ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
         Log.d("GCM", "disabled static confirmation background receiver");
@@ -153,6 +167,7 @@ public class ConfirmationActivity extends Activity {
         registerReceiver(foregroundReceiver,
                 new IntentFilter(ConfirmationActivity.BROADCAST_CONFIRMATION));
 
+        updateLobby();
     }
 
     @Override
@@ -165,7 +180,7 @@ public class ConfirmationActivity extends Activity {
         unregisterReceiver(foregroundReceiver);
 
         //enable static ConfirmationBackgroundReceiver
-        ComponentName component=new ComponentName(this, ConfirmationBackgroundReceiver.class);
+        ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
         Log.d("GCM", "re enabled static confirmation background receiver");
@@ -175,6 +190,7 @@ public class ConfirmationActivity extends Activity {
 
     /**
      * Returns participants adapter
+     *
      * @return participantsAdapter
      */
     public ParticipantsAdapter getParticipantsAdapter() {
@@ -195,8 +211,8 @@ public class ConfirmationActivity extends Activity {
         Gson gson = new Gson();
         List<Object> jsonList = gson.fromJson(participantsListJson, ArrayList.class);
 
-        for(Object entry : jsonList ) {
-            Map<String, String> entryMap = (Map<String, String>)entry;
+        for (Object entry : jsonList) {
+            Map<String, String> entryMap = (Map<String, String>) entry;
             String id = entryMap.get("id");
             String name = entryMap.get("name");
             String state = entryMap.get("state");
@@ -205,4 +221,53 @@ public class ConfirmationActivity extends Activity {
             participantsAdapter.add(participant);
         }
     }
+
+    private void updateLobby() {
+        final Context context = this;
+        coreLogic.getLobby(
+                new IDataCallback() {
+                    @Override
+                    public void run(Object rawData) {
+                        // onSuccess
+                        Map<String, Object> data = (Map<String, Object>) rawData;
+                        // TODO: update list
+                        List<Object> participants = (List<Object>) data.get("participants");
+                        Log.d("ConfirmationActivity", participants.toString());
+
+                        final List<Participant> resultList = new ArrayList<Participant>();
+                        for (Object rawEntry : participants) {
+                            Map<String, Object> entry = (Map<String, Object>) rawEntry;
+                            String id = (String) entry.get("USER_ID");
+                            String status = (String) entry.get("STATUS");
+                            String name = (String) entry.get("USER_NAME");
+                            resultList.add(new Participant(id, status, name));
+                        }
+                        ConfirmationActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                participantsAdapter.emptySilent();
+                                participantsAdapter.addAll(resultList);
+                            }
+                        });
+                    }
+                },
+                new IDataCallback() {
+                    @Override
+                    public void run(final Object data) {
+                        // onError
+                        Handler mainHandler = new Handler(context.getMainLooper());
+
+                        Runnable runOnUI = new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, data.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        };
+                        mainHandler.post(runOnUI);
+                    }
+                }
+        );
+
+    }
+
 }

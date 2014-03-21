@@ -31,6 +31,7 @@ public class CoreLogic implements ICoreLogic {
 
     /**
      * Decorate a data hashmap with user information fields
+     *
      * @param data
      * @param userId
      * @param userName
@@ -50,6 +51,13 @@ public class CoreLogic implements ICoreLogic {
         data.put(ICoreLogic.PROPERTY_USER_ID, userId);
         data.put(ICoreLogic.PROPERTY_USER_NAME, userName);
         return data;
+    }
+
+    @Override
+    public void getLobby(IDataCallback onSuccess, IDataCallback onError) {
+        HashMap<String, String> rewrite = new HashMap<String, String>();
+        rewrite.put("USER_ID", coreUserInfo.getUserId());
+        client.doGetRequest("/lobby", rewrite, onSuccess, onError);
     }
 
     @Override
@@ -90,7 +98,6 @@ public class CoreLogic implements ICoreLogic {
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
         payload.put(PROPERTY_MATCH_TAG, searchTerm);
-        // TODO: enqueue
         client.doPostRequest("/queue", payload, onSuccess, onError);
     }
 

@@ -12,9 +12,10 @@ public class SearchEntry {
 
     /**
      * Constructor of SearchEntry class
-     * @param id -> id of searchEntry
-     * @param description -> description of searchEntry
-     * @param creator -> creator of searchEntry
+     *
+     * @param id           -> id of searchEntry
+     * @param description  -> description of searchEntry
+     * @param creator      -> creator of searchEntry
      * @param participants -> number of participants
      */
     public SearchEntry(String id, String description, String creator, String participants) {
