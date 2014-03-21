@@ -69,7 +69,7 @@ public class SearchActivityTest {
 
         // add some search entries
         for (int i=0; i < 40; i++) {
-            SearchEntry searchEntry = new SearchEntry(String.valueOf(i), "schmusen", "Hans Dampf", "1/3");
+            SearchEntry searchEntry = new SearchEntry(String.valueOf(i), "schmusen", "Hans Dampf");
             searchAdapter.add(searchEntry);
 
             // update robolectric
@@ -89,12 +89,10 @@ public class SearchActivityTest {
 
                 String foundDescription = ((TextView)group.getChildAt(0)).getText().toString();
                 String foundCreator = ((TextView)group.getChildAt(1)).getText().toString();
-                String foundParticipants = ((TextView)group.getChildAt(2)).getText().toString();
 
                 if (!foundSearchEntry.id.equals(searchEntry.id)) continue;
                 if (!foundDescription.equals(searchEntry.description)) continue;
                 if (!foundCreator.equals(searchEntry.creator)) continue;
-                if (!foundParticipants.equals(searchEntry.participants)) continue;
 
                 isDisplayed = true;
             }

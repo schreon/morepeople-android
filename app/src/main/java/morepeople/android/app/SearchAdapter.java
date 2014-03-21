@@ -3,6 +3,7 @@ package morepeople.android.app;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -126,17 +127,17 @@ public class SearchAdapter extends BaseAdapter {
         LinearLayout group;
         TextView creatorView;
         TextView descriptionView;
-        TextView participantsView;
 
         if (view == null) {
-            group = new LinearLayout(context);
-            creatorView = new TextView(context);
-            descriptionView = new TextView(context);
-            participantsView = new TextView(context);
+            group = (LinearLayout)LayoutInflater.from(context).inflate(R.layout.listitem_queue, null);
+            // group = new LinearLayout(context);
+            //creatorView = new TextView(context);
+            creatorView = (TextView) group.findViewById(R.id.search_creator);
+            //descriptionView = new TextView(context);
+            descriptionView = (TextView) group.findViewById(R.id.search_term);
 
-            group.addView(descriptionView);
-            group.addView(creatorView);
-            group.addView(participantsView);
+            //group.addView(descriptionView);
+            //group.addView(creatorView);
 
             final LinearLayout fGroup = group;
             group.setOnClickListener(new View.OnClickListener() {
@@ -150,7 +151,7 @@ public class SearchAdapter extends BaseAdapter {
 
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage("Möchtest Du " + entry.description + " beitreten?")
+                            .setMessage("Möchtest Du \"" + entry.description + "\" beitreten?")
                             .setCancelable(false)
                             .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
@@ -175,15 +176,16 @@ public class SearchAdapter extends BaseAdapter {
             });
         } else {
             group = (LinearLayout) view;
-            descriptionView = (TextView) group.getChildAt(0);
-            creatorView = (TextView) group.getChildAt(1);
-            participantsView = (TextView) group.getChildAt(2);
+            // group = new LinearLayout(context);
+            //creatorView = new TextView(context);
+            creatorView = (TextView) group.findViewById(R.id.search_creator);
+            //descriptionView = new TextView(context);
+            descriptionView = (TextView) group.findViewById(R.id.search_term);
         }
 
         SearchEntry searchEntry = searchEntryList.get(i);
         creatorView.setText(searchEntry.creator);
         descriptionView.setText(searchEntry.description);
-        participantsView.setText(searchEntry.participants);
 
         group.setTag(searchEntry);
 

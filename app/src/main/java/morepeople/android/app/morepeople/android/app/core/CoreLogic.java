@@ -61,6 +61,11 @@ public class CoreLogic implements ICoreLogic {
     }
 
     @Override
+    public void setState(UserState newState) {
+        stateHandler.transferToState(newState);
+    }
+
+    @Override
     public void load(final IDataCallback onError) {
         final IDataCallback onSuccess = new IDataCallback() {
             @Override
@@ -103,27 +108,37 @@ public class CoreLogic implements ICoreLogic {
 
     @Override
     public void cancel(IDataCallback onSuccess, IDataCallback onError) {
-
+        Map<String, Object> payload = new HashMap<String, Object>();
+        decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
+        client.doPostRequest("/cancel", payload, onSuccess, onError);
     }
 
     @Override
     public void accept(IDataCallback onSuccess, IDataCallback onError) {
-
+        Map<String, Object> payload = new HashMap<String, Object>();
+        decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
+        client.doPostRequest("/accept", payload, onSuccess, onError);
     }
 
     @Override
     public void finish(IDataCallback onSuccess, IDataCallback onError) {
-
+        Map<String, Object> payload = new HashMap<String, Object>();
+        decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
+        client.doPostRequest("/finish", payload, onSuccess, onError);
     }
 
     @Override
     public void evaluate(Map<String, Object> evaluation, IDataCallback onSuccess, IDataCallback onError) {
-
+        Map<String, Object> payload = new HashMap<String, Object>();
+        decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
+        client.doPostRequest("/evaluate", payload, onSuccess, onError);
     }
 
     @Override
     public void confirmCancel(IDataCallback onSuccess, IDataCallback onError) {
-
+        Map<String, Object> payload = new HashMap<String, Object>();
+        decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
+        client.doPostRequest("/confirmcancel", payload, onSuccess, onError);
     }
 
     private String readHostName() {

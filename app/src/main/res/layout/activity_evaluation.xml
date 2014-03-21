@@ -9,7 +9,7 @@
     tools:context="morepeople.android.app.EvaluationActivity">
 
     <TextView
-        android:text="@string/hello_world"
+        android:text="@string/cancel_sorry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

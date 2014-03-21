@@ -9,8 +9,16 @@
     tools:context="morepeople.android.app.CancelActivity">
 
     <TextView
-        android:text="@string/hello_world"
+        android:text="@string/cancel_sorry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Okay :("
+        android:id="@+id/button_confirmcancel"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">MorePeopleAndroid</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="cancel_sorry">Sorry, die Aktivität wurde abgebrochen.</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>

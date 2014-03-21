@@ -32,6 +32,8 @@ public interface ICoreLogic {
 
     public void getLobby(IDataCallback onSuccess, IDataCallback onError);
 
+    public void setState(UserState newState);
+
     /**
      * Load the state from the persistence layer
      *

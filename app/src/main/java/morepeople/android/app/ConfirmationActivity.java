@@ -30,7 +30,7 @@ import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
 import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 
 /**
- * ConfirmationActivity is shown if enough users were found to start an activity
+ * ConfirmationActivity is shown if enough users were found to start a match.
  */
 public class ConfirmationActivity extends Activity {
 
@@ -41,7 +41,6 @@ public class ConfirmationActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("GCM", "ConfirmationActivity.foregroundReceiver");
-            // TODO: extract participant list from intent and update participantsAdapter
             // write participant list into shared preferences
             SharedPreferences prefs = getBaseContext().getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
             String participantsListJson = intent.getStringExtra("participantsListJson");
@@ -73,7 +72,7 @@ public class ConfirmationActivity extends Activity {
         }
         coreLogic = new CoreLogic(this, currentState);
 
-        participantsAdapter = new ParticipantsAdapter();
+        participantsAdapter = new ParticipantsAdapter(coreLogic);
 
         ListView listView = (ListView) this.findViewById(R.id.confirm_list_view);
         listView.setAdapter(participantsAdapter);
@@ -82,16 +81,43 @@ public class ConfirmationActivity extends Activity {
         final LinearLayout layoutConfirmButtons = (LinearLayout) this.findViewById(R.id.confirm_button_layout);
         Button buttonConfirm = (Button) this.findViewById(R.id.button_confirm);
 
+        // Hide controls if already in accepted state
+        if (currentState.equals(ICoreLogic.UserState.ACCEPTED)) {
+            layoutConfirmWait.setVisibility(View.VISIBLE);
+            layoutConfirmButtons.setVisibility(View.GONE);
+        }
+
         /**
          * OnClickListener for confirm button.
          * Changes layout visibility.
          */
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+        buttonConfirm.setOnClickListener(
+            new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: send confirmation to server
                 layoutConfirmWait.setVisibility(View.VISIBLE);
                 layoutConfirmButtons.setVisibility(View.GONE);
+
+                coreLogic.accept(new IDataCallback() {
+                    @Override
+                    public void run(Object rawData) {
+                        Map<String, Object> data = (Map<String, Object>) rawData;
+                        // set state
+                        coreLogic.setState(ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE)));
+                        // Hide controls
+                        layoutConfirmWait.setVisibility(View.VISIBLE);
+                        layoutConfirmButtons.setVisibility(View.GONE);
+
+                    }
+                },
+                new IDataCallback() {
+                    @Override
+                    public void run(Object data) {
+                        // Show controls again
+                        layoutConfirmWait.setVisibility(View.GONE);
+                        layoutConfirmButtons.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         });
 
@@ -118,10 +144,14 @@ public class ConfirmationActivity extends Activity {
                         .setCancelable(false)
                         .setPositiveButton("Absagen", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
-                                // TODO: send reject to server
-                                Intent intent = new Intent(self, SearchActivity.class);
-                                startActivity(intent);
+                                coreLogic.cancel(new IDataCallback() {
+                                    @Override
+                                    public void run(Object rawData) {
+                                        Map<String, Object> data = (Map<String, Object>) rawData;
+                                        // set state
+                                        coreLogic.setState(ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE)));
+                                    }
+                                }, null);
                             }
                         })
                         .setNegativeButton("Ups ...", new DialogInterface.OnClickListener() {
@@ -230,6 +260,7 @@ public class ConfirmationActivity extends Activity {
                     public void run(Object rawData) {
                         // onSuccess
                         Map<String, Object> data = (Map<String, Object>) rawData;
+
                         // TODO: update list
                         List<Object> participants = (List<Object>) data.get("participants");
                         Log.d("ConfirmationActivity", participants.toString());

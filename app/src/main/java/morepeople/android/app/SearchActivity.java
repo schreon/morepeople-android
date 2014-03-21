@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -57,6 +58,7 @@ public class SearchActivity extends Activity {
             Log.e("SearchActivity", e.getMessage());
         }
         coreLogic = new CoreLogic(this, currentState);
+
         userLocation = null;
         onLocationUpdate = new IDataCallback() {
             @Override
@@ -123,27 +125,39 @@ public class SearchActivity extends Activity {
             @Override
             public void onClick(View view) {
                 String searchTerm = inputSearch.getText().toString();
-                searchAdapter.add(new SearchEntry("testid", inputSearch.getText().toString(), "Hans Dampf", "1/3"));
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
                 inputSearch.setText("");
+                imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
                 layoutWaiting.setVisibility(View.VISIBLE);
                 layoutSearchInput.setVisibility(View.GONE);
                 coreLogic.queue(searchTerm,
                         new IDataCallback() {
                             @Override
                             public void run(Object data) {
-
+                                searchAndUpdate();
                             }
-                        },
-                        new IDataCallback() {
-                            @Override
-                            public void run(Object data) {
-
-                            }
-                        }
+                        }, null
                 );
             }
         });
 
+        // Hide the controls if alreade queued
+        if (currentState.equals(ICoreLogic.UserState.QUEUED)) {
+            layoutWaiting.setVisibility(View.VISIBLE);
+            layoutSearchInput.setVisibility(View.GONE);
+            InputMethodManager imm = (InputMethodManager)getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            inputSearch.setText("");
+            imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
+        }
+
+        searchAdapter.setOnQueueSuccess(new IDataCallback() {
+            @Override
+            public void run(Object data) {
+                coreLogic.load(null);
+            }
+        });
     }
 
     private void searchAndUpdate() {
@@ -168,9 +182,8 @@ public class SearchActivity extends Activity {
                                 Map<String, Object> res = (Map<String, Object>) entry;
                                 String description = (String) res.get("MATCH_TAG");
                                 String id = (String) res.get("USER_ID");
-                                String creator = "-";
-                                String participants = "-";
-                                resultList.add(new SearchEntry(id, description, creator, participants));
+                                String creator = (String) res.get("USER_NAME");
+                                resultList.add(new SearchEntry(id, description, creator));
                             }
                             SearchActivity.this.runOnUiThread(new Runnable() {
                                 @Override

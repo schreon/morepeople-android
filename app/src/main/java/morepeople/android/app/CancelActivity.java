@@ -2,15 +2,46 @@ package morepeople.android.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
+import morepeople.android.app.morepeople.android.app.core.CoreLogic;
+import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
+import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 
 public class CancelActivity extends Activity {
+
+    private ICoreLogic coreLogic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cancel);
+
+        ICoreLogic.UserState currentState = null;
+        try {
+            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
+        } catch (Exception e) {
+            Log.e("ConfirmationActivity", e.getMessage());
+        }
+        coreLogic = new CoreLogic(this, currentState);
+
+        final Button buttonConfirmCancel = (Button) this.findViewById(R.id.button_confirmcancel);
+        buttonConfirmCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                coreLogic.confirmCancel(new IDataCallback() {
+                    @Override
+                    public void run(Object data) {
+                        coreLogic.load(null);
+                    }
+                }, null);
+            }
+        });
+
     }
 
 

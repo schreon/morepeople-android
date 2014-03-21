@@ -1,6 +1,8 @@
 package morepeople.android.app;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,17 +13,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import morepeople.android.app.morepeople.android.app.core.CoreLogic;
+import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
+import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+
 /**
  * ParticipantsAdapter extends BaseAdapter and includes methods for the participant list
  */
 public class ParticipantsAdapter extends BaseAdapter {
     private List<Participant> participantList;
-
+    private ICoreLogic coreLogic;
+    private IDataCallback onAcceptSuccess;
+    private IDataCallback onAcceptError;
     /**
      * Constructor of ParticipantsAdapter class
      */
-    public ParticipantsAdapter() {
+    public ParticipantsAdapter(ICoreLogic coreLogic) {
         participantList = new ArrayList<Participant>();
+        this.coreLogic = coreLogic;
     }
 
     /**
@@ -82,7 +91,7 @@ public class ParticipantsAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        Context context = viewGroup.getContext();
+        final Context context = viewGroup.getContext();
         assert context != null;
 
         LinearLayout group;
@@ -107,6 +116,8 @@ public class ParticipantsAdapter extends BaseAdapter {
         statusView.setText(participant.status);
 
         group.setTag(participant);
+
+        // TODO: show profile info when clicking on participant
 
         return group;
     }
