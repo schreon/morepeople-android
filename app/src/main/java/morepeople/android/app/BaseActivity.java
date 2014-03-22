@@ -21,6 +21,7 @@ public abstract class BaseActivity extends Activity {
     private static final String TAG = "morepeople.android.app.BaseActivity";
     private Context context;
 
+    protected Handler mainHandler;
     protected IErrorCallback defaultErrorCallback = new IErrorCallback() {
         @Override
         public void run(final String errorMessage) {
@@ -42,7 +43,7 @@ public abstract class BaseActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = this;
         coreApi = null;
-
+        mainHandler = new Handler(getMainLooper());
         Log.d(TAG, "onCreate finished");
     }
 
@@ -70,5 +71,9 @@ public abstract class BaseActivity extends Activity {
     protected void onCoreInitFinished() {
         Log.d(TAG, "starting onCoreInitFinished");
         Log.d(TAG, "finishing onCoreInitFinished");
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

@@ -29,10 +29,12 @@ public class CoreViewController implements ICoreViewController {
     @Override
     public void handleUpdate(ICoreWritablePreferences preferences) {
         UserState userState = preferences.getCurrentUserState();
+        Log.d(TAG, "current state: " + userState);
+
         Intent intent;
         switch (userState) {
             case OFFLINE:
-                Log.d(TAG, "SearchActivity");
+                Log.d(TAG, "launch SearchActivity");
                 intent = new Intent(context, SearchActivity.class);
                 break;
             case QUEUED:

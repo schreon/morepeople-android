@@ -19,6 +19,7 @@ import org.apache.http.protocol.HTTP;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,11 @@ public class CoreClient implements ICoreClient {
             if (data.size() > 0) {
                 url += "?";
                 for (String key : data.keySet()) {
-                    url += key + "=" + data.get(key) + "&";
+                    try {
+                        url += URLEncoder.encode(key, "utf-8") + "=" + URLEncoder.encode(data.get(key), "utf-8") + "&";
+                    } catch (UnsupportedEncodingException e) {
+                        onError.run(e.getMessage());
+                    }
                 }
             }
         }

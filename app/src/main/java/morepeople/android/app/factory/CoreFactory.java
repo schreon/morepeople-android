@@ -5,7 +5,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.Map;
 
@@ -63,14 +62,14 @@ public class CoreFactory implements ICoreFactory {
                         @Override
                         public void run(Map<String, Object> data) {
                             preferences.setUserId((String) data.get(Constants.PROPERTY_USER_ID));
-                            Log.d(TAG, "Retrieved USER_ID: "+preferences.getUserId());
+                            Log.d(TAG, "Retrieved USER_ID: " + preferences.getUserId());
                             plan.next();
                         }
                     }, onError);
                 }
             });
         } else {
-            Log.d(TAG, "Already got USER_ID: "+preferences.getUserId());
+            Log.d(TAG, "Already got USER_ID: " + preferences.getUserId());
         }
 
         /**

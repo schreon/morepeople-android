@@ -126,7 +126,16 @@ public class ConfirmationActivity extends BaseActivity {
             }
         });
 
+        updateParticipantList();
+        updateLobby();
     }
+
+    private Runnable delayedLobby = new Runnable() {
+        @Override
+        public void run() {
+            updateLobby();
+        }
+    };
 
     @Override
     protected void onResume() {
@@ -144,9 +153,6 @@ public class ConfirmationActivity extends BaseActivity {
 
         registerReceiver(foregroundReceiver,
                 new IntentFilter(Constants.BROADCAST_CONFIRMATION));
-
-        updateLobby();
-        updateParticipantList();
     }
 
     @Override
@@ -161,6 +167,8 @@ public class ConfirmationActivity extends BaseActivity {
         //enable static ConfirmationBackgroundReceiver
         ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+
+        mainHandler.removeCallbacks(delayedLobby);
 
         Log.d("GCM", "re enabled static confirmation background receiver");
     }
@@ -177,6 +185,7 @@ public class ConfirmationActivity extends BaseActivity {
             }
         });
     }
+
     private void updateLobby() {
         coreApi.getLobby(defaultErrorCallback);
     }
@@ -184,6 +193,9 @@ public class ConfirmationActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        updateParticipantList();
+        if (coreApi != null) {
+            updateParticipantList();
+            mainHandler.postDelayed(delayedLobby, 10000);
+        }
     }
 }

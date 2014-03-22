@@ -167,7 +167,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     public void setParticipantListFromMap(List<Map> participantListMap) {
         Log.d(TAG, "setParticipantListFromMap");
         List<Participant> newParticipantList = new ArrayList<Participant>();
-        for ( Map<String, Object> participantMap : participantListMap ) {
+        for (Map<String, Object> participantMap : participantListMap) {
             String USER_ID = (String) participantMap.get(Constants.PROPERTY_USER_ID);
             String USER_NAME = (String) participantMap.get(Constants.PROPERTY_USER_NAME);
             String STATE = (String) participantMap.get(Constants.PROPERTY_STATE);
@@ -201,7 +201,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     public void setSearchEntryListFromMap(List<Map> searchEntryListMap) {
         Log.d(TAG, "setSearchEntryListFromMap");
         List<SearchEntry> newSearchEntryList = new ArrayList<SearchEntry>();
-        for ( Map<String, Object> searchEntryMap : searchEntryListMap ) {
+        for (Map<String, Object> searchEntryMap : searchEntryListMap) {
             String USER_ID = (String) searchEntryMap.get(Constants.PROPERTY_USER_ID);
             String USER_NAME = (String) searchEntryMap.get(Constants.PROPERTY_USER_NAME);
             String MATCH_TAG = (String) searchEntryMap.get(Constants.PROPERTY_MATCH_TAG);

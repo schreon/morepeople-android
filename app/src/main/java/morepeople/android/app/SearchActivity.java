@@ -3,7 +3,6 @@ package morepeople.android.app;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,7 +27,7 @@ public class SearchActivity extends BaseActivity {
 
     private SearchAdapter searchAdapter;
     private EditText inputSearch;
-    private Handler mainHandler;
+
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
      */
@@ -38,7 +37,6 @@ public class SearchActivity extends BaseActivity {
         Log.d(TAG, "onCreate started");
         setContentView(R.layout.activity_search);
         getActionBar().setTitle("morepeople");
-        mainHandler = new Handler(getMainLooper());
         Log.d(TAG, "onCreate finished");
     }
 
@@ -101,7 +99,7 @@ public class SearchActivity extends BaseActivity {
             public void onClick(View view) {
                 String searchTerm = inputSearch.getText().toString();
                 hideControls();
-                coreApi.queue(searchTerm, null);
+                coreApi.queue(searchTerm, defaultErrorCallback);
             }
         });
 
@@ -130,8 +128,6 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void hideControls() {
-        Handler mainHandler = new Handler(this.getMainLooper());
-
         Runnable runOnUI = new Runnable() {
             @Override
             public void run() {
@@ -146,12 +142,9 @@ public class SearchActivity extends BaseActivity {
             }
         };
         mainHandler.post(runOnUI);
-
     }
 
     private void showControls() {
-        Handler mainHandler = new Handler(this.getMainLooper());
-
         Runnable runOnUI = new Runnable() {
             @Override
             public void run() {
@@ -176,23 +169,27 @@ public class SearchActivity extends BaseActivity {
     private void searchAndUpdate() {
         Log.d(TAG, "searchAndUpdate");
         String searchTerm = inputSearch.getText().toString();
-        if (searchTerm.isEmpty()) {
-            searchTerm = null;
-        }
 
         coreApi.search(
-                coreApi.getPreferences().getLastKnownCoordinates(),
-                1000,
-                searchTerm,
-                defaultErrorCallback
+            coreApi.getPreferences().getLastKnownCoordinates(),
+            1000,
+            searchTerm,
+            defaultErrorCallback
         );
     }
+
     private Runnable runSearch = new Runnable() {
         @Override
         public void run() {
-            searchAndUpdate();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    searchAndUpdate();
+                }
+            });
         }
     };
+
     private void updateListView() {
         Log.d(TAG, "updateListView");
 
@@ -209,7 +206,11 @@ public class SearchActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        updateListView();
+        if (coreApi != null) {
+            // do a search
+            updateListView();
+            adaptViewToState(coreApi.getPreferences().getCurrentUserState());
+        }
     }
 
     @Override

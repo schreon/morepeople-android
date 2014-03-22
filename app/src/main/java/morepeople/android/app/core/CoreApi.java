@@ -13,12 +13,14 @@ import morepeople.android.app.interfaces.ICoreWritablePreferences;
 import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.interfaces.IErrorCallback;
 import morepeople.android.app.structures.Coordinates;
+import morepeople.android.app.structures.UserState;
 
 /**
  * Created by schreon on 3/20/14.
  */
 public class CoreApi implements ICoreApi {
     private static final String TAG = "morepeople.android.app.core.CoreApi";
+
     /**
      * @param client
      * @param preferences
@@ -68,37 +70,34 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void getLobby(IErrorCallback onError) {
-        Log.d(TAG, "getLobby");
-        HashMap<String, String> rewrite = new HashMap<String, String>();
-        rewrite.put("USER_ID", preferences.getUserId());
-        client.doGetRequest(
-                "/lobby",
-                rewrite,
-                new IDataCallback() {
-                    @Override
-                    public void run(Map<String, Object> data) {
-
-                    }
-                },
-                onError);
+        Log.d(TAG, "lobby");
+        Map<String, Object> payload = new HashMap<String, Object>();
+        decorateWithUserInfo(payload, preferences);
+        payload.put(Constants.PROPERTY_MATCH_TAG, preferences.getMatchTag());
+        client.doPostRequest("/queue", payload, onServerResponse, onError);
     }
 
     @Override
     public void search(Coordinates coordinates, long radius, String searchTerm, IErrorCallback onError) {
         Log.d(TAG, "search");
-        HashMap<String, String> rewrite = new HashMap<String, String>();
-        rewrite.put("LON", String.valueOf(coordinates.getLongitude()));
-        rewrite.put("LAT", String.valueOf(coordinates.getLatitude()));
-        rewrite.put("RAD", "1000");
-        if (searchTerm != null) {
-            rewrite.put("SEARCH", searchTerm);
+        if ( preferences.getCurrentUserState().equals(UserState.QUEUED)) {
+            queue(preferences.getMatchTag(), onError);
+        } else {
+            HashMap<String, String> rewrite = new HashMap<String, String>();
+            rewrite.put("LON", String.valueOf(coordinates.getLongitude()));
+            rewrite.put("LAT", String.valueOf(coordinates.getLatitude()));
+            rewrite.put("RAD", "1000");
+            if (searchTerm != null) {
+                rewrite.put("SEARCH", searchTerm);
+            }
+            client.doGetRequest("/queue", rewrite, onServerResponse, onError);
         }
-        client.doGetRequest("/queue", rewrite, onServerResponse, onError);
     }
 
     @Override
     public void queue(String searchTerm, IErrorCallback onError) {
         Log.d(TAG, "queue");
+        preferences.setMatchTag(searchTerm);
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
         payload.put(Constants.PROPERTY_MATCH_TAG, searchTerm);

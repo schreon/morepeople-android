@@ -5,12 +5,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
-
-import morepeople.android.app.interfaces.ICoreApi;
 
 /**
  * Created by schreon on 3/21/14.

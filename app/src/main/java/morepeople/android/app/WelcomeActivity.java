@@ -4,9 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 
-import morepeople.android.app.interfaces.ICoreApi;
-import morepeople.android.app.interfaces.ICoreFactory;
-
 public class WelcomeActivity extends BaseActivity {
     private ProgressDialog mDialog;
     public static final String TAG = "morepeople.android.app.WelcomeActivity";
