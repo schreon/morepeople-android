@@ -20,7 +20,7 @@ import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.ICoreLocationManager;
 import morepeople.android.app.interfaces.ICoreRegistrar;
 import morepeople.android.app.interfaces.IDataCallback;
-import morepeople.android.app.interfaces.UserState;
+import morepeople.android.app.structures.UserState;
 
 import static java.lang.Thread.sleep;
 import static junit.framework.Assert.assertEquals;

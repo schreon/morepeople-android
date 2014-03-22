@@ -17,6 +17,9 @@ public abstract class Constants {
     public static final String PROPERTY_EVALUATION = "EVALUATION";
     public static final String PROPERTY_SHARED_PREFS = "morepeople.android.app.PROPERTY_SHARED_PREFS";
     public static final String PROPERTY_HOSTNAME = "morepeople.android.app.HOSTNAME";
+    public static final String PROPERTY_PARTICIPANTS = "PARTICIPANTS";
+    public static final String PROPERTY_SEARCHENTRIES = "SEARCHENTRIES";
+
     private Constants() {
         // Don't initialize this.
     }

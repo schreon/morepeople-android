@@ -4,10 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
 import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.interfaces.Coordinates;
+import morepeople.android.app.structures.Coordinates;
 import morepeople.android.app.interfaces.ICorePreferences;
-import morepeople.android.app.interfaces.UserState;
+import morepeople.android.app.structures.Participant;
+import morepeople.android.app.structures.SearchEntry;
+import morepeople.android.app.structures.UserState;
 
 /**
  * Stores preference values in the shared preferences of the given context.
@@ -24,6 +32,13 @@ public class CorePreferences implements ICorePreferences {
     private String hostName;
     private Coordinates lastKnownCoordinates;
     private UserState currentUserState;
+    private List<Participant> participantList;
+    private List<SearchEntry> searchEntryList;
+
+    private final Type participantListType = new TypeToken<List<Participant>>(){}.getType();
+    private final Type searchEntryListType = new TypeToken<List<SearchEntry>>(){}.getType();
+
+    private Gson gson;
 
     public CorePreferences(Context context) {
         sharedPreferences = context.getSharedPreferences(Constants.PROPERTY_SHARED_PREFS, Context.MODE_PRIVATE);
@@ -33,6 +48,9 @@ public class CorePreferences implements ICorePreferences {
         hostName = null;
         lastKnownCoordinates = null;
         currentUserState = null;
+        participantList = null;
+        searchEntryList = null;
+        gson = new Gson();
     }
 
     @Override
@@ -86,19 +104,11 @@ public class CorePreferences implements ICorePreferences {
     @Override
     public Coordinates getLastKnownCoordinates() {
         if (lastKnownCoordinates == null) {
-            long longitudeBits, latitudeBits;
-            if (sharedPreferences.contains(Constants.PROPERTY_LONGITUDE)) {
-                longitudeBits = sharedPreferences.getLong(Constants.PROPERTY_LONGITUDE, 0);
-            } else {
+            String serialized = sharedPreferences.getString(Constants.PROPERTY_COORDINATES, null);
+            if (serialized == null) {
                 return null;
             }
-            if (sharedPreferences.contains(Constants.PROPERTY_LATITUDE)) {
-                latitudeBits = sharedPreferences.getLong(Constants.PROPERTY_LATITUDE, 0);
-            } else {
-                return null;
-            }
-            lastKnownCoordinates = new Coordinates(Double.longBitsToDouble(longitudeBits), Double.longBitsToDouble(latitudeBits));
-            Log.d(TAG, "already contains hostname:" + userId);
+            lastKnownCoordinates = gson.fromJson(serialized, Coordinates.class);
         }
         return lastKnownCoordinates;
     }
@@ -106,10 +116,8 @@ public class CorePreferences implements ICorePreferences {
     @Override
     public void setLastKnownCoordinates(Coordinates lastKnownCoordinates) {
         this.lastKnownCoordinates = lastKnownCoordinates;
-        long longitudeBits = Double.doubleToLongBits(lastKnownCoordinates.getLongitude());
-        long latitudeBits = Double.doubleToLongBits(lastKnownCoordinates.getLatitude());
-        editor.putLong(Constants.PROPERTY_LONGITUDE, longitudeBits);
-        editor.putLong(Constants.PROPERTY_LATITUDE, latitudeBits);
+        String serialized = gson.toJson(lastKnownCoordinates);
+        editor.putString(Constants.PROPERTY_COORDINATES, serialized);
         editor.commit();
     }
 
@@ -126,6 +134,46 @@ public class CorePreferences implements ICorePreferences {
     public void setCurrentUserState(UserState currentUserState) {
         this.currentUserState = currentUserState;
         editor.putString(Constants.PROPERTY_STATE, currentUserState.toString());
+        editor.commit();
+    }
+
+    @Override
+    public List<Participant> getParticipantList() {
+        if (participantList == null) {
+            String serialized = sharedPreferences.getString(Constants.PROPERTY_PARTICIPANTS, null);
+            if (serialized == null) {
+                return null;
+            }
+            participantList = gson.fromJson(serialized, participantListType);
+        }
+        return null;
+    }
+
+    @Override
+    public void setParticipantList(List<Participant> participantList) {
+        this.participantList = participantList;
+        String serialized = gson.toJson(participantList);
+        editor.putString(Constants.PROPERTY_PARTICIPANTS, serialized);
+        editor.commit();
+    }
+
+    @Override
+    public List<SearchEntry> getSearchEntryList() {
+        if (searchEntryList == null) {
+            String serialized = sharedPreferences.getString(Constants.PROPERTY_SEARCHENTRIES, null);
+            if (serialized == null) {
+                return null;
+            }
+            searchEntryList = gson.fromJson(serialized, searchEntryListType);
+        }
+        return null;
+    }
+
+    @Override
+    public void setSearchEntryList(List<SearchEntry> searchEntryList) {
+        this.searchEntryList = searchEntryList;
+        String serialized = gson.toJson(searchEntryList);
+        editor.putString(Constants.PROPERTY_SEARCHENTRIES, serialized);
         editor.commit();
     }
 }

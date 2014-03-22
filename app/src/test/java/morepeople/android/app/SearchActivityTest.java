@@ -17,6 +17,7 @@ import org.robolectric.annotation.Config;
 
 import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.ICoreRegistrar;
+import morepeople.android.app.structures.SearchEntry;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;

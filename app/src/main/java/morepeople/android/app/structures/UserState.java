@@ -1,4 +1,4 @@
-package morepeople.android.app.interfaces;
+package morepeople.android.app.structures;
 
 /**
  * The states the user can be in.

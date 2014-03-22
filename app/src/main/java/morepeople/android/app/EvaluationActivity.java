@@ -13,7 +13,7 @@ import java.util.Map;
 
 import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.ICoreApi;
-import morepeople.android.app.interfaces.UserState;
+import morepeople.android.app.structures.UserState;
 import morepeople.android.app.morepeople.android.app.core.CoreAPI;
 import morepeople.android.app.interfaces.IDataCallback;
 

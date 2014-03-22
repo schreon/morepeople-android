@@ -1,6 +1,4 @@
-package morepeople.android.app.interfaces;
-
-import java.io.Serializable;
+package morepeople.android.app.structures;
 
 /**
  * Created by schreon on 3/22/14.

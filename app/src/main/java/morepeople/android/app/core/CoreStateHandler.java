@@ -1,23 +1,14 @@
 package morepeople.android.app.core;
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import morepeople.android.app.CancelActivity;
-import morepeople.android.app.ChatActivity;
-import morepeople.android.app.ConfirmationActivity;
-import morepeople.android.app.EvaluationActivity;
-import morepeople.android.app.SearchActivity;
-import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.ICallback;
 import morepeople.android.app.interfaces.ICoreStateHandler;
-import morepeople.android.app.interfaces.UserState;
+import morepeople.android.app.interfaces.IDataCallback;
+import morepeople.android.app.structures.UserState;
 
 /**
  * Created by schreon on 3/20/14.
@@ -28,14 +19,14 @@ public class CoreStateHandler implements ICoreStateHandler {
     private UserState currentState;
 
     // Map of onEnter callbacks
-    private Map<UserState, List<ICallback>> callbacks;
+    private Map<UserState, List<IDataCallback>> callbacks;
 
     public CoreStateHandler(UserState currentState) {
         this.currentState = currentState;
 
-        callbacks = new HashMap<UserState, List<ICallback>>();
+        callbacks = new HashMap<UserState, List<IDataCallback>>();
         for (UserState state : UserState.values()) {
-            callbacks.put(state, new ArrayList<ICallback>());
+            callbacks.put(state, new ArrayList<IDataCallback>());
         }
     }
 
@@ -45,22 +36,20 @@ public class CoreStateHandler implements ICoreStateHandler {
     }
 
     @Override
-    public void transferToState(UserState newState) {
-        if (newState != currentState) {
-            for (ICallback callback : callbacks.get(newState)) {
-                callback.run();
-            }
+    public void transferToState(UserState newState, final Map<String, Object> data) {
+        for (IDataCallback callback : callbacks.get(newState)) {
+            callback.run(data);
         }
         currentState = newState;
     }
 
     @Override
-    public void addEnterStateListener(UserState observedState, ICallback onEnterState) {
+    public void addEnterStateListener(UserState observedState, IDataCallback onEnterState) {
         callbacks.get(observedState).add(onEnterState);
     }
 
     @Override
-    public void removeEnterStateListener(UserState observedState, ICallback onEnterState) {
+    public void removeEnterStateListener(UserState observedState, IDataCallback onEnterState) {
         callbacks.get(observedState).remove(onEnterState);
     }
 }

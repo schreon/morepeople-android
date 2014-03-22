@@ -16,6 +16,7 @@ import java.util.List;
 
 import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.IDataCallback;
+import morepeople.android.app.structures.SearchEntry;
 
 /**
  * SearchAdapter extends BaseAdapter and provides functions for managing the searchEntryList.

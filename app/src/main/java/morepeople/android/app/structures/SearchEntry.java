@@ -1,4 +1,4 @@
-package morepeople.android.app;
+package morepeople.android.app.structures;
 
 /**
  * SearchEntry class

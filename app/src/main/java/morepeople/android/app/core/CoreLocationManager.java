@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.interfaces.Coordinates;
+import morepeople.android.app.structures.Coordinates;
 import morepeople.android.app.interfaces.ICoreLocationManager;
 import morepeople.android.app.interfaces.IDataCallback;
 

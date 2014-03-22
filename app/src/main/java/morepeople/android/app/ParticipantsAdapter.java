@@ -14,7 +14,8 @@ import java.util.List;
 
 import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.IDataCallback;
-import morepeople.android.app.interfaces.UserState;
+import morepeople.android.app.structures.Participant;
+import morepeople.android.app.structures.UserState;
 
 /**
  * ParticipantsAdapter extends BaseAdapter and includes methods for the participant list

@@ -20,6 +20,7 @@ import org.robolectric.shadows.ShadowAlertDialog;
 
 import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.ICoreRegistrar;
+import morepeople.android.app.structures.Participant;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;

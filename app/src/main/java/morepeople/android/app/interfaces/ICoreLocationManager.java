@@ -1,6 +1,6 @@
 package morepeople.android.app.interfaces;
 
-import android.location.Location;
+import morepeople.android.app.structures.Coordinates;
 
 /**
  * Location Manager which provides access to the location of the user.

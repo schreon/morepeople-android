@@ -1,6 +1,11 @@
 package morepeople.android.app.interfaces;
 
-import android.location.Location;
+import java.util.List;
+
+import morepeople.android.app.structures.Coordinates;
+import morepeople.android.app.structures.Participant;
+import morepeople.android.app.structures.SearchEntry;
+import morepeople.android.app.structures.UserState;
 
 /**
  * Provides access to persisted preferences.
@@ -55,4 +60,11 @@ public interface ICorePreferences {
      * @param currentUserState the new current user state.
      */
     public void setCurrentUserState(UserState currentUserState);
+
+
+    public List<Participant> getParticipantList();
+    public void setParticipantList(List<Participant> participantList);
+
+    public List<SearchEntry> getSearchEntryList();
+    public void setSearchEntryList(List<SearchEntry> searchEntryList);
 }
