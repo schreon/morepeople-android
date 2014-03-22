@@ -7,7 +7,7 @@ import java.util.Map;
 import morepeople.android.app.structures.Coordinates;
 
 /**
- * Created by schreon on 3/19/14.
+ * Contract: This is the only Core interface visible to activities along with ICorePreferences.
  */
 public interface ICoreApi {
 

@@ -30,6 +30,7 @@ public class CorePreferences implements ICorePreferences {
     private String userName;
     private String userId;
     private String hostName;
+    private String matchTag;
     private Coordinates lastKnownCoordinates;
     private UserState currentUserState;
     private List<Participant> participantList;
@@ -50,6 +51,7 @@ public class CorePreferences implements ICorePreferences {
         currentUserState = null;
         participantList = null;
         searchEntryList = null;
+        matchTag = null;
         gson = new Gson();
     }
 
@@ -73,7 +75,7 @@ public class CorePreferences implements ICorePreferences {
     public String getUserId() {
         if (userId == null) {
             userId = sharedPreferences.getString(Constants.PROPERTY_USER_ID, null);
-            Log.d(TAG, "already contains user id:" + userId);
+            Log.d(TAG, "already contains user USER_ID:" + userId);
         }
         return userId;
     }
@@ -174,6 +176,21 @@ public class CorePreferences implements ICorePreferences {
         this.searchEntryList = searchEntryList;
         String serialized = gson.toJson(searchEntryList);
         editor.putString(Constants.PROPERTY_SEARCHENTRIES, serialized);
+        editor.commit();
+    }
+
+    @Override
+    public String getMatchTag() {
+        if (matchTag == null) {
+            matchTag = sharedPreferences.getString(Constants.PROPERTY_MATCH_TAG, null);
+        }
+        return matchTag;
+    }
+
+    @Override
+    public void setMatchTag(String matchTag) {
+        this.matchTag = matchTag;
+        editor.putString(Constants.PROPERTY_MATCH_TAG, matchTag);
         editor.commit();
     }
 }

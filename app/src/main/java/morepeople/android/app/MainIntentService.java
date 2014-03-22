@@ -29,7 +29,7 @@ public class MainIntentService extends IntentService {
         Log.d("GCM", "got an intent");
         // dependent on the gcm message type etc. broadcast another intent
 
-        // if the status code indicates, that no activity has intercepted the intent:
+        // if the STATE code indicates, that no activity has intercepted the intent:
         // create notification
 
         Bundle extras = intent.getExtras();
@@ -42,7 +42,7 @@ public class MainIntentService extends IntentService {
                 Log.d("GCM", "CONFIRMATION");
                 Intent mIntent = new Intent(ConfirmationActivity.BROADCAST_CONFIRMATION);
 
-                mIntent.putExtra("participantsListJson", "[{'id':'test', 'name':'test', 'status':'OPEN'}]");
+                mIntent.putExtra("participantsListJson", "[{'USER_ID':'test', 'USER_NAME':'test', 'STATE':'OPEN'}]");
 
                 sendBroadcast(mIntent);
             }

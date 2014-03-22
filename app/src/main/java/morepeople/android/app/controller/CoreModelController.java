@@ -1,5 +1,6 @@
 package morepeople.android.app.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import morepeople.android.app.interfaces.Constants;
@@ -24,14 +25,18 @@ public class CoreModelController implements ICoreModelController {
         preferences.setCurrentUserState(userState);
 
         switch (userState) {
-            case OFFLINE:
-
+            case QUEUED:{
+                String matchTag = (String)data.get(Constants.PROPERTY_MATCH_TAG);
+                preferences.setMatchTag(matchTag);
+            }
                 break;
-            case QUEUED:
-
-                break;
-            case OPEN:
-
+            case OPEN: {
+                String matchTag = (String)data.get(Constants.PROPERTY_MATCH_TAG);
+                preferences.setMatchTag(matchTag);
+                String strParticipants = (String)data.get(Constants.PROPERTY_PARTICIPANTS);
+                // directly put serialized string
+                preferences.setParticipantList(strParticipants);
+            }
                 break;
             case ACCEPTED:
 

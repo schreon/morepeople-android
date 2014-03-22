@@ -9,20 +9,20 @@
     tools:context="morepeople.android.app.SearchActivity">
 
     <RelativeLayout
-        android:id="@+id/layout_searchlist"
+        android:USER_ID="@+USER_ID/layout_searchlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_above="@+id/layout_search_foot"
+        android:layout_above="@+USER_ID/layout_search_foot"
         android:layout_alignParentTop="true"
         android:visibility="visible">
 
         <ListView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/list_search"
+            android:USER_ID="@+USER_ID/list_search"
             android:stackFromBottom="false"
             android:choiceMode="none"
             android:layout_alignParentBottom="false"
@@ -31,7 +31,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/layout_search_foot"
+        android:USER_ID="@+USER_ID/layout_search_foot"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
         android:visibility="visible">
 
         <RelativeLayout
-            android:id="@+id/layout_search_input"
+            android:USER_ID="@+USER_ID/layout_search_input"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Create new search"
-                android:id="@+id/button_send_search"
+                android:USER_ID="@+USER_ID/button_send_search"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:visibility="gone"
@@ -64,7 +64,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/input_search"
+                android:USER_ID="@+USER_ID/input_search"
                 android:editable="true"
                 android:enabled="true"
                 android:focusable="true"
@@ -77,14 +77,14 @@
                 android:layout_marginTop="0dp"
                 android:layout_alignParentBottom="false"
                 android:visibility="visible"
-                android:layout_below="@+id/button_send_search"
+                android:layout_below="@+USER_ID/button_send_search"
                 android:hint="Worauf hast Du spontan Lust?" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:visibility="gone"
-            android:id="@+id/layout_waiting"
+            android:USER_ID="@+USER_ID/layout_waiting"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Du bist in die Suche eingereiht."
-                android:id="@+id/textView"
+                android:USER_ID="@+USER_ID/textView"
                 android:visibility="visible"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
@@ -112,7 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="abbrechen"
-                android:id="@+id/button_cancel_search"
+                android:USER_ID="@+USER_ID/button_cancel_search"
                 android:layout_alignParentLeft="false"
                 android:layout_marginLeft="144dp"
                 android:layout_alignParentTop="true"

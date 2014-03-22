@@ -57,7 +57,7 @@ public class CoreFactory implements ICoreFactory {
         final ICorePreferences preferences = new CorePreferences(context);
 
         /**
-         * Step 1: Retrieve user id from GCM if necessary
+         * Step 1: Retrieve user USER_ID from GCM if necessary
          */
         if (preferences.getUserId() == null) {
             plan.addStep(new ICallback() {

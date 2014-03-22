@@ -12,12 +12,12 @@ import morepeople.android.app.structures.UserState;
  */
 public interface ICorePreferences {
     /**
-     * @return the full name of the user.
+     * @return the full USER_NAME of the user.
      */
     public String getUserName();
 
     /**
-     * @param userName the new user name.
+     * @param userName the new user USER_NAME.
      */
     public void setUserName(String userName);
 
@@ -27,17 +27,17 @@ public interface ICorePreferences {
     public String getUserId();
 
     /**
-     * @param userId the new user id.
+     * @param userId the new user USER_ID.
      */
     public void setUserId(String userId);
 
     /**
-     * @return the host name of the server.
+     * @return the host USER_NAME of the server.
      */
     public String getServerHostName();
 
     /**
-     * @param serverHostName the new server host name.
+     * @param serverHostName the new server host USER_NAME.
      */
     public void setServerHostName(String serverHostName);
 
@@ -64,7 +64,12 @@ public interface ICorePreferences {
 
     public List<Participant> getParticipantList();
     public void setParticipantList(List<Participant> participantList);
+    public void setParticipantList(String strParticipantList);
 
     public List<SearchEntry> getSearchEntryList();
     public void setSearchEntryList(List<SearchEntry> searchEntryList);
+    public void setSearchEntryList(String strSearchEntryList);
+
+    public String getMatchTag();
+    public void setMatchTag(String matchTag);
 }

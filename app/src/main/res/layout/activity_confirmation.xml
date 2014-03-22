@@ -9,15 +9,15 @@
     tools:context="morepeople.android.app.ConfirmationActivity">
 
     <LinearLayout
-        android:id="@+id/layout_confirm_intro"
+        android:USER_ID="@+USER_ID/layout_confirm_intro"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/confirm_wait_layout"
+        android:layout_alignStart="@+USER_ID/confirm_wait_layout"
         android:layout_alignParentTop="true">
 
         <TextView
-            android:id="@+id/text_confirm_queue"
+            android:USER_ID="@+USER_ID/text_confirm_queue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -27,7 +27,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/text_confirm_intro"
+            android:USER_ID="@+USER_ID/text_confirm_intro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -37,22 +37,22 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/confirm_layout"
+        android:USER_ID="@+USER_ID/confirm_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/confirm_button_layout"
-        android:layout_below="@+id/layout_confirm_intro"
+        android:layout_above="@+USER_ID/confirm_button_layout"
+        android:layout_below="@+USER_ID/layout_confirm_intro"
         android:orientation="horizontal">
 
         <ListView
-            android:id="@+id/confirm_list_view"
+            android:USER_ID="@+USER_ID/confirm_list_view"
             android:layout_width="wrap_content"
             android:layout_height="440dp"/>
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/confirm_button_layout"
+        android:USER_ID="@+USER_ID/confirm_button_layout"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -65,20 +65,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Confirm"
-            android:id="@+id/button_confirm"
+            android:USER_ID="@+USER_ID/button_confirm"
             android:layout_weight=".50" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reject"
-            android:id="@+id/button_reject"
+            android:USER_ID="@+USER_ID/button_reject"
             android:layout_weight=".50" />
     </LinearLayout>
 
     <LinearLayout
         android:visibility="gone"
-        android:id="@+id/confirm_wait_layout"
+        android:USER_ID="@+USER_ID/confirm_wait_layout"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Du hast verbindlich zugesagt."
-            android:id="@+id/confirm_wait_text" />
+            android:USER_ID="@+USER_ID/confirm_wait_text" />
     </LinearLayout>
 
 </RelativeLayout>

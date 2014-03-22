@@ -33,7 +33,7 @@ import morepeople.android.app.interfaces.IErrorCallback;
 public class CoreClient implements ICoreClient {
     private static final String TAG = "morepeople.android.app.core.CoreClient";
     /**
-     * the host name
+     * the host USER_NAME
      */
     private String hostName;
 

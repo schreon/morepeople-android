@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="more people"
-        android:id="@+id/textView"
+        android:USER_ID="@+USER_ID/textView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 

@@ -34,10 +34,10 @@ public class SearchActivityTest {
     SearchActivity activity;
 
     public static void sharedPrefs() {
-        // Insert registration id and the user name into SharedPreferences
+        // Insert registration USER_ID and the user USER_NAME into SharedPreferences
         SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreApi.SHARED_PREFS, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
-        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
+        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-USER_ID").commit();
     }
 
     /**
@@ -90,9 +90,9 @@ public class SearchActivityTest {
                 String foundDescription = ((TextView)group.getChildAt(0)).getText().toString();
                 String foundCreator = ((TextView)group.getChildAt(1)).getText().toString();
 
-                if (!foundSearchEntry.id.equals(searchEntry.id)) continue;
-                if (!foundDescription.equals(searchEntry.description)) continue;
-                if (!foundCreator.equals(searchEntry.creator)) continue;
+                if (!foundSearchEntry.USER_ID.equals(searchEntry.USER_ID)) continue;
+                if (!foundDescription.equals(searchEntry.MATCH_TAG)) continue;
+                if (!foundCreator.equals(searchEntry.USER_NAME)) continue;
 
                 isDisplayed = true;
             }

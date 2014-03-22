@@ -45,10 +45,10 @@ public class CoreLocationTest {
     ICoreLocationManager coreLocation;
 
     public static void sharedPrefs() {
-        // Insert registration id and the user name into SharedPreferences
+        // Insert registration USER_ID and the user USER_NAME into SharedPreferences
         SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreApi.SHARED_PREFS, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
-        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
+        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-USER_ID").commit();
 
         // Add pending HTTP response which will be served as soon as the application
         // sends the first HTTP request (no matter which request that will be).

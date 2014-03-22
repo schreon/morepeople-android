@@ -28,7 +28,7 @@ public class CoreApi implements ICoreApi {
     private IDataCallback onServerResponse;
 
     /**
-     * Dependency Injection.
+     *
      *
      * @param context
      * @param registrar

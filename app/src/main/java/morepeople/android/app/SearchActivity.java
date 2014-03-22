@@ -296,7 +296,7 @@ public class SearchActivity extends Activity {
         coreLocation.setListenToLocationUpdates(true);
         // do a search
         searchAndUpdate();
-        // update status
+        // update STATE
         coreLogic.initialize(null);
     }
 

@@ -71,10 +71,10 @@ public class ParticipantsAdapter extends BaseAdapter {
     }
 
     /**
-     * Gets item id at specific position
+     * Gets item USER_ID at specific position
      *
      * @param i -> position
-     * @return -> id of item
+     * @return -> USER_ID of item
      */
     @Override
     public long getItemId(int i) {
@@ -109,8 +109,8 @@ public class ParticipantsAdapter extends BaseAdapter {
         }
 
         Participant participant = participantList.get(i);
-        nameView.setText(participant.name);
-        switch(UserState.valueOf(participant.status)) {
+        nameView.setText(participant.USER_NAME);
+        switch(UserState.valueOf(participant.STATE)) {
             case OPEN:
                 statusView.setText("Überlegt noch ...");
                 break;

@@ -102,10 +102,10 @@ public class SearchAdapter extends BaseAdapter {
     }
 
     /**
-     * Get item id for specific position
+     * Get item USER_ID for specific position
      *
      * @param i -> position
-     * @return item id
+     * @return item USER_ID
      */
     @Override
     public long getItemId(int i) {
@@ -146,12 +146,12 @@ public class SearchAdapter extends BaseAdapter {
 
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage("Möchtest Du \"" + entry.description + "\" beitreten?")
+                            .setMessage("Möchtest Du \"" + entry.MATCH_TAG + "\" beitreten?")
                             .setCancelable(false)
                             .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     // enqueue for the same match tag
-                                    coreLogic.queue(entry.description, onQueueSuccess, onQueueError);
+                                    coreLogic.queue(entry.MATCH_TAG, onQueueSuccess, onQueueError);
                                 }
                             })
                             .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
@@ -176,8 +176,8 @@ public class SearchAdapter extends BaseAdapter {
         }
 
         SearchEntry searchEntry = searchEntryList.get(i);
-        creatorView.setText(searchEntry.creator);
-        descriptionView.setText(searchEntry.description);
+        creatorView.setText(searchEntry.USER_NAME);
+        descriptionView.setText(searchEntry.MATCH_TAG);
 
         group.setTag(searchEntry);
 

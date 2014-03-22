@@ -5,20 +5,20 @@ package morepeople.android.app.structures;
  */
 public class Participant {
 
-    public String id;
-    public String name;
-    public String status;
+    public String USER_ID;
+    public String USER_NAME;
+    public String STATE;
 
     /**
      * Constructor of participant class
      *
-     * @param id     -> id of the user
-     * @param name   -> name of the user
-     * @param status -> status of the user (OPEN, WAITING, RUNNING, FINISHED)
+     * @param USER_ID     -> USER_ID of the user
+     * @param USER_NAME   -> USER_NAME of the user
+     * @param STATE -> STATE of the user (OPEN, WAITING, RUNNING, FINISHED)
      */
-    public Participant(String id, String name, String status) {
-        this.id = id;
-        this.name = name;
-        this.status = status;
+    public Participant(String USER_ID, String USER_NAME, String STATE) {
+        this.USER_ID = USER_ID;
+        this.USER_NAME = USER_NAME;
+        this.STATE = STATE;
     }
 }

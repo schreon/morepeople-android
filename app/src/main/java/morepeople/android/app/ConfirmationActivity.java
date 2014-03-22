@@ -238,20 +238,20 @@ public class ConfirmationActivity extends Activity {
 
         /**
          *   [{
-         *      'id' : '13',
-         *      'name' : 'depp',
+         *      'USER_ID' : '13',
+         *      'USER_NAME' : 'depp',
          *      'state': 'OPEN',
          *   }]
          */
 
-        //id, name, status
+        //USER_ID, USER_NAME, STATE
         Gson gson = new Gson();
         List<Object> jsonList = gson.fromJson(participantsListJson, ArrayList.class);
 
         for (Object entry : jsonList) {
             Map<String, String> entryMap = (Map<String, String>) entry;
-            String id = entryMap.get("id");
-            String name = entryMap.get("name");
+            String id = entryMap.get("USER_ID");
+            String name = entryMap.get("USER_NAME");
             String state = entryMap.get("state");
 
             Participant participant = new Participant(id, name, state);

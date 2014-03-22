@@ -33,10 +33,10 @@ public class ChatActivityTest {
     private ChatActivity activity;
 
     public static void sharedPrefs() {
-        // Insert registration id and the user name into SharedPreferences
+        // Insert registration USER_ID and the user USER_NAME into SharedPreferences
         SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreApi.SHARED_PREFS, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
-        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
+        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-USER_ID").commit();
     }
 
     /**
@@ -172,7 +172,7 @@ public class ChatActivityTest {
 
     }
 
-    // TODO:above each chat message, the device id should be displayed
+    // TODO:above each chat message, the device USER_ID should be displayed
 
     // TODO: if the user enters the input field, the onscreen keyboard should push the rest of the ui
     // to the top

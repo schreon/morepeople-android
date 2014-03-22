@@ -41,7 +41,7 @@ public class ChatAdapter extends BaseAdapter {
 
     /**
      * @param i the index of the desired chat message.
-     * @return the id, represented as long, of the chat message. In this case, it equals the index.
+     * @return the USER_ID, represented as long, of the chat message. In this case, it equals the index.
      */
     @Override
     public long getItemId(int i) {

@@ -5,20 +5,20 @@ package morepeople.android.app.structures;
  */
 public class SearchEntry {
 
-    public String id;
-    public String description;
-    public String creator;
+    public String USER_ID;
+    public String MATCH_TAG;
+    public String USER_NAME;
 
     /**
      * Constructor of SearchEntry class
      *
-     * @param id           -> id of searchEntry
-     * @param description  -> description of searchEntry
-     * @param creator      -> creator of searchEntry
+     * @param USER_ID           -> USER_ID of searchEntry
+     * @param MATCH_TAG  -> MATCH_TAG of searchEntry
+     * @param USER_NAME      -> USER_NAME of searchEntry
      */
-    public SearchEntry(String id, String description, String creator) {
-        this.id = id;
-        this.description = description;
-        this.creator = creator;
+    public SearchEntry(String USER_ID, String MATCH_TAG, String USER_NAME) {
+        this.USER_ID = USER_ID;
+        this.MATCH_TAG = MATCH_TAG;
+        this.USER_NAME = USER_NAME;
     }
 }

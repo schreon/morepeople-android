@@ -42,10 +42,10 @@ public class ConfirmationActivityTest {
     private ConfirmationActivity activity;
 
     public static void sharedPrefs() {
-        // Insert registration id and the user name into SharedPreferences
+        // Insert registration USER_ID and the user USER_NAME into SharedPreferences
         SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreApi.SHARED_PREFS, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
-        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
+        sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-USER_ID").commit();
     }
 
     /**
@@ -97,9 +97,9 @@ public class ConfirmationActivityTest {
                 String foundName = ((TextView)group.getChildAt(0)).getText().toString();
                 String foundStatus = ((TextView)group.getChildAt(1)).getText().toString();
 
-                if (!foundParticipant.id.equals(participant.id)) continue;
-                if (!foundName.equals(participant.name)) continue;
-                if (!foundStatus.equals(participant.status)) continue;
+                if (!foundParticipant.USER_ID.equals(participant.USER_ID)) continue;
+                if (!foundName.equals(participant.USER_NAME)) continue;
+                if (!foundStatus.equals(participant.STATE)) continue;
 
                 isDisplayed = true;
             }
