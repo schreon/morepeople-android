@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import java.util.Map;
 
+import morepeople.android.app.interfaces.UserState;
 import morepeople.android.app.morepeople.android.app.core.CoreAPI;
 import morepeople.android.app.interfaces.ICoreAPI;
 import morepeople.android.app.interfaces.IDataCallback;
@@ -31,9 +32,9 @@ public class ChatActivity extends Activity {
         super.onCreate(savedInstanceState);
         getActionBar().setTitle("morepeople");
         setContentView(R.layout.activity_chat);
-        ICoreAPI.UserState currentState = null;
+        UserState currentState = null;
         try {
-            currentState = ICoreAPI.UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
+            currentState = UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("ConfirmationActivity", e.getMessage());
         }
@@ -72,7 +73,7 @@ public class ChatActivity extends Activity {
                     public void run(Object rawData) {
                         Map<String, Object> data = (Map<String, Object>) rawData;
                         // set state
-                        coreLogic.setState(ICoreAPI.UserState.valueOf((String)data.get(ICoreAPI.PROPERTY_STATE)));
+                        coreLogic.setState(UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE)));
                     }
                 }, null);
             }

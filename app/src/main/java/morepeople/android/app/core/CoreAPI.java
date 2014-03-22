@@ -15,6 +15,7 @@ import morepeople.android.app.interfaces.ICorePreferencesManager;
 import morepeople.android.app.interfaces.ICoreRegistrar;
 import morepeople.android.app.interfaces.ICoreStateHandler;
 import morepeople.android.app.interfaces.IDataCallback;
+import morepeople.android.app.interfaces.UserState;
 
 /**
  * Created by schreon on 3/20/14.

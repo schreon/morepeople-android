@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import morepeople.android.app.core.CoreLocationManager;
+import morepeople.android.app.interfaces.UserState;
 import morepeople.android.app.morepeople.android.app.core.CoreAPI;
 import morepeople.android.app.interfaces.ICoreAPI;
 import morepeople.android.app.interfaces.ICoreLocationManager;
@@ -49,9 +50,9 @@ public class SearchActivity extends Activity {
         setContentView(R.layout.activity_search);
         getActionBar().setTitle("morepeople");
         coreLocation = new CoreLocationManager(this);
-        ICoreAPI.UserState currentState = null;
+        UserState currentState = null;
         try {
-            currentState = ICoreAPI.UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
+            currentState = UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("SearchActivity", e.getMessage());
         }
@@ -135,7 +136,7 @@ public class SearchActivity extends Activity {
         });
 
         // Hide the controls if already queued
-        if (ICoreAPI.UserState.QUEUED.equals(currentState)) {
+        if (UserState.QUEUED.equals(currentState)) {
             hideControls();
         } else {
             showControls();
@@ -147,7 +148,7 @@ public class SearchActivity extends Activity {
                 hideControls();
                 Map<String, Object> data = (Map<String, Object>) rawData;
                 // set state
-                coreLogic.setState(ICoreAPI.UserState.valueOf((String)data.get(ICoreAPI.PROPERTY_STATE)));
+                coreLogic.setState(UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE)));
                 searchAndUpdate();
             }
         });
@@ -165,7 +166,7 @@ public class SearchActivity extends Activity {
                             public void run(Object rawData) {
                                 Map<String, Object> data = (Map<String, Object>) rawData;
                                 // set state
-                                ICoreAPI.UserState state = ICoreAPI.UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE));
+                                UserState state = UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE));
                                 adaptViewToState(state);
                                 coreLogic.setState(state);
                             }
@@ -211,9 +212,9 @@ public class SearchActivity extends Activity {
         mainHandler.post(runOnUI);
     }
 
-    private void adaptViewToState(ICoreAPI.UserState state) {
+    private void adaptViewToState(UserState state) {
         // Hide the controls if already queued
-        if (ICoreAPI.UserState.QUEUED.equals(state)) {
+        if (UserState.QUEUED.equals(state)) {
             hideControls();
         } else {
             showControls();

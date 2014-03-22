@@ -4,10 +4,11 @@ package morepeople.android.app.interfaces;
  * Registrar which provides access to all registration processes.
  */
 public interface ICoreRegistrar {
-    public static final String PROPERTY_REG_ID = "REG_ID";
-    public static final String PROPERTY_APP_VERSION = "APP_VERSION";
-    public static final String SENDER_ID = "1039190776751";
 
+    /**
+     * Contract: This may return null until register has been called.
+     * @return the registration ID of the user.
+     */
     public String getRegistrationId();
 
     /**

@@ -11,6 +11,7 @@ import morepeople.android.app.EvaluationActivity;
 import morepeople.android.app.SearchActivity;
 import morepeople.android.app.interfaces.ICoreAPI;
 import morepeople.android.app.interfaces.ICoreStateHandler;
+import morepeople.android.app.interfaces.UserState;
 
 /**
  * Created by schreon on 3/20/14.
@@ -18,21 +19,21 @@ import morepeople.android.app.interfaces.ICoreStateHandler;
 public class CoreStateHandler implements ICoreStateHandler {
     private static final String TAG = "CoreStateHandler";
 
-    private ICoreAPI.UserState currentState;
+    private UserState currentState;
     private Context context;
 
-    public CoreStateHandler(Context context, ICoreAPI.UserState currentState) {
+    public CoreStateHandler(Context context, UserState currentState) {
         this.currentState = currentState;
         this.context = context;
     }
 
     @Override
-    public ICoreAPI.UserState getCurrentState() {
+    public UserState getCurrentState() {
         return currentState;
     }
 
     @Override
-    public void transferToState(ICoreAPI.UserState newState) {
+    public void transferToState(UserState newState) {
         if (newState != currentState) {
             onStateChanged(newState);
         }
@@ -40,7 +41,7 @@ public class CoreStateHandler implements ICoreStateHandler {
     }
 
     @Override
-    public void onStateChanged(ICoreAPI.UserState newState) {
+    public void onStateChanged(UserState newState) {
         Intent intent;
         switch (newState) {
             case OFFLINE:

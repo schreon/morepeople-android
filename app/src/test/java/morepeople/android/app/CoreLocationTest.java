@@ -20,6 +20,7 @@ import morepeople.android.app.interfaces.ICoreAPI;
 import morepeople.android.app.interfaces.ICoreLocationManager;
 import morepeople.android.app.interfaces.ICoreRegistrar;
 import morepeople.android.app.interfaces.IDataCallback;
+import morepeople.android.app.interfaces.UserState;
 
 import static java.lang.Thread.sleep;
 import static junit.framework.Assert.assertEquals;
@@ -51,7 +52,7 @@ public class CoreLocationTest {
 
         // Add pending HTTP response which will be served as soon as the application
         // sends the first HTTP request (no matter which request that will be).
-        Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+ ICoreAPI.UserState.RUNNING.toString()+"' }");
+        Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+ UserState.RUNNING.toString()+"' }");
     }
 
     /**

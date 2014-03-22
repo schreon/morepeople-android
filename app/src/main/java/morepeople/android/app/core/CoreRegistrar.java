@@ -10,6 +10,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 
+import morepeople.android.app.interfaces.ICallback;
 import morepeople.android.app.interfaces.ICoreAPI;
 import morepeople.android.app.interfaces.ICoreRegistrar;
 import morepeople.android.app.interfaces.IDataCallback;
@@ -18,6 +19,9 @@ import morepeople.android.app.interfaces.IDataCallback;
  * Created by schreon on 3/20/14.
  */
 public class CoreRegistrar implements ICoreRegistrar {
+    private static final String PROPERTY_REG_ID = "REG_ID";
+    private static final String PROPERTY_APP_VERSION = "APP_VERSION";
+    private static final String SENDER_ID = "1039190776751";
     private final static String TAG = "CoreRegistrar";
     private Context context;
     private GoogleCloudMessaging gcm;
@@ -42,7 +46,7 @@ public class CoreRegistrar implements ICoreRegistrar {
     }
 
     @Override
-    public void requestRegistrationId(IDataCallback onSuccess, IDataCallback onError) {
+    public void register(final ICallback onSuccess, final IDataCallback onError) {
         final SharedPreferences prefs = context.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
         String regId = prefs.getString(PROPERTY_REG_ID, "");
         if (regId.isEmpty()) {
@@ -51,10 +55,15 @@ public class CoreRegistrar implements ICoreRegistrar {
             }
 
             Log.d(TAG, "Requesting new regid");
-            registerInBackground(context, onSuccess, onError);
+            registerInBackground(context, new IDataCallback() {
+                @Override
+                public void run(Object data) {
+                    onSuccess.run();
+                }
+            }, onError);
         } else {
             Log.d(TAG, "Found reg id: " + regId);
-            onSuccess.run(regId);
+            onSuccess.run();
         }
     }
 

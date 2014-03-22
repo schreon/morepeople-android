@@ -8,15 +8,6 @@ import java.util.Map;
  * Created by schreon on 3/19/14.
  */
 public interface ICoreAPI {
-    public enum UserState {
-        OFFLINE,
-        QUEUED,
-        OPEN,
-        ACCEPTED,
-        RUNNING,
-        FINISHED,
-        CANCELLED
-    }
 
     public static final String SHARED_PREFS = "morepeople.android.app.SHARED_PREFS";
     public static final String PROPERTY_USER_ID = "USER_ID";

@@ -14,6 +14,7 @@ import java.util.List;
 
 import morepeople.android.app.interfaces.ICoreAPI;
 import morepeople.android.app.interfaces.IDataCallback;
+import morepeople.android.app.interfaces.UserState;
 
 /**
  * ParticipantsAdapter extends BaseAdapter and includes methods for the participant list
@@ -108,7 +109,7 @@ public class ParticipantsAdapter extends BaseAdapter {
 
         Participant participant = participantList.get(i);
         nameView.setText(participant.name);
-        switch(ICoreAPI.UserState.valueOf(participant.status)) {
+        switch(UserState.valueOf(participant.status)) {
             case OPEN:
                 statusView.setText("Überlegt noch ...");
                 break;
