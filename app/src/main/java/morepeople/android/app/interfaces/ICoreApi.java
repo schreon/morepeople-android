@@ -17,13 +17,6 @@ public interface ICoreApi {
     public void getLobby(ICallback onSuccess, IErrorCallback onError);
 
     /**
-     * Initialize the API.
-     *
-     * @param onError
-     */
-    public void initialize(ICallback onFinished, IErrorCallback onError);
-
-    /**
      * Search the environment for other users with similar intents
      *
      * @param location

@@ -16,6 +16,7 @@ import morepeople.android.app.interfaces.ICorePreferences;
 import morepeople.android.app.interfaces.ICoreRegistrar;
 import morepeople.android.app.interfaces.ICoreStateHandler;
 import morepeople.android.app.interfaces.IDataCallback;
+import morepeople.android.app.interfaces.IErrorCallback;
 import morepeople.android.app.interfaces.UserState;
 
 /**
@@ -25,6 +26,16 @@ public class CoreApi implements ICoreApi {
     private Context context;
     private ICoreRegistrar registrar;
 
+    /**
+     * Dependency Injection.
+     *
+     * @param context
+     * @param registrar
+     * @param client
+     * @param stateHandler
+     * @param coreLocation
+     * @param coreUserInfo
+     */
     public CoreApi(Context context,
                    ICoreRegistrar registrar,
                    ICoreClient client,
@@ -69,41 +80,15 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void getLobby(IDataCallback onSuccess, IDataCallback onError) {
+    public void getLobby(ICallback onSuccess, IErrorCallback onError) {
         HashMap<String, String> rewrite = new HashMap<String, String>();
         rewrite.put("USER_ID", coreUserInfo.getUserId());
         client.doGetRequest("/lobby", rewrite, onSuccess, onError);
     }
 
-    @Override
-    public void setState(UserState newState) {
-        stateHandler.transferToState(newState);
-    }
 
     @Override
-    public void initialize(final ICallback onFinished, final IDataCallback onError) {
-        final IDataCallback onSuccess = new IDataCallback() {
-            @Override
-            public void run(Object data) {
-                // call state state handler with loaded state
-                String userState = ((Map<String, String>) data).get(Constants.PROPERTY_STATE);
-                stateHandler.transferToState(UserState.valueOf(userState));
-                onFinished.run();
-            }
-        };
-        coreUserInfo.initialize(new IDataCallback() {
-            @Override
-            public void run(Object data) {
-                HashMap<String, Object> arguments = new HashMap<String, Object>();
-                decorateWithUserInfo(arguments, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
-                // initialize state from server
-                client.doPostRequest("/state", arguments, onSuccess, onError);
-            }
-        }, onError);
-    }
-
-    @Override
-    public void search(Location location, long radius, String searchTerm, IDataCallback onSuccess, IDataCallback onError) {
+    public void search(Location location, long radius, String searchTerm, ICallback onSuccess, IErrorCallback onError) {
         HashMap<String, String> rewrite = new HashMap<String, String>();
         rewrite.put("LON", String.valueOf(location.getLongitude()));
         rewrite.put("LAT", String.valueOf(location.getLatitude()));
@@ -115,7 +100,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void queue(String searchTerm, IDataCallback onSuccess, IDataCallback onError) {
+    public void queue(String searchTerm, ICallback onSuccess, IErrorCallback onError) {
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
         payload.put(Constants.PROPERTY_MATCH_TAG, searchTerm);
@@ -123,28 +108,28 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void cancel(IDataCallback onSuccess, IDataCallback onError) {
+    public void cancel(ICallback onSuccess, IErrorCallback onError) {
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
         client.doPostRequest("/cancel", payload, onSuccess, onError);
     }
 
     @Override
-    public void accept(IDataCallback onSuccess, IDataCallback onError) {
+    public void accept(ICallback onSuccess, IErrorCallback onError) {
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
         client.doPostRequest("/accept", payload, onSuccess, onError);
     }
 
     @Override
-    public void finish(IDataCallback onSuccess, IDataCallback onError) {
+    public void finish(ICallback onSuccess, IErrorCallback onError) {
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
         client.doPostRequest("/finish", payload, onSuccess, onError);
     }
 
     @Override
-    public void evaluate(Map<String, Object> evaluation, IDataCallback onSuccess, IDataCallback onError) {
+    public void evaluate(Map<String, Object> evaluation, ICallback onSuccess, IErrorCallback onError) {
         Map<String, Object> payload = new HashMap<String, Object>();
         payload.put(Constants.PROPERTY_EVALUATION, evaluation);
         decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
@@ -152,7 +137,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void confirmCancel(IDataCallback onSuccess, IDataCallback onError) {
+    public void confirmCancel(ICallback onSuccess, IErrorCallback onError) {
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
         client.doPostRequest("/confirmcancel", payload, onSuccess, onError);

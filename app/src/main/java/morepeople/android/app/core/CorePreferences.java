@@ -7,6 +7,7 @@ import android.util.Log;
 import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.Coordinates;
 import morepeople.android.app.interfaces.ICorePreferences;
+import morepeople.android.app.interfaces.UserState;
 
 /**
  * Stores preference values in the shared preferences of the given context.
@@ -15,7 +16,6 @@ import morepeople.android.app.interfaces.ICorePreferences;
  */
 public class CorePreferences implements ICorePreferences {
     private static final String TAG = "morepeople.android.app.CorePreferences";
-    private Context context;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -23,15 +23,16 @@ public class CorePreferences implements ICorePreferences {
     private String userId;
     private String hostName;
     private Coordinates lastKnownCoordinates;
+    private UserState currentUserState;
 
     public CorePreferences(Context context) {
-        this.context = context;
         sharedPreferences = context.getSharedPreferences(Constants.PROPERTY_SHARED_PREFS, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         userName = null;
         userId = null;
         hostName = null;
         lastKnownCoordinates = null;
+        currentUserState = null;
     }
 
     @Override
@@ -109,6 +110,22 @@ public class CorePreferences implements ICorePreferences {
         long latitudeBits = Double.doubleToLongBits(lastKnownCoordinates.getLatitude());
         editor.putLong(Constants.PROPERTY_LONGITUDE, longitudeBits);
         editor.putLong(Constants.PROPERTY_LATITUDE, latitudeBits);
+        editor.commit();
+    }
+
+    @Override
+    public UserState getCurrentUserState() {
+        if (currentUserState == null) {
+            currentUserState = UserState.valueOf(sharedPreferences.getString(Constants.PROPERTY_STATE, null));
+            Log.d(TAG, "current state:" + userId);
+        }
+        return currentUserState;
+    }
+
+    @Override
+    public void setCurrentUserState(UserState currentUserState) {
+        this.currentUserState = currentUserState;
+        editor.putString(Constants.PROPERTY_STATE, currentUserState.toString());
         editor.commit();
     }
 }

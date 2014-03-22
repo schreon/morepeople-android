@@ -46,4 +46,13 @@ public interface ICorePreferences {
      */
     public void setLastKnownCoordinates(Coordinates lastKnownCoordinates);
 
+    /**
+     * @return the current user state
+     */
+    public UserState getCurrentUserState();
+
+    /**
+     * @param currentUserState the new current user state.
+     */
+    public void setCurrentUserState(UserState currentUserState);
 }
