@@ -160,6 +160,13 @@ public class CorePreferences implements ICorePreferences {
     }
 
     @Override
+    public void setParticipantList(String strParticipantList) {
+        participantList = gson.fromJson(strParticipantList, participantListType);
+        editor.putString(Constants.PROPERTY_PARTICIPANTS, strParticipantList);
+        editor.commit();
+    }
+
+    @Override
     public List<SearchEntry> getSearchEntryList() {
         if (searchEntryList == null) {
             String serialized = sharedPreferences.getString(Constants.PROPERTY_SEARCHENTRIES, null);
@@ -176,6 +183,13 @@ public class CorePreferences implements ICorePreferences {
         this.searchEntryList = searchEntryList;
         String serialized = gson.toJson(searchEntryList);
         editor.putString(Constants.PROPERTY_SEARCHENTRIES, serialized);
+        editor.commit();
+    }
+
+    @Override
+    public void setSearchEntryList(String strSearchEntryList) {
+        searchEntryList = gson.fromJson(strSearchEntryList, searchEntryListType);
+        editor.putString(Constants.PROPERTY_SEARCHENTRIES, strSearchEntryList);
         editor.commit();
     }
 

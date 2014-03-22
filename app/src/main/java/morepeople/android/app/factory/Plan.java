@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import morepeople.android.app.interfaces.IApiCallback;
 import morepeople.android.app.interfaces.ICallback;
 
 /**
@@ -12,11 +13,9 @@ import morepeople.android.app.interfaces.ICallback;
 public class Plan {
     private List<ICallback> steps;
     private int index;
-    private ICallback onFinish;
 
-    public Plan(ICallback onFinish) {
+    public Plan() {
        steps = new LinkedList<ICallback>();
-        this.onFinish = onFinish;
     }
 
     public void start() {
@@ -26,11 +25,7 @@ public class Plan {
 
     public synchronized void next() {
         index += 1;
-        if (index+1 > steps.size()) {
-            onFinish.run();
-        } else {
-            steps.get(index).run();
-        }
+        steps.get(index).run();
     }
 
     public void addStep(ICallback step) {

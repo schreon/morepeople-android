@@ -65,8 +65,6 @@ public class CoreViewController implements ICoreViewController {
                 intent = new Intent(context, CancelActivity.class);
                 break;
         }
-        // put the state into the intent
-        intent.putExtra(Constants.PROPERTY_STATE, userState.toString());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

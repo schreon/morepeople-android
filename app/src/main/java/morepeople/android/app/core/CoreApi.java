@@ -22,41 +22,23 @@ import morepeople.android.app.structures.Coordinates;
  * Created by schreon on 3/20/14.
  */
 public class CoreApi implements ICoreApi {
-    private Context context;
-    private ICoreRegistrar registrar;
-
-    private IDataCallback onServerResponse;
-
     /**
      *
      *
-     * @param context
-     * @param registrar
      * @param client
-     * @param stateHandler
-     * @param coreLocation
      * @param preferences
      */
-    public CoreApi(Context context,
-                   ICoreRegistrar registrar,
-                   ICoreClient client,
-                   ICoreStateHandler stateHandler,
-                   ICoreLocationManager coreLocation,
+    public CoreApi(ICoreClient client,
                    ICorePreferences preferences,
                    IDataCallback onServerResponse) {
-        this.context = context;
-        this.registrar = registrar;
         this.client = client;
-        this.stateHandler = stateHandler;
-        this.coreLocation = coreLocation;
         this.preferences = preferences;
         this.onServerResponse = onServerResponse;
     }
 
     private ICoreClient client;
-    private ICoreStateHandler stateHandler;
-    private ICoreLocationManager coreLocation;
     private ICorePreferences preferences;
+    private IDataCallback onServerResponse;
 
     /**
      * Decorate a data hashmap with user information fields

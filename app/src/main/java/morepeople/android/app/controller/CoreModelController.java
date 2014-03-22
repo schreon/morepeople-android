@@ -34,24 +34,28 @@ public class CoreModelController implements ICoreModelController {
                 String matchTag = (String)data.get(Constants.PROPERTY_MATCH_TAG);
                 preferences.setMatchTag(matchTag);
                 String strParticipants = (String)data.get(Constants.PROPERTY_PARTICIPANTS);
-                // directly put serialized string
+                // directly pass serialized string
                 preferences.setParticipantList(strParticipants);
             }
                 break;
             case ACCEPTED:
-
+                String matchTag = (String)data.get(Constants.PROPERTY_MATCH_TAG);
+                preferences.setMatchTag(matchTag);
+                String strParticipants = (String)data.get(Constants.PROPERTY_PARTICIPANTS);
+                // directly pass serialized string
+                preferences.setParticipantList(strParticipants);
                 break;
             case RUNNING:
-
+                // TODO
                 break;
             case FINISHED:
-
+                // TODO
                 break;
             case CANCELLED:
-
+                //String serverMessage = (String)data.get(Constants.PROPERTY_SERVERMESSAGE);
+                // TODO
                 break;
             default:
-
                 break;
         }
     }

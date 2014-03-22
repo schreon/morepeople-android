@@ -19,6 +19,7 @@ public abstract class Constants {
     public static final String PROPERTY_HOSTNAME = "morepeople.android.app.HOSTNAME";
     public static final String PROPERTY_PARTICIPANTS = "PARTICIPANTS";
     public static final String PROPERTY_SEARCHENTRIES = "SEARCHENTRIES";
+    public static final String PROPERTY_SERVERMESSAGE = "SERVERMESSAGE";
 
     private Constants() {
         // Don't initialize this.

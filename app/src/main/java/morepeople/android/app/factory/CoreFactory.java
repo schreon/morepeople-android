@@ -2,6 +2,8 @@ package morepeople.android.app.factory;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import java.util.Map;
@@ -13,11 +15,16 @@ import morepeople.android.app.EvaluationActivity;
 import morepeople.android.app.SearchActivity;
 import morepeople.android.app.controller.CoreModelController;
 import morepeople.android.app.controller.CoreViewController;
+import morepeople.android.app.core.CoreApi;
+import morepeople.android.app.core.CoreClient;
 import morepeople.android.app.core.CoreLocationManager;
 import morepeople.android.app.core.CorePreferences;
 import morepeople.android.app.core.CoreRegistrar;
 import morepeople.android.app.core.CoreStateHandler;
 import morepeople.android.app.interfaces.Constants;
+import morepeople.android.app.interfaces.IApiCallback;
+import morepeople.android.app.interfaces.ICoreApi;
+import morepeople.android.app.interfaces.ICoreClient;
 import morepeople.android.app.interfaces.ICoreModelController;
 import morepeople.android.app.interfaces.ICoreViewController;
 import morepeople.android.app.structures.Coordinates;
@@ -43,16 +50,9 @@ public class CoreFactory implements ICoreFactory {
         this.context = context;
     }
 
-    // TODO: move to some kind of controller class?
-    private synchronized void updateModelOnStateChange(UserState newState, Map<String, Object> data) {
-
-    }
-
-
-
     @Override
-    public void createCoreApi(ICallback onNoUserNameFound, final ICallback onFinish, final IErrorCallback onError) {
-        final Plan plan = new Plan(onFinish);
+    public void createCoreApi(ICallback onNoUserNameFound, final IApiCallback onFinish, final IErrorCallback onError) {
+        final Plan plan = new Plan();
 
         final ICorePreferences preferences = new CorePreferences(context);
 
@@ -104,19 +104,44 @@ public class CoreFactory implements ICoreFactory {
             }
         }
 
+        /**
+         * Retrieve hostname
+         */
+        ApplicationInfo ai = null;
+        try {
+            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String hostName = (String) ai.metaData.get(Constants.PROPERTY_HOSTNAME);
+        preferences.setServerHostName(hostName);
+
+        /**
+         *  Create client
+         */
+        final ICoreClient client = new CoreClient(hostName);
+
         final ICoreModelController coreModelController = new CoreModelController();
         final ICoreViewController coreViewController = new CoreViewController(context);
 
         /**
          * Step 3: server response handler which updates the preferences
          */
-        IDataCallback onServerResponse = new IDataCallback() {
+        final IDataCallback onServerResponse = new IDataCallback() {
             @Override
             public void run(Map<String, Object> data) {
                 coreModelController.handleResponse(data, preferences);
                 coreViewController.handleUpdate(preferences);
             }
         };
+
+        plan.addStep(new ICallback() {
+            @Override
+            public void run() {
+                ICoreApi coreApi = new CoreApi(client, preferences, onServerResponse);
+                onFinish.run(coreApi);
+            }
+        });
 
         plan.start();
     }
