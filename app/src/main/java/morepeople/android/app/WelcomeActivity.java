@@ -2,14 +2,13 @@ package morepeople.android.app;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 
 import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.ICoreFactory;
 
 public class WelcomeActivity extends BaseActivity {
     private ProgressDialog mDialog;
-    private ICoreApi coreApi;
-    private ICoreFactory coreFactory;
     public static final String TAG = "morepeople.android.app.WelcomeActivity";
 
     @Override
@@ -22,8 +21,16 @@ public class WelcomeActivity extends BaseActivity {
         mDialog.setMessage("Registrierung läuft ...");
         mDialog.setCancelable(false);
         mDialog.show();
+        Log.d(TAG, "onCreate finished");
     }
 
+    @Override
+    protected void onCoreInitFinished() {
+        super.onCoreInitFinished();
+        Log.d(TAG, "starting onCoreInitFinished");
+        coreApi.loadState(defaultErrorCallback);
+        Log.d(TAG, "finishing onCoreInitFinished");
+    }
 
     @Override
     protected void onResume() {

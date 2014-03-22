@@ -1,15 +1,8 @@
 package morepeople.android.app;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
-import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.interfaces.ICoreApi;
-import morepeople.android.app.structures.UserState;
 
 public class CancelActivity extends BaseActivity {
 

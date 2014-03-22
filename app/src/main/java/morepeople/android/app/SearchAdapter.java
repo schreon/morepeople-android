@@ -64,8 +64,10 @@ public class SearchAdapter extends BaseAdapter {
      */
     public void addAll(Collection<SearchEntry> searchEntries) {
         // TODO: sort by distance to the user
-        searchEntryList.addAll(searchEntries);
-        notifyDataSetChanged();
+        if (searchEntries != null) {
+            searchEntryList.addAll(searchEntries);
+            notifyDataSetChanged();
+        }
     }
 
     /**

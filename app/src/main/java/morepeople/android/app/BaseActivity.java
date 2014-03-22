@@ -41,20 +41,34 @@ public abstract class BaseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        ICoreFactory coreFactory = new CoreFactory(this);
-        coreFactory.createCoreApi(
-                null,
-                new IApiCallback() {
-                    @Override
-                    public void run(ICoreApi pCoreApi) {
-                        coreApi = pCoreApi;
-                        onCoreInitFinished();
-                    }
-                },
-                defaultErrorCallback
-        );
+        coreApi = null;
+
+        Log.d(TAG, "onCreate finished");
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        Log.d(TAG, "starting onPostCreate");
+        if (coreApi == null) {
+            ICoreFactory coreFactory = new CoreFactory(this);
+            coreFactory.createCoreApi(
+                    null,
+                    new IApiCallback() {
+                        @Override
+                        public void run(ICoreApi pCoreApi) {
+                            coreApi = pCoreApi;
+                            onCoreInitFinished();
+                        }
+                    },
+                    defaultErrorCallback
+            );
+        }
+        Log.d(TAG, "finishing onPostCreate");
     }
 
     protected void onCoreInitFinished() {
+        Log.d(TAG, "starting onCoreInitFinished");
+        Log.d(TAG, "finishing onCoreInitFinished");
     }
 }

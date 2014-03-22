@@ -1,5 +1,8 @@
 package morepeople.android.app.controller;
 
+import android.util.Log;
+
+import java.util.List;
 import java.util.Map;
 
 import morepeople.android.app.interfaces.Constants;
@@ -16,46 +19,34 @@ import morepeople.android.app.structures.UserState;
  */
 public class CoreModelController implements ICoreModelController {
 
+    private static final String TAG = "morepeople.android.app.controller.CoreModelController";
+
     @Override
     public void handleResponse(Map<String, Object> data, ICoreWritablePreferences preferences) {
-        // Update the user state
-        String strState = (String) data.get(Constants.PROPERTY_STATE);
-        UserState userState = UserState.valueOf(strState);
-        preferences.setCurrentUserState(userState);
+        Log.d(TAG, data.toString());
+        if (data.keySet().contains(Constants.PROPERTY_STATE)) {
+            // Update the user state
+            String strState = (String) data.get(Constants.PROPERTY_STATE);
+            UserState userState = UserState.valueOf(strState);
+            preferences.setCurrentUserState(userState);
+        }
 
-        switch (userState) {
-            case QUEUED: {
-                String matchTag = (String) data.get(Constants.PROPERTY_MATCH_TAG);
-                preferences.setMatchTag(matchTag);
-            }
-            break;
-            case OPEN: {
-                String matchTag = (String) data.get(Constants.PROPERTY_MATCH_TAG);
-                preferences.setMatchTag(matchTag);
-                String strParticipants = (String) data.get(Constants.PROPERTY_PARTICIPANTS);
-                // directly pass serialized string
-                preferences.setParticipantList(strParticipants);
-            }
-            break;
-            case ACCEPTED:
-                String matchTag = (String) data.get(Constants.PROPERTY_MATCH_TAG);
-                preferences.setMatchTag(matchTag);
-                String strParticipants = (String) data.get(Constants.PROPERTY_PARTICIPANTS);
-                // directly pass serialized string
-                preferences.setParticipantList(strParticipants);
-                break;
-            case RUNNING:
-                // TODO
-                break;
-            case FINISHED:
-                // TODO
-                break;
-            case CANCELLED:
-                //String serverMessage = (String)data.get(Constants.PROPERTY_SERVERMESSAGE);
-                // TODO
-                break;
-            default:
-                break;
+        if (data.keySet().contains(Constants.PROPERTY_MATCH_TAG)) {
+            // Update match tag
+            String matchTag = (String) data.get(Constants.PROPERTY_MATCH_TAG);
+            preferences.setMatchTag(matchTag);
+        }
+
+        if (data.keySet().contains(Constants.PROPERTY_PARTICIPANTS)) {
+            // Update match tag
+            List participantsList = (List) data.get(Constants.PROPERTY_PARTICIPANTS);
+            preferences.setParticipantListFromMap(participantsList);
+        }
+
+        if (data.keySet().contains(Constants.PROPERTY_SEARCHENTRIES)) {
+            // Update match tag
+            List searchEntryList = (List) data.get(Constants.PROPERTY_SEARCHENTRIES);
+            preferences.setSearchEntryListFromMap(searchEntryList);
         }
     }
 }

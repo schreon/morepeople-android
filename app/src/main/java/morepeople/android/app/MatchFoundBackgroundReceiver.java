@@ -20,11 +20,6 @@ public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("GCM", "MatchFoundBackgroundReceiver.onReceive");
 
-        SharedPreferences prefs = context.getSharedPreferences(ICoreApi.SHARED_PREFS, Context.MODE_PRIVATE);
-        String participantsListJson = (String) intent.getExtras().get("participantsListJson");
-        prefs.edit().putString("participantsList", participantsListJson);
-        prefs.edit().commit();
-
         // create notification which will start activity if the notification is clicked
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 

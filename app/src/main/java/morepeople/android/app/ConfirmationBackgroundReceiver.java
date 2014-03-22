@@ -11,7 +11,6 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
 import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.interfaces.ICoreApi;
 
 /**
  * Created by schreon on 3/13/14.

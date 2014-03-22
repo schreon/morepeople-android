@@ -8,7 +8,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.ICoreWritablePreferences;
@@ -150,7 +152,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
             }
             participantList = gson.fromJson(serialized, participantListType);
         }
-        return null;
+        return participantList;
     }
 
     @Override
@@ -162,11 +164,18 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setParticipantList(String strParticipantList) {
-        participantList = gson.fromJson(strParticipantList, participantListType);
-        editor.putString(Constants.PROPERTY_PARTICIPANTS, strParticipantList);
-        editor.commit();
+    public void setParticipantListFromMap(List<Map> participantListMap) {
+        Log.d(TAG, "setParticipantListFromMap");
+        List<Participant> newParticipantList = new ArrayList<Participant>();
+        for ( Map<String, Object> participantMap : participantListMap ) {
+            String USER_ID = (String) participantMap.get(Constants.PROPERTY_USER_ID);
+            String USER_NAME = (String) participantMap.get(Constants.PROPERTY_USER_NAME);
+            String STATE = (String) participantMap.get(Constants.PROPERTY_STATE);
+            newParticipantList.add(new Participant(USER_ID, USER_NAME, STATE));
+        }
+        this.setParticipantList(newParticipantList);
     }
+
 
     @Override
     public List<SearchEntry> getSearchEntryList() {
@@ -177,7 +186,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
             }
             searchEntryList = gson.fromJson(serialized, searchEntryListType);
         }
-        return null;
+        return searchEntryList;
     }
 
     @Override
@@ -189,10 +198,16 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setSearchEntryList(String strSearchEntryList) {
-        searchEntryList = gson.fromJson(strSearchEntryList, searchEntryListType);
-        editor.putString(Constants.PROPERTY_SEARCHENTRIES, strSearchEntryList);
-        editor.commit();
+    public void setSearchEntryListFromMap(List<Map> searchEntryListMap) {
+        Log.d(TAG, "setSearchEntryListFromMap");
+        List<SearchEntry> newSearchEntryList = new ArrayList<SearchEntry>();
+        for ( Map<String, Object> searchEntryMap : searchEntryListMap ) {
+            String USER_ID = (String) searchEntryMap.get(Constants.PROPERTY_USER_ID);
+            String USER_NAME = (String) searchEntryMap.get(Constants.PROPERTY_USER_NAME);
+            String MATCH_TAG = (String) searchEntryMap.get(Constants.PROPERTY_MATCH_TAG);
+            newSearchEntryList.add(new SearchEntry(USER_ID, MATCH_TAG, USER_NAME));
+        }
+        this.setSearchEntryList(newSearchEntryList);
     }
 
     @Override

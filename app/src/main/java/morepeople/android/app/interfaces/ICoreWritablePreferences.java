@@ -1,6 +1,7 @@
 package morepeople.android.app.interfaces;
 
 import java.util.List;
+import java.util.Map;
 
 import morepeople.android.app.structures.Coordinates;
 import morepeople.android.app.structures.Participant;
@@ -38,11 +39,11 @@ public interface ICoreWritablePreferences extends ICoreReadablePreferences {
 
     public void setParticipantList(List<Participant> participantList);
 
-    public void setParticipantList(String strParticipantList);
+    public void setParticipantListFromMap(List<Map> participantList);
 
     public void setSearchEntryList(List<SearchEntry> searchEntryList);
 
-    public void setSearchEntryList(String strSearchEntryList);
+    public void setSearchEntryListFromMap(List<Map> searchEntryList);
 
     public void setMatchTag(String matchTag);
 }

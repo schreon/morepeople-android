@@ -1,18 +1,10 @@
 package morepeople.android.app;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
-import java.util.Map;
-
-import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.interfaces.ICoreApi;
-import morepeople.android.app.interfaces.IDataCallback;
-import morepeople.android.app.structures.UserState;
 
 /**
  * This activity is shown when the match the user joined previously has started. There is a chat

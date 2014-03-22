@@ -1,5 +1,7 @@
 package morepeople.android.app.core;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import morepeople.android.app.structures.Coordinates;
  * Created by schreon on 3/20/14.
  */
 public class CoreApi implements ICoreApi {
+    private static final String TAG = "morepeople.android.app.core.CoreApi";
     /**
      * @param client
      * @param preferences
@@ -56,6 +59,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void loadState(IErrorCallback onError) {
+        Log.d(TAG, "loadState");
         HashMap<String, Object> arguments = new HashMap<String, Object>();
         decorateWithUserInfo(arguments, preferences);
         // load state from server
@@ -64,6 +68,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void getLobby(IErrorCallback onError) {
+        Log.d(TAG, "getLobby");
         HashMap<String, String> rewrite = new HashMap<String, String>();
         rewrite.put("USER_ID", preferences.getUserId());
         client.doGetRequest(
@@ -80,6 +85,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void search(Coordinates coordinates, long radius, String searchTerm, IErrorCallback onError) {
+        Log.d(TAG, "search");
         HashMap<String, String> rewrite = new HashMap<String, String>();
         rewrite.put("LON", String.valueOf(coordinates.getLongitude()));
         rewrite.put("LAT", String.valueOf(coordinates.getLatitude()));
@@ -92,6 +98,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void queue(String searchTerm, IErrorCallback onError) {
+        Log.d(TAG, "queue");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
         payload.put(Constants.PROPERTY_MATCH_TAG, searchTerm);
@@ -100,6 +107,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void cancel(IErrorCallback onError) {
+        Log.d(TAG, "cancel");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
         client.doPostRequest("/cancel", payload, onServerResponse, onError);
@@ -107,6 +115,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void accept(IErrorCallback onError) {
+        Log.d(TAG, "accept");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
         client.doPostRequest("/accept", payload, onServerResponse, onError);
@@ -114,6 +123,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void finish(IErrorCallback onError) {
+        Log.d(TAG, "finish");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
         client.doPostRequest("/finish", payload, onServerResponse, onError);
@@ -121,6 +131,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void evaluate(Map<String, Object> evaluation, IErrorCallback onError) {
+        Log.d(TAG, "evaluate");
         Map<String, Object> payload = new HashMap<String, Object>();
         payload.put(Constants.PROPERTY_EVALUATION, evaluation);
         decorateWithUserInfo(payload, preferences);
@@ -129,6 +140,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public void confirmCancel(IErrorCallback onError) {
+        Log.d(TAG, "confirmCancel");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
         client.doPostRequest("/confirmcancel", payload, onServerResponse, onError);

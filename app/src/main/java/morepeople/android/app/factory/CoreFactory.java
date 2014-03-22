@@ -3,6 +3,9 @@ package morepeople.android.app.factory;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Map;
 
@@ -12,6 +15,7 @@ import morepeople.android.app.core.CoreApi;
 import morepeople.android.app.core.CoreClient;
 import morepeople.android.app.core.CoreLocationManager;
 import morepeople.android.app.core.CoreRegistrar;
+import morepeople.android.app.core.CoreUserName;
 import morepeople.android.app.core.CoreWritablePreferences;
 import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.IApiCallback;
@@ -59,39 +63,14 @@ public class CoreFactory implements ICoreFactory {
                         @Override
                         public void run(Map<String, Object> data) {
                             preferences.setUserId((String) data.get(Constants.PROPERTY_USER_ID));
+                            Log.d(TAG, "Retrieved USER_ID: "+preferences.getUserId());
                             plan.next();
                         }
                     }, onError);
                 }
             });
-        }
-
-        /**
-         * Step 2: Retrieve location if necessary
-         */
-        if (preferences.getLastKnownCoordinates() == null) {
-            // create location manager
-            final ICoreLocationManager coreLocationManager = new CoreLocationManager(context);
-            Coordinates lastKnownCoordinates = coreLocationManager.getLastKnownCoordinates();
-            if (lastKnownCoordinates != null) {
-                preferences.setLastKnownCoordinates(lastKnownCoordinates);
-            } else {
-                plan.addStep(new ICallback() {
-                    @Override
-                    public void run() {
-                        coreLocationManager.setLocationUpdateHandler(new IDataCallback() {
-                            @Override
-                            public void run(Map<String, Object> data) {
-                                coreLocationManager.setListenToLocationUpdates(false);
-                                Coordinates newCoordinates = (Coordinates) data.get(Constants.PROPERTY_COORDINATES);
-                                preferences.setLastKnownCoordinates(newCoordinates);
-                                plan.next();
-                            }
-                        });
-                        coreLocationManager.setListenToLocationUpdates(true);
-                    }
-                });
-            }
+        } else {
+            Log.d(TAG, "Already got USER_ID: "+preferences.getUserId());
         }
 
         /**
@@ -105,6 +84,51 @@ public class CoreFactory implements ICoreFactory {
         }
         String hostName = (String) ai.metaData.get(Constants.PROPERTY_HOSTNAME);
         preferences.setServerHostName(hostName);
+        Log.d(TAG, "Retrieved HOSTNAME:" + hostName);
+
+        /**
+         * Retrieve username
+         */
+        CoreUserName coreUserName = new CoreUserName();
+        String userName = coreUserName.readUserName(context);
+        if (userName == null) {
+            Log.d(TAG, "userName is null. TODO: prompt for username!");
+        }
+        preferences.setUserName(userName);
+        Log.d(TAG, "Retrieved USER_NAME: " + userName);
+
+        /**
+         * Step 2: Retrieve location if necessary
+         */
+        if (preferences.getLastKnownCoordinates() == null) {
+            // create location manager
+            final ICoreLocationManager coreLocationManager = new CoreLocationManager(context);
+            Coordinates lastKnownCoordinates = coreLocationManager.getLastKnownCoordinates();
+            if (lastKnownCoordinates != null) {
+                preferences.setLastKnownCoordinates(lastKnownCoordinates);
+                Log.d(TAG, "got last known coordinates:" + lastKnownCoordinates.toString());
+            } else {
+                plan.addStep(new ICallback() {
+                    @Override
+                    public void run() {
+                        coreLocationManager.setLocationUpdateHandler(new IDataCallback() {
+                            @Override
+                            public void run(Map<String, Object> data) {
+                                Log.d(TAG, "Retrieved LOCATION");
+                                coreLocationManager.setListenToLocationUpdates(false);
+                                Coordinates newCoordinates = (Coordinates) data.get(Constants.PROPERTY_COORDINATES);
+                                preferences.setLastKnownCoordinates(newCoordinates);
+                                plan.next();
+                            }
+                        });
+                        coreLocationManager.setListenToLocationUpdates(true);
+                    }
+                });
+            }
+        } else {
+            Log.d(TAG, "Retrieved last known coordinates:" + preferences.getLastKnownCoordinates().toString());
+        }
+
 
         /**
          *  Create client
@@ -128,8 +152,17 @@ public class CoreFactory implements ICoreFactory {
         plan.addStep(new ICallback() {
             @Override
             public void run() {
-                ICoreApi coreApi = new CoreApi(client, preferences, onServerResponse);
-                onFinish.run(coreApi);
+                Log.d(TAG, "finished building - passing coreApi instance.");
+                final ICoreApi coreApi = new CoreApi(client, preferences, onServerResponse);
+
+                Handler mainHandler = new Handler(context.getMainLooper());
+                Runnable runOnUI = new Runnable() {
+                    @Override
+                    public void run() {
+                        onFinish.run(coreApi);
+                    }
+                };
+                mainHandler.post(runOnUI);
             }
         });
 
