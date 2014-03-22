@@ -1,42 +1,32 @@
 package morepeople.android.app.factory;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import java.util.Map;
 
-import morepeople.android.app.CancelActivity;
-import morepeople.android.app.ChatActivity;
-import morepeople.android.app.ConfirmationActivity;
-import morepeople.android.app.EvaluationActivity;
-import morepeople.android.app.SearchActivity;
 import morepeople.android.app.controller.CoreModelController;
 import morepeople.android.app.controller.CoreViewController;
 import morepeople.android.app.core.CoreApi;
 import morepeople.android.app.core.CoreClient;
 import morepeople.android.app.core.CoreLocationManager;
-import morepeople.android.app.core.CorePreferences;
 import morepeople.android.app.core.CoreRegistrar;
-import morepeople.android.app.core.CoreStateHandler;
+import morepeople.android.app.core.CoreWritablePreferences;
 import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.IApiCallback;
+import morepeople.android.app.interfaces.ICallback;
 import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.ICoreClient;
-import morepeople.android.app.interfaces.ICoreModelController;
-import morepeople.android.app.interfaces.ICoreViewController;
-import morepeople.android.app.structures.Coordinates;
-import morepeople.android.app.interfaces.ICallback;
 import morepeople.android.app.interfaces.ICoreFactory;
 import morepeople.android.app.interfaces.ICoreLocationManager;
-import morepeople.android.app.interfaces.ICorePreferences;
+import morepeople.android.app.interfaces.ICoreModelController;
 import morepeople.android.app.interfaces.ICoreRegistrar;
-import morepeople.android.app.interfaces.ICoreStateHandler;
+import morepeople.android.app.interfaces.ICoreViewController;
+import morepeople.android.app.interfaces.ICoreWritablePreferences;
 import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.interfaces.IErrorCallback;
-import morepeople.android.app.structures.UserState;
+import morepeople.android.app.structures.Coordinates;
 
 /**
  * Created by schreon on 3/22/14.
@@ -54,7 +44,7 @@ public class CoreFactory implements ICoreFactory {
     public void createCoreApi(ICallback onNoUserNameFound, final IApiCallback onFinish, final IErrorCallback onError) {
         final Plan plan = new Plan();
 
-        final ICorePreferences preferences = new CorePreferences(context);
+        final ICoreWritablePreferences preferences = new CoreWritablePreferences(context);
 
         /**
          * Step 1: Retrieve user USER_ID from GCM if necessary

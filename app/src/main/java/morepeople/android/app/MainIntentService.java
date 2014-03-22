@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import morepeople.android.app.interfaces.Constants;
+
 /**
  * MainIntentService extends IntentService and provides onHandleIntent method
  */
@@ -40,7 +42,7 @@ public class MainIntentService extends IntentService {
             // kick off broadcast stuff
             if (extras.get("MP_MESSAGE_TYPE").equals("CONFIRMATION")) {
                 Log.d("GCM", "CONFIRMATION");
-                Intent mIntent = new Intent(ConfirmationActivity.BROADCAST_CONFIRMATION);
+                Intent mIntent = new Intent(Constants.BROADCAST_CONFIRMATION);
 
                 mIntent.putExtra("participantsListJson", "[{'USER_ID':'test', 'USER_NAME':'test', 'STATE':'OPEN'}]");
 

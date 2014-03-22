@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.structures.Coordinates;
 import morepeople.android.app.interfaces.ICoreLocationManager;
 import morepeople.android.app.interfaces.IDataCallback;
+import morepeople.android.app.structures.Coordinates;
 
 /**
  * Created by schreon on 3/20/14.
@@ -29,7 +29,7 @@ public class CoreLocationManager implements ICoreLocationManager {
     private LocationListener networkLocationListener;
 
     private synchronized void notifyLocationUpdate(Location location) {
-        if ( onLocationUpdate == null) {
+        if (onLocationUpdate == null) {
             return;
         }
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -92,6 +92,7 @@ public class CoreLocationManager implements ICoreLocationManager {
     private Coordinates locationToCoordinates(Location location) {
         return new Coordinates(location.getLongitude(), location.getLatitude());
     }
+
     @Override
     public Coordinates getLastKnownCoordinates() {
         if (locationManager == null) {

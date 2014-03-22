@@ -1,46 +1,30 @@
 package morepeople.android.app;
 
-import android.app.Activity;
 import android.content.Context;
-import android.location.Location;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import morepeople.android.app.core.CoreLocationManager;
-import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.structures.SearchEntry;
 import morepeople.android.app.structures.UserState;
-import morepeople.android.app.morepeople.android.app.core.CoreAPI;
-import morepeople.android.app.interfaces.ICoreLocationManager;
-import morepeople.android.app.interfaces.IDataCallback;
 
 
 /**
  * On this activity, the user sees the nearby searches of other users.
  * He can search them, join them or add an own search.
  */
-public class SearchActivity extends Activity {
+public class SearchActivity extends BaseActivity {
 
     private SearchAdapter searchAdapter;
-    private ICoreLocationManager coreLocation;
-    private IDataCallback onLocationUpdate;
-    private ICoreApi coreLogic;
-    private Location userLocation;
-
     private EditText inputSearch;
 
     /**
@@ -51,26 +35,12 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         getActionBar().setTitle("morepeople");
-        coreLocation = new CoreLocationManager(this);
-        UserState currentState = null;
-        try {
-            currentState = UserState.valueOf(getIntent().getExtras().getString(Constants.PROPERTY_STATE));
-        } catch (Exception e) {
-            Log.e("SearchActivity", e.getMessage());
-        }
-        coreLogic = new CoreAPI(this, currentState);
+    }
 
-        userLocation = null;
-        onLocationUpdate = new IDataCallback() {
-            @Override
-            public void run(Object rawData) {
-                userLocation = (Location) rawData;
-                // search and refresh state
-                searchAndUpdate();
-                coreLogic.initialize(null);
-            }
-        };
-        searchAdapter = new SearchAdapter(coreLogic);
+    @Override
+    protected void onCoreInitFinished() {
+
+        searchAdapter = new SearchAdapter();
         final ListView listView = (ListView) findViewById(R.id.list_search);
         listView.setAdapter(searchAdapter);
 
@@ -126,34 +96,17 @@ public class SearchActivity extends Activity {
             public void onClick(View view) {
                 String searchTerm = inputSearch.getText().toString();
                 hideControls();
-                coreLogic.queue(searchTerm,
-                        new IDataCallback() {
-                            @Override
-                            public void run(Object data) {
-                                searchAndUpdate();
-                            }
-                        }, null
-                );
+                coreApi.queue(searchTerm, null);
             }
         });
 
+
         // Hide the controls if already queued
-        if (UserState.QUEUED.equals(currentState)) {
+        if (UserState.QUEUED.equals(coreApi.getPreferences().getCurrentUserState())) {
             hideControls();
         } else {
             showControls();
         }
-
-        searchAdapter.setOnQueueSuccess(new IDataCallback() {
-            @Override
-            public void run(Object rawData) {
-                hideControls();
-                Map<String, Object> data = (Map<String, Object>) rawData;
-                // set state
-                coreLogic.setState(UserState.valueOf((String) data.get(Constants.PROPERTY_STATE)));
-                searchAndUpdate();
-            }
-        });
 
         Button buttonCancelSearch = (Button) this.findViewById(R.id.button_cancel_search);
         /**
@@ -162,19 +115,7 @@ public class SearchActivity extends Activity {
         buttonCancelSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                coreLogic.cancel(
-                        new IDataCallback() {
-                            @Override
-                            public void run(Object rawData) {
-                                Map<String, Object> data = (Map<String, Object>) rawData;
-                                // set state
-                                UserState state = UserState.valueOf((String) data.get(Constants.PROPERTY_STATE));
-                                adaptViewToState(state);
-                                coreLogic.setState(state);
-                            }
-                        },
-                        null
-                );
+                coreApi.cancel(defaultErrorCallback);
             }
         });
     }
@@ -189,7 +130,7 @@ public class SearchActivity extends Activity {
                 final View layoutSearchInput = findViewById(R.id.layout_search_input);
                 layoutWaiting.setVisibility(View.VISIBLE);
                 layoutSearchInput.setVisibility(View.GONE);
-                InputMethodManager imm = (InputMethodManager)getSystemService(
+                InputMethodManager imm = (InputMethodManager) getSystemService(
                         Context.INPUT_METHOD_SERVICE);
                 inputSearch.setText("");
                 imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
@@ -224,86 +165,45 @@ public class SearchActivity extends Activity {
     }
 
     private void searchAndUpdate() {
-        // TODO: deal with concurrency in the right way (with a semaphore for example)
-        if (userLocation != null) {
-            String searchTerm = inputSearch.getText().toString();
-            if (searchTerm.isEmpty()) {
-                searchTerm = null;
-            }
-            final Context context = this;
-            coreLogic.search(userLocation, 1000, searchTerm, new IDataCallback() {
-                        @Override
-                        public void run(Object rawData) {
-                            // onSuccess
-                            Map<String, Object> data = (Map<String, Object>) rawData;
-                            // TODO: update list
-                            List<Object> results = (List<Object>) data.get("results");
-                            Log.d("SearchActivity", results.toString());
-
-                            final List<SearchEntry> resultList = new ArrayList<SearchEntry>();
-                            for (Object entry : results) {
-                                Map<String, Object> res = (Map<String, Object>) entry;
-                                String description = (String) res.get("MATCH_TAG");
-                                String id = (String) res.get("USER_ID");
-                                String creator = (String) res.get("USER_NAME");
-                                resultList.add(new SearchEntry(id, description, creator));
-                            }
-                            SearchActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    searchAdapter.emptySilent();
-                                    searchAdapter.addAll(resultList);
-                                }
-                            });
-                        }
-                    }, new IDataCallback() {
-                        @Override
-                        public void run(final Object data) {
-                            // onError
-                            Handler mainHandler = new Handler(context.getMainLooper());
-
-                            Runnable runOnUI = new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, data.toString(), Toast.LENGTH_LONG).show();
-                                }
-                            };
-                            mainHandler.post(runOnUI);
-                        }
-                    }
-            );
-
+        String searchTerm = inputSearch.getText().toString();
+        if (searchTerm.isEmpty()) {
+            searchTerm = null;
         }
+        coreApi.search(
+                coreApi.getPreferences().getLastKnownCoordinates(),
+                1000,
+                searchTerm,
+                defaultErrorCallback
+        );
     }
 
-    /**
-     * Get searchAdapter
-     *
-     * @return searchAdapter
-     */
-    public SearchAdapter getSearchAdapter() {
-        // TODO
-        return searchAdapter;
+    private void updateListView() {
+        final List<SearchEntry> searchEntries = coreApi.getPreferences().getSearchEntryList();
+        SearchActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                searchAdapter.emptySilent();
+                searchAdapter.addAll(searchEntries);
+            }
+        });
     }
 
-    // TODO: remove search button (instant search) and add dynamic "add search" entry
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        updateListView();
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // TODO: poll search
-        coreLocation.setLocationUpdateHandler(onLocationUpdate);
-        coreLocation.setListenToLocationUpdates(true);
         // do a search
         searchAndUpdate();
-        // update STATE
-        coreLogic.initialize(null);
+        updateListView();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        coreLocation.setListenToLocationUpdates(false);
-        // TODO: stop poll
     }
 }

@@ -12,9 +12,9 @@ public class Participant {
     /**
      * Constructor of participant class
      *
-     * @param USER_ID     -> USER_ID of the user
-     * @param USER_NAME   -> USER_NAME of the user
-     * @param STATE -> STATE of the user (OPEN, WAITING, RUNNING, FINISHED)
+     * @param USER_ID   -> USER_ID of the user
+     * @param USER_NAME -> USER_NAME of the user
+     * @param STATE     -> STATE of the user (OPEN, WAITING, RUNNING, FINISHED)
      */
     public Participant(String USER_ID, String USER_NAME, String STATE) {
         this.USER_ID = USER_ID;

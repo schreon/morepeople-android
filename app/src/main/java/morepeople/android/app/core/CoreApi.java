@@ -1,19 +1,13 @@
 package morepeople.android.app.core;
 
-import android.content.Context;
-import android.location.Location;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.interfaces.ICallback;
 import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.ICoreClient;
-import morepeople.android.app.interfaces.ICoreLocationManager;
-import morepeople.android.app.interfaces.ICorePreferences;
-import morepeople.android.app.interfaces.ICoreRegistrar;
-import morepeople.android.app.interfaces.ICoreStateHandler;
+import morepeople.android.app.interfaces.ICoreReadablePreferences;
+import morepeople.android.app.interfaces.ICoreWritablePreferences;
 import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.interfaces.IErrorCallback;
 import morepeople.android.app.structures.Coordinates;
@@ -23,13 +17,11 @@ import morepeople.android.app.structures.Coordinates;
  */
 public class CoreApi implements ICoreApi {
     /**
-     *
-     *
      * @param client
      * @param preferences
      */
     public CoreApi(ICoreClient client,
-                   ICorePreferences preferences,
+                   ICoreWritablePreferences preferences,
                    IDataCallback onServerResponse) {
         this.client = client;
         this.preferences = preferences;
@@ -37,13 +29,13 @@ public class CoreApi implements ICoreApi {
     }
 
     private ICoreClient client;
-    private ICorePreferences preferences;
+    private ICoreWritablePreferences preferences;
     private IDataCallback onServerResponse;
 
     /**
      * Decorate a data hashmap with user information fields
      */
-    private Map<String, Object> decorateWithUserInfo(Map<String, Object> data, ICorePreferences preferences) {
+    private Map<String, Object> decorateWithUserInfo(Map<String, Object> data, ICoreWritablePreferences preferences) {
         Coordinates coordinates = preferences.getLastKnownCoordinates();
         String userId = preferences.getUserId();
         String userName = preferences.getUserName();
@@ -60,6 +52,14 @@ public class CoreApi implements ICoreApi {
         data.put(Constants.PROPERTY_USER_ID, userId);
         data.put(Constants.PROPERTY_USER_NAME, userName);
         return data;
+    }
+
+    @Override
+    public void loadState(IErrorCallback onError) {
+        HashMap<String, Object> arguments = new HashMap<String, Object>();
+        decorateWithUserInfo(arguments, preferences);
+        // load state from server
+        client.doPostRequest("/state", arguments, onServerResponse, onError);
     }
 
     @Override
@@ -132,6 +132,11 @@ public class CoreApi implements ICoreApi {
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
         client.doPostRequest("/confirmcancel", payload, onServerResponse, onError);
+    }
+
+    @Override
+    public ICoreReadablePreferences getPreferences() {
+        return this.preferences;
     }
 
 }

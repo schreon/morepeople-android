@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import morepeople.android.app.interfaces.ICallback;
 import morepeople.android.app.interfaces.ICoreClient;
 import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.interfaces.IErrorCallback;

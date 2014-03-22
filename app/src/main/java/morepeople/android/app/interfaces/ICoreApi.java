@@ -1,18 +1,22 @@
 package morepeople.android.app.interfaces;
 
-import android.location.Location;
-
 import java.util.Map;
 
 import morepeople.android.app.structures.Coordinates;
 
 /**
- * Contract: This is the only Core interface visible to activities along with ICorePreferences.
+ * Contract: This is the only Core interface visible to activities along with ICoreWritablePreferences.
  */
 public interface ICoreApi {
 
     /**
+     * Load the state from the server.
      *
+     * @param onError
+     */
+    public void loadState(IErrorCallback onError);
+
+    /**
      * @param onError
      */
     public void getLobby(IErrorCallback onError);
@@ -54,7 +58,7 @@ public interface ICoreApi {
      *
      * @param onError
      */
-    public void finish( IErrorCallback onError);
+    public void finish(IErrorCallback onError);
 
     /**
      * Send the evaluation about the match to the server
@@ -70,4 +74,9 @@ public interface ICoreApi {
      * @param onError
      */
     public void confirmCancel(IErrorCallback onError);
+
+    /**
+     * @return read only preferences without any setters.
+     */
+    public ICoreReadablePreferences getPreferences();
 }

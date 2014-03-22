@@ -9,26 +9,25 @@ import morepeople.android.app.ChatActivity;
 import morepeople.android.app.ConfirmationActivity;
 import morepeople.android.app.EvaluationActivity;
 import morepeople.android.app.SearchActivity;
-import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.interfaces.ICoreModelController;
-import morepeople.android.app.interfaces.ICorePreferences;
 import morepeople.android.app.interfaces.ICoreViewController;
+import morepeople.android.app.interfaces.ICoreWritablePreferences;
 import morepeople.android.app.structures.UserState;
 
 /**
  * This controller handles view updates.
- *
+ * <p/>
  * Contract: This is the only Core class which has knowledge of the activity classes !!!
  */
 public class CoreViewController implements ICoreViewController {
     private static final String TAG = "morepeople.android.app.controller.CoreViewController";
     private Context context;
+
     public CoreViewController(Context context) {
         this.context = context;
     }
 
     @Override
-    public void handleUpdate(ICorePreferences preferences) {
+    public void handleUpdate(ICoreWritablePreferences preferences) {
         UserState userState = preferences.getCurrentUserState();
         Intent intent;
         switch (userState) {

@@ -22,15 +22,14 @@ import morepeople.android.app.structures.UserState;
  */
 public class ParticipantsAdapter extends BaseAdapter {
     private List<Participant> participantList;
-    private ICoreApi coreLogic;
     private IDataCallback onAcceptSuccess;
     private IDataCallback onAcceptError;
+
     /**
      * Constructor of ParticipantsAdapter class
      */
-    public ParticipantsAdapter(ICoreApi coreLogic) {
+    public ParticipantsAdapter() {
         participantList = new ArrayList<Participant>();
-        this.coreLogic = coreLogic;
     }
 
     /**
@@ -110,7 +109,7 @@ public class ParticipantsAdapter extends BaseAdapter {
 
         Participant participant = participantList.get(i);
         nameView.setText(participant.USER_NAME);
-        switch(UserState.valueOf(participant.STATE)) {
+        switch (UserState.valueOf(participant.STATE)) {
             case OPEN:
                 statusView.setText("Überlegt noch ...");
                 break;

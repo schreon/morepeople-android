@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
+import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.ICoreApi;
 
 /**
@@ -21,7 +22,7 @@ public class ConfirmationBackgroundReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("GCM", "ConfirmationBackgroundReceiver.onReceive");
 
-        SharedPreferences prefs = context.getSharedPreferences(ICoreApi.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.PROPERTY_SHARED_PREFS, Context.MODE_PRIVATE);
         String participantsListJson = (String) intent.getExtras().get("participantsListJson");
         prefs.edit().putString("participantsList", participantsListJson);
         prefs.edit().commit();

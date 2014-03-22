@@ -16,6 +16,7 @@ public interface ICoreLocationManager {
 
     /**
      * Turn listening to location updates on and off.
+     *
      * @param isListening determines if location updates are observed or not.
      */
     public void setListenToLocationUpdates(boolean isListening);

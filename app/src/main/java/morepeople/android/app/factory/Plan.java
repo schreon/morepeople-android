@@ -1,10 +1,8 @@
 package morepeople.android.app.factory;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import morepeople.android.app.interfaces.IApiCallback;
 import morepeople.android.app.interfaces.ICallback;
 
 /**
@@ -15,7 +13,7 @@ public class Plan {
     private int index;
 
     public Plan() {
-       steps = new LinkedList<ICallback>();
+        steps = new LinkedList<ICallback>();
     }
 
     public void start() {

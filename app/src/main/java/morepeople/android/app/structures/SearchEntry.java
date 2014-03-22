@@ -12,9 +12,9 @@ public class SearchEntry {
     /**
      * Constructor of SearchEntry class
      *
-     * @param USER_ID           -> USER_ID of searchEntry
-     * @param MATCH_TAG  -> MATCH_TAG of searchEntry
-     * @param USER_NAME      -> USER_NAME of searchEntry
+     * @param USER_ID   -> USER_ID of searchEntry
+     * @param MATCH_TAG -> MATCH_TAG of searchEntry
+     * @param USER_NAME -> USER_NAME of searchEntry
      */
     public SearchEntry(String USER_ID, String MATCH_TAG, String USER_NAME) {
         this.USER_ID = USER_ID;

@@ -20,6 +20,7 @@ public abstract class Constants {
     public static final String PROPERTY_PARTICIPANTS = "PARTICIPANTS";
     public static final String PROPERTY_SEARCHENTRIES = "SEARCHENTRIES";
     public static final String PROPERTY_SERVERMESSAGE = "SERVERMESSAGE";
+    public static String BROADCAST_CONFIRMATION = "morepeople.android.app.BROADCAST_CONFIRMATION";
 
     private Constants() {
         // Don't initialize this.

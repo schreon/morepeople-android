@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import morepeople.android.app.interfaces.ICallback;
 import morepeople.android.app.interfaces.ICoreStateHandler;
 import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.structures.UserState;

@@ -11,8 +11,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import morepeople.android.app.interfaces.Constants;
+import morepeople.android.app.interfaces.ICoreWritablePreferences;
 import morepeople.android.app.structures.Coordinates;
-import morepeople.android.app.interfaces.ICorePreferences;
 import morepeople.android.app.structures.Participant;
 import morepeople.android.app.structures.SearchEntry;
 import morepeople.android.app.structures.UserState;
@@ -22,8 +22,8 @@ import morepeople.android.app.structures.UserState;
  * Contract: access to the respective fields ONLY takes place through this class, because it
  * caches values! This means: only ony instance of this class per Context!
  */
-public class CorePreferences implements ICorePreferences {
-    private static final String TAG = "morepeople.android.app.CorePreferences";
+public class CoreWritablePreferences implements ICoreWritablePreferences {
+    private static final String TAG = "morepeople.android.app.CoreWritablePreferences";
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -36,12 +36,14 @@ public class CorePreferences implements ICorePreferences {
     private List<Participant> participantList;
     private List<SearchEntry> searchEntryList;
 
-    private final Type participantListType = new TypeToken<List<Participant>>(){}.getType();
-    private final Type searchEntryListType = new TypeToken<List<SearchEntry>>(){}.getType();
+    private final Type participantListType = new TypeToken<List<Participant>>() {
+    }.getType();
+    private final Type searchEntryListType = new TypeToken<List<SearchEntry>>() {
+    }.getType();
 
     private Gson gson;
 
-    public CorePreferences(Context context) {
+    public CoreWritablePreferences(Context context) {
         sharedPreferences = context.getSharedPreferences(Constants.PROPERTY_SHARED_PREFS, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         userName = null;

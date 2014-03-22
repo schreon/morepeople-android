@@ -8,7 +8,6 @@ import java.util.Map;
  */
 public interface ICoreClient {
     /**
-     *
      * @param path
      * @param arguments parameters. Plain String-String Map.
      * @param onSuccess

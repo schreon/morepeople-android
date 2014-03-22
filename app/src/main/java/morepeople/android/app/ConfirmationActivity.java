@@ -1,6 +1,5 @@
 package morepeople.android.app;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -27,35 +26,24 @@ import java.util.List;
 import java.util.Map;
 
 import morepeople.android.app.interfaces.Constants;
+import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.structures.Participant;
 import morepeople.android.app.structures.UserState;
-import morepeople.android.app.morepeople.android.app.core.CoreAPI;
-import morepeople.android.app.interfaces.ICoreApi;
-import morepeople.android.app.interfaces.IDataCallback;
 
 /**
  * ConfirmationActivity is shown if enough users were found to start a match.
  */
-public class ConfirmationActivity extends Activity {
+public class ConfirmationActivity extends BaseActivity {
 
-    public static String BROADCAST_CONFIRMATION = "morepeople.android.app.BROADCAST_CONFIRMATION";
-    private ICoreApi coreLogic;
     private BroadcastReceiver foregroundReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("GCM", "ConfirmationActivity.foregroundReceiver");
-            // write participant list into shared preferences
-            SharedPreferences prefs = getBaseContext().getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
-            String participantsListJson = intent.getStringExtra("participantsListJson");
-            prefs.edit().putString("participantsList", participantsListJson);
-            prefs.edit().commit();
-
-            // updates the running activity
-            // deserialize participantList json
-            readParticipantJson(participantsListJson);
+            coreApi.getLobby(defaultErrorCallback);
         }
     };
+
     private ParticipantsAdapter participantsAdapter;
 
     /**
@@ -69,16 +57,12 @@ public class ConfirmationActivity extends Activity {
         setContentView(R.layout.activity_confirmation);
 
         getActionBar().setTitle("Es geht los!");
+    }
 
-        UserState currentState = null;
-        try {
-            currentState = UserState.valueOf(getIntent().getExtras().getString(Constants.PROPERTY_STATE));
-        } catch (Exception e) {
-            Log.e("ConfirmationActivity", e.getMessage());
-        }
-        coreLogic = new CoreAPI(this, currentState);
+    @Override
+    protected void onCoreInitFinished() {
 
-        participantsAdapter = new ParticipantsAdapter(coreLogic);
+        participantsAdapter = new ParticipantsAdapter();
 
         ListView listView = (ListView) this.findViewById(R.id.confirm_list_view);
         listView.setAdapter(participantsAdapter);
@@ -88,7 +72,7 @@ public class ConfirmationActivity extends Activity {
         Button buttonConfirm = (Button) this.findViewById(R.id.button_confirm);
 
         // Hide controls if already in accepted state
-        if (currentState.equals(UserState.ACCEPTED)) {
+        if (UserState.ACCEPTED.equals(coreApi.getPreferences().getCurrentUserState())) {
             layoutConfirmWait.setVisibility(View.VISIBLE);
             layoutConfirmButtons.setVisibility(View.GONE);
         }
@@ -98,34 +82,15 @@ public class ConfirmationActivity extends Activity {
          * Changes layout visibility.
          */
         buttonConfirm.setOnClickListener(
-            new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layoutConfirmWait.setVisibility(View.VISIBLE);
-                layoutConfirmButtons.setVisibility(View.GONE);
-
-                coreLogic.accept(new IDataCallback() {
+                new View.OnClickListener() {
                     @Override
-                    public void run(Object rawData) {
-                        Map<String, Object> data = (Map<String, Object>) rawData;
-                        // set state
-                        coreLogic.setState(UserState.valueOf((String) data.get(Constants.PROPERTY_STATE)));
-                        // Hide controls
+                    public void onClick(View view) {
                         layoutConfirmWait.setVisibility(View.VISIBLE);
                         layoutConfirmButtons.setVisibility(View.GONE);
 
-                    }
-                },
-                new IDataCallback() {
-                    @Override
-                    public void run(Object data) {
-                        // Show controls again
-                        layoutConfirmWait.setVisibility(View.GONE);
-                        layoutConfirmButtons.setVisibility(View.VISIBLE);
+                        coreApi.accept(defaultErrorCallback);
                     }
                 });
-            }
-        });
 
         final ConfirmationActivity self = this;
 
@@ -150,14 +115,7 @@ public class ConfirmationActivity extends Activity {
                         .setCancelable(false)
                         .setPositiveButton("Absagen", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                coreLogic.cancel(new IDataCallback() {
-                                    @Override
-                                    public void run(Object rawData) {
-                                        Map<String, Object> data = (Map<String, Object>) rawData;
-                                        // set state
-                                        coreLogic.setState(UserState.valueOf((String) data.get(Constants.PROPERTY_STATE)));
-                                    }
-                                }, null);
+                                coreApi.cancel(defaultErrorCallback);
                             }
                         })
                         .setNegativeButton("Ups ...", new DialogInterface.OnClickListener() {
@@ -182,14 +140,6 @@ public class ConfirmationActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        // read from shared preferences
-        SharedPreferences sharedPrefs = getSharedPreferences("morepeople.android.app", Context.MODE_PRIVATE);
-        String participantsListJson = sharedPrefs.getString("participantsListJson", null);
-
-        if (participantsListJson != null) {
-            readParticipantJson(participantsListJson);
-        }
-
         // disable static ConfirmationBackgroundReceiver
         ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -201,10 +151,10 @@ public class ConfirmationActivity extends Activity {
         //        new IntentFilter(ConfirmationActivity.BROADCAST_CONFIRMATION));
 
         registerReceiver(foregroundReceiver,
-                new IntentFilter(ConfirmationActivity.BROADCAST_CONFIRMATION));
+                new IntentFilter(Constants.BROADCAST_CONFIRMATION));
 
-        coreLogic.initialize(null);
         updateLobby();
+        updateParticipantList();
     }
 
     @Override
@@ -221,100 +171,27 @@ public class ConfirmationActivity extends Activity {
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
         Log.d("GCM", "re enabled static confirmation background receiver");
-
-
     }
 
-    /**
-     * Returns participants adapter
-     *
-     * @return participantsAdapter
-     */
-    public ParticipantsAdapter getParticipantsAdapter() {
-        return participantsAdapter;
+    private void updateParticipantList() {
+        final List<Participant> participants = coreApi.getPreferences().getParticipantList();
+        ConfirmationActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                participantsAdapter.emptySilent();
+                participantsAdapter.addAll(participants);
+                final TextView tx = (TextView) findViewById(R.id.text_confirm_queue);
+                tx.setText(coreApi.getPreferences().getMatchTag());
+            }
+        });
     }
-
-    private void readParticipantJson(String participantsListJson) {
-
-        /**
-         *   [{
-         *      'USER_ID' : '13',
-         *      'USER_NAME' : 'depp',
-         *      'state': 'OPEN',
-         *   }]
-         */
-
-        //USER_ID, USER_NAME, STATE
-        Gson gson = new Gson();
-        List<Object> jsonList = gson.fromJson(participantsListJson, ArrayList.class);
-
-        for (Object entry : jsonList) {
-            Map<String, String> entryMap = (Map<String, String>) entry;
-            String id = entryMap.get("USER_ID");
-            String name = entryMap.get("USER_NAME");
-            String state = entryMap.get("state");
-
-            Participant participant = new Participant(id, name, state);
-            participantsAdapter.add(participant);
-        }
-    }
-
     private void updateLobby() {
-        final Context context = this;
-        coreLogic.getLobby(
-                new IDataCallback() {
-                    @Override
-                    public void run(Object rawData) {
-                        // onSuccess
-                        final Map<String, Object> data = (Map<String, Object>) rawData;
-
-                        if(data.keySet().contains(Constants.PROPERTY_STATE)) {
-                            UserState state;
-                            state = UserState.valueOf((String) data.get(Constants.PROPERTY_STATE));
-                            coreLogic.setState(state);
-                            return;
-                        }
-                        // TODO: update list
-                        List<Object> participants = (List<Object>) data.get("participants");
-                        Log.d("ConfirmationActivity", participants.toString());
-
-                        final List<Participant> resultList = new ArrayList<Participant>();
-                        for (Object rawEntry : participants) {
-                            Map<String, Object> entry = (Map<String, Object>) rawEntry;
-                            String id = (String) entry.get(Constants.PROPERTY_USER_ID);
-                            String status = (String) entry.get(Constants.PROPERTY_STATE);
-                            String name = (String) entry.get(Constants.PROPERTY_USER_NAME);
-                            resultList.add(new Participant(id, name, status));
-                        }
-                        ConfirmationActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                participantsAdapter.emptySilent();
-                                participantsAdapter.addAll(resultList);
-                                final TextView tx = (TextView) findViewById(R.id.text_confirm_queue);
-                                tx.setText((String)data.get("MATCH_TAG"));
-                            }
-                        });
-                    }
-                },
-                new IDataCallback() {
-                    @Override
-                    public void run(final Object data) {
-                        // onError
-                        Handler mainHandler = new Handler(context.getMainLooper());
-
-                        Runnable runOnUI = new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, data.toString(), Toast.LENGTH_LONG).show();
-                            }
-                        };
-                        mainHandler.post(runOnUI);
-                    }
-                }
-        );
-
-
+        coreApi.getLobby(defaultErrorCallback);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        updateParticipantList();
+    }
 }

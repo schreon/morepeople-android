@@ -16,22 +16,25 @@ public interface ICoreStateHandler {
 
     /**
      * Enter the new state. Listeners will be called.
+     *
      * @param newState the new state to enter.
-     * @param data data returned by the server.
+     * @param data     data returned by the server.
      */
     public void transferToState(UserState newState, Map<String, Object> data);
 
     /**
      * Add a listener to the "onEnter" event of the according state.
+     *
      * @param observedState the state which will be observed.
-     * @param onEnterState will be called whenever the user enters this state.
+     * @param onEnterState  will be called whenever the user enters this state.
      */
     public void addEnterStateListener(UserState observedState, IDataCallback onEnterState);
 
     /**
      * Remove a listener.
+     *
      * @param observedState the state which had been observed.
-     * @param onEnterState the listener to remove.
+     * @param onEnterState  the listener to remove.
      */
     public void removeEnterStateListener(UserState observedState, IDataCallback onEnterState);
 }

@@ -1,6 +1,5 @@
 package morepeople.android.app;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,19 +10,17 @@ import android.widget.ListView;
 import java.util.Map;
 
 import morepeople.android.app.interfaces.Constants;
-import morepeople.android.app.structures.UserState;
-import morepeople.android.app.morepeople.android.app.core.CoreAPI;
 import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.IDataCallback;
+import morepeople.android.app.structures.UserState;
 
 /**
  * This activity is shown when the match the user joined previously has started. There is a chat
  * with all other participants and a button to start navigation.
  */
-public class ChatActivity extends Activity {
+public class ChatActivity extends BaseActivity {
 
     private ChatAdapter chatAdapterAdapter;
-    private ICoreApi coreLogic;
 
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -31,15 +28,12 @@ public class ChatActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setTitle("morepeople");
         setContentView(R.layout.activity_chat);
-        UserState currentState = null;
-        try {
-            currentState = UserState.valueOf(getIntent().getExtras().getString(Constants.PROPERTY_STATE));
-        } catch (Exception e) {
-            Log.e("ConfirmationActivity", e.getMessage());
-        }
-        coreLogic = new CoreAPI(this, currentState);
+        getActionBar().setTitle("morepeople");
+    }
+
+    @Override
+    protected void onCoreInitFinished() {
         chatAdapterAdapter = new ChatAdapter();
         ListView listView = (ListView) findViewById(R.id.chat_history);
         listView.setAdapter(chatAdapterAdapter);
@@ -69,23 +63,8 @@ public class ChatActivity extends Activity {
         btn_finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                coreLogic.finish(new IDataCallback() {
-                    @Override
-                    public void run(Object rawData) {
-                        Map<String, Object> data = (Map<String, Object>) rawData;
-                        // set state
-                        coreLogic.setState(UserState.valueOf((String) data.get(Constants.PROPERTY_STATE)));
-                    }
-                }, null);
+                coreApi.finish(defaultErrorCallback);
             }
         });
     }
-
-    /**
-     * @return the chatAdapterAdapter of this activity.
-     */
-    public ChatAdapter getChatAdapterAdapter() {
-        return chatAdapterAdapter;
-    }
-
 }

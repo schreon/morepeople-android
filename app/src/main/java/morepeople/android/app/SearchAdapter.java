@@ -1,8 +1,6 @@
 package morepeople.android.app;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.structures.SearchEntry;
 
@@ -24,7 +21,6 @@ import morepeople.android.app.structures.SearchEntry;
 public class SearchAdapter extends BaseAdapter {
 
     private List<SearchEntry> searchEntryList;
-    private ICoreApi coreLogic;
 
     public IDataCallback getOnQueueSuccess() {
         return onQueueSuccess;
@@ -45,13 +41,13 @@ public class SearchAdapter extends BaseAdapter {
     private IDataCallback onQueueSuccess = null;
     private IDataCallback onQueueError = null;
 
+
     /**
      * Constructor of SearchAdapter class.
      * Inits new searchEntryList.
      */
-    public SearchAdapter(ICoreApi coreLogic) {
+    public SearchAdapter() {
         searchEntryList = new ArrayList<SearchEntry>();
-        this.coreLogic = coreLogic;
     }
 
     /**
@@ -130,7 +126,7 @@ public class SearchAdapter extends BaseAdapter {
         TextView descriptionView;
 
         if (view == null) {
-            group = (LinearLayout)LayoutInflater.from(context).inflate(R.layout.listitem_queue, null);
+            group = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.listitem_queue, null);
             creatorView = (TextView) group.findViewById(R.id.search_creator);
             descriptionView = (TextView) group.findViewById(R.id.search_term);
 
@@ -138,35 +134,35 @@ public class SearchAdapter extends BaseAdapter {
             group.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final SearchEntry entry = (SearchEntry) fGroup.getTag();
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-
-                    // set title
-                    alertDialogBuilder.setTitle("Beitreten");
-
-                    // set dialog message
-                    alertDialogBuilder
-                            .setMessage("Möchtest Du \"" + entry.MATCH_TAG + "\" beitreten?")
-                            .setCancelable(false)
-                            .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // enqueue for the same match tag
-                                    coreLogic.queue(entry.MATCH_TAG, onQueueSuccess, onQueueError);
-                                }
-                            })
-                            .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // if this button is clicked, just close
-                                    // the dialog box and do nothing
-                                    dialog.cancel();
-                                }
-                            });
-
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-
-                    // show it
-                    alertDialog.show();
+//                    final SearchEntry entry = (SearchEntry) fGroup.getTag();
+//                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+//
+//                    // set title
+//                    alertDialogBuilder.setTitle("Beitreten");
+//
+//                    // set dialog message
+//                    alertDialogBuilder
+//                            .setMessage("Möchtest Du \"" + entry.MATCH_TAG + "\" beitreten?")
+//                            .setCancelable(false)
+//                            .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    // enqueue for the same match tag
+//                                    coreApi.queue(entry.MATCH_TAG, onQueueSuccess, onQueueError);
+//                                }
+//                            })
+//                            .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    // if this button is clicked, just close
+//                                    // the dialog box and do nothing
+//                                    dialog.cancel();
+//                                }
+//                            });
+//
+//                    // create alert dialog
+//                    AlertDialog alertDialog = alertDialogBuilder.create();
+//
+//                    // show it
+//                    alertDialog.show();
                 }
             });
         } else {
