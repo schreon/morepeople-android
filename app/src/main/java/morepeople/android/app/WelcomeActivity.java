@@ -8,13 +8,13 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import morepeople.android.app.morepeople.android.app.core.CoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+import morepeople.android.app.morepeople.android.app.core.CoreAPI;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.IDataCallback;
 
 public class WelcomeActivity extends Activity {
     ProgressDialog mDialog;
-    ICoreLogic coreLogic;
+    ICoreAPI coreLogic;
     public static final String TAG = "WelcomeActivity";
 
     @Override
@@ -25,8 +25,8 @@ public class WelcomeActivity extends Activity {
         getActionBar().setTitle("morepeople");
 
         mDialog = new ProgressDialog(this);
-        // Start CoreLogic with no start state
-        coreLogic = new CoreLogic(this, null);
+        // Start CoreAPI with no start state
+        coreLogic = new CoreAPI(this, null);
         final Context context = this;
         IDataCallback onError = new IDataCallback() {
             @Override
@@ -45,7 +45,7 @@ public class WelcomeActivity extends Activity {
         };
 
         // Load state from server
-        coreLogic.load(onError);
+        coreLogic.initialize(onError);
     }
 
 

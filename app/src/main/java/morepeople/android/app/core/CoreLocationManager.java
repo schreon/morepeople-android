@@ -1,4 +1,4 @@
-package morepeople.android.app.morepeople.android.app.core;
+package morepeople.android.app.core;
 
 import android.content.Context;
 import android.location.Location;
@@ -6,10 +6,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import morepeople.android.app.interfaces.ICoreLocationManager;
+import morepeople.android.app.interfaces.IDataCallback;
+
 /**
  * Created by schreon on 3/20/14.
  */
-public class CoreLocation implements ICoreLocation {
+public class CoreLocationManager implements ICoreLocationManager {
     private LocationManager locationManager;
     private boolean gpsEnabled;
     private boolean networkEnabled;
@@ -20,7 +23,7 @@ public class CoreLocation implements ICoreLocation {
     private LocationListener gpsLocationListener;
     private LocationListener networkLocationListener;
 
-    public CoreLocation(Context context) {
+    public CoreLocationManager(Context context) {
         onLocationUpdate = null;
         gpsEnabled = false;
         networkEnabled = false;
@@ -123,14 +126,14 @@ public class CoreLocation implements ICoreLocation {
     }
 
     @Override
-    public void setPolling(boolean isPolling) {
-        if (!this.isPolling && isPolling) {
+    public void setListenToLocationUpdates(boolean isListening) {
+        if (!this.isPolling && isListening) {
             turnOnLocationPolling();
         }
-        if (this.isPolling && !isPolling) {
+        if (this.isPolling && !isListening) {
             turnOffLocationPolling();
         }
-        this.isPolling = isPolling;
+        this.isPolling = isListening;
     }
 
     private void turnOnLocationPolling() {

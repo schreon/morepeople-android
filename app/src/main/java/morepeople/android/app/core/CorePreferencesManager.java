@@ -1,4 +1,4 @@
-package morepeople.android.app.morepeople.android.app.core;
+package morepeople.android.app.core;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -12,16 +12,22 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreLocationManager;
+import morepeople.android.app.interfaces.ICorePreferencesManager;
+import morepeople.android.app.interfaces.ICoreRegistrar;
+import morepeople.android.app.interfaces.IDataCallback;
+
 /**
  * Created by schreon on 3/20/14.
  */
-public class CoreUserInfo implements ICoreUserInfo {
+public class CorePreferencesManager implements ICorePreferencesManager {
 
     private boolean finishedLocation;
     private boolean finishedRegistration;
 
     private ICoreRegistrar registrar;
-    private ICoreLocation location;
+    private ICoreLocationManager location;
 
     private Location userLocation;
     private String regId;
@@ -29,7 +35,7 @@ public class CoreUserInfo implements ICoreUserInfo {
 
     private Context context;
 
-    public CoreUserInfo(ICoreRegistrar registrar, ICoreLocation location, Context context) {
+    public CorePreferencesManager(ICoreRegistrar registrar, ICoreLocationManager location, Context context) {
         this.registrar = registrar;
         this.location = location;
 
@@ -56,7 +62,7 @@ public class CoreUserInfo implements ICoreUserInfo {
         String userName = null;
 
         //get username from shared preferences
-        SharedPreferences sp1 = context.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences sp1 = context.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
         if (sp1.contains("appUsername")) {
             userName = sp1.getString("appUsername", null);
 
@@ -100,7 +106,7 @@ public class CoreUserInfo implements ICoreUserInfo {
         //save username in prefs
         if (userName != null) {
             Log.d("ACCOUNT", "found username in profile:" + userName);
-            SharedPreferences sp = context.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences sp = context.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
             SharedPreferences.Editor Ed = sp.edit();
             Ed.putString("appUsername", userName);
             Ed.commit();
@@ -114,15 +120,15 @@ public class CoreUserInfo implements ICoreUserInfo {
     private synchronized void checkFinishedIdAndLoc(final IDataCallback onSuccess) {
         if (finishedLocation && finishedRegistration) {
             Map<String, Object> data = new HashMap<String, Object>();
-            data.put(ICoreLogic.PROPERTY_LOC, userLocation);
-            data.put(ICoreLogic.PROPERTY_USER_ID, regId);
-            data.put(ICoreLogic.PROPERTY_USER_NAME, userName);
+            data.put(ICoreAPI.PROPERTY_LOC, userLocation);
+            data.put(ICoreAPI.PROPERTY_USER_ID, regId);
+            data.put(ICoreAPI.PROPERTY_USER_NAME, userName);
             onSuccess.run(data);
         }
     }
 
     @Override
-    public void load(final IDataCallback onSuccess, final IDataCallback onError) {
+    public void initialize(final ICallback onSuccess, final IDataCallback onError) {
         // read the username
         userName = readUserName();
 
@@ -134,17 +140,17 @@ public class CoreUserInfo implements ICoreUserInfo {
             location.setLocationUpdateHandler(new IDataCallback() {
                 @Override
                 public void run(Object data) {
-                    location.setPolling(false);
+                    location.setListenToLocationUpdates(false);
                     finishedLocation = true;
                     userLocation = (Location) data;
                     checkFinishedIdAndLoc(onSuccess);
                 }
             });
-            location.setPolling(true);
+            location.setListenToLocationUpdates(true);
         }
 
         // request regId
-        registrar.requestRegistrationId(new IDataCallback() {
+        registrar.register(new IDataCallback() {
             @Override
             public void run(Object data) {
                 regId = (String) data;

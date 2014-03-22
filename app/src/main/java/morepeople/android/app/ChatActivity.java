@@ -10,9 +10,9 @@ import android.widget.ListView;
 
 import java.util.Map;
 
-import morepeople.android.app.morepeople.android.app.core.CoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+import morepeople.android.app.morepeople.android.app.core.CoreAPI;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.IDataCallback;
 
 /**
  * This activity is shown when the match the user joined previously has started. There is a chat
@@ -21,7 +21,7 @@ import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 public class ChatActivity extends Activity {
 
     private ChatAdapter chatAdapterAdapter;
-    private ICoreLogic coreLogic;
+    private ICoreAPI coreLogic;
 
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -31,13 +31,13 @@ public class ChatActivity extends Activity {
         super.onCreate(savedInstanceState);
         getActionBar().setTitle("morepeople");
         setContentView(R.layout.activity_chat);
-        ICoreLogic.UserState currentState = null;
+        ICoreAPI.UserState currentState = null;
         try {
-            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
+            currentState = ICoreAPI.UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("ConfirmationActivity", e.getMessage());
         }
-        coreLogic = new CoreLogic(this, currentState);
+        coreLogic = new CoreAPI(this, currentState);
         chatAdapterAdapter = new ChatAdapter();
         ListView listView = (ListView) findViewById(R.id.chat_history);
         listView.setAdapter(chatAdapterAdapter);
@@ -72,7 +72,7 @@ public class ChatActivity extends Activity {
                     public void run(Object rawData) {
                         Map<String, Object> data = (Map<String, Object>) rawData;
                         // set state
-                        coreLogic.setState(ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE)));
+                        coreLogic.setState(ICoreAPI.UserState.valueOf((String)data.get(ICoreAPI.PROPERTY_STATE)));
                     }
                 }, null);
             }

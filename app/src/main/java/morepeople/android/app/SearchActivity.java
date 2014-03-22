@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import morepeople.android.app.morepeople.android.app.core.CoreLocation;
-import morepeople.android.app.morepeople.android.app.core.CoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreLocation;
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+import morepeople.android.app.core.CoreLocationManager;
+import morepeople.android.app.morepeople.android.app.core.CoreAPI;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreLocationManager;
+import morepeople.android.app.interfaces.IDataCallback;
 
 
 /**
@@ -33,9 +33,9 @@ import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 public class SearchActivity extends Activity {
 
     private SearchAdapter searchAdapter;
-    private ICoreLocation coreLocation;
+    private ICoreLocationManager coreLocation;
     private IDataCallback onLocationUpdate;
-    private ICoreLogic coreLogic;
+    private ICoreAPI coreLogic;
     private Location userLocation;
 
     private EditText inputSearch;
@@ -48,14 +48,14 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         getActionBar().setTitle("morepeople");
-        coreLocation = new CoreLocation(this);
-        ICoreLogic.UserState currentState = null;
+        coreLocation = new CoreLocationManager(this);
+        ICoreAPI.UserState currentState = null;
         try {
-            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
+            currentState = ICoreAPI.UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("SearchActivity", e.getMessage());
         }
-        coreLogic = new CoreLogic(this, currentState);
+        coreLogic = new CoreAPI(this, currentState);
 
         userLocation = null;
         onLocationUpdate = new IDataCallback() {
@@ -64,7 +64,7 @@ public class SearchActivity extends Activity {
                 userLocation = (Location) rawData;
                 // search and refresh state
                 searchAndUpdate();
-                coreLogic.load(null);
+                coreLogic.initialize(null);
             }
         };
         searchAdapter = new SearchAdapter(coreLogic);
@@ -135,7 +135,7 @@ public class SearchActivity extends Activity {
         });
 
         // Hide the controls if already queued
-        if (ICoreLogic.UserState.QUEUED.equals(currentState)) {
+        if (ICoreAPI.UserState.QUEUED.equals(currentState)) {
             hideControls();
         } else {
             showControls();
@@ -147,7 +147,7 @@ public class SearchActivity extends Activity {
                 hideControls();
                 Map<String, Object> data = (Map<String, Object>) rawData;
                 // set state
-                coreLogic.setState(ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE)));
+                coreLogic.setState(ICoreAPI.UserState.valueOf((String)data.get(ICoreAPI.PROPERTY_STATE)));
                 searchAndUpdate();
             }
         });
@@ -165,7 +165,7 @@ public class SearchActivity extends Activity {
                             public void run(Object rawData) {
                                 Map<String, Object> data = (Map<String, Object>) rawData;
                                 // set state
-                                ICoreLogic.UserState state = ICoreLogic.UserState.valueOf((String) data.get(ICoreLogic.PROPERTY_STATE));
+                                ICoreAPI.UserState state = ICoreAPI.UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE));
                                 adaptViewToState(state);
                                 coreLogic.setState(state);
                             }
@@ -211,9 +211,9 @@ public class SearchActivity extends Activity {
         mainHandler.post(runOnUI);
     }
 
-    private void adaptViewToState(ICoreLogic.UserState state) {
+    private void adaptViewToState(ICoreAPI.UserState state) {
         // Hide the controls if already queued
-        if (ICoreLogic.UserState.QUEUED.equals(state)) {
+        if (ICoreAPI.UserState.QUEUED.equals(state)) {
             hideControls();
         } else {
             showControls();
@@ -290,17 +290,17 @@ public class SearchActivity extends Activity {
         super.onResume();
         // TODO: poll search
         coreLocation.setLocationUpdateHandler(onLocationUpdate);
-        coreLocation.setPolling(true);
+        coreLocation.setListenToLocationUpdates(true);
         // do a search
         searchAndUpdate();
         // update status
-        coreLogic.load(null);
+        coreLogic.initialize(null);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        coreLocation.setPolling(false);
+        coreLocation.setListenToLocationUpdates(false);
         // TODO: stop poll
     }
 }

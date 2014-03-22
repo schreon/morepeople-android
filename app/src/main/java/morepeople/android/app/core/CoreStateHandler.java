@@ -1,4 +1,4 @@
-package morepeople.android.app.morepeople.android.app.core;
+package morepeople.android.app.core;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import morepeople.android.app.ChatActivity;
 import morepeople.android.app.ConfirmationActivity;
 import morepeople.android.app.EvaluationActivity;
 import morepeople.android.app.SearchActivity;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreStateHandler;
 
 /**
  * Created by schreon on 3/20/14.
@@ -16,21 +18,21 @@ import morepeople.android.app.SearchActivity;
 public class CoreStateHandler implements ICoreStateHandler {
     private static final String TAG = "CoreStateHandler";
 
-    private ICoreLogic.UserState currentState;
+    private ICoreAPI.UserState currentState;
     private Context context;
 
-    public CoreStateHandler(Context context, ICoreLogic.UserState currentState) {
+    public CoreStateHandler(Context context, ICoreAPI.UserState currentState) {
         this.currentState = currentState;
         this.context = context;
     }
 
     @Override
-    public ICoreLogic.UserState getCurrentState() {
+    public ICoreAPI.UserState getCurrentState() {
         return currentState;
     }
 
     @Override
-    public void transferToState(ICoreLogic.UserState newState) {
+    public void transferToState(ICoreAPI.UserState newState) {
         if (newState != currentState) {
             onStateChanged(newState);
         }
@@ -38,7 +40,7 @@ public class CoreStateHandler implements ICoreStateHandler {
     }
 
     @Override
-    public void onStateChanged(ICoreLogic.UserState newState) {
+    public void onStateChanged(ICoreAPI.UserState newState) {
         Intent intent;
         switch (newState) {
             case OFFLINE:
@@ -75,7 +77,7 @@ public class CoreStateHandler implements ICoreStateHandler {
                 break;
         }
         // put the state into the intent
-        intent.putExtra(ICoreLogic.PROPERTY_STATE, newState.toString());
+        intent.putExtra(ICoreAPI.PROPERTY_STATE, newState.toString());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

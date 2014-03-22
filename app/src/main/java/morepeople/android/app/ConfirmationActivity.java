@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import morepeople.android.app.morepeople.android.app.core.CoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+import morepeople.android.app.morepeople.android.app.core.CoreAPI;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.IDataCallback;
 
 /**
  * ConfirmationActivity is shown if enough users were found to start a match.
@@ -36,7 +36,7 @@ import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 public class ConfirmationActivity extends Activity {
 
     public static String BROADCAST_CONFIRMATION = "morepeople.android.app.BROADCAST_CONFIRMATION";
-    private ICoreLogic coreLogic;
+    private ICoreAPI coreLogic;
     private BroadcastReceiver foregroundReceiver = new BroadcastReceiver() {
 
         @Override
@@ -67,13 +67,13 @@ public class ConfirmationActivity extends Activity {
 
         getActionBar().setTitle("Es geht los!");
 
-        ICoreLogic.UserState currentState = null;
+        ICoreAPI.UserState currentState = null;
         try {
-            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
+            currentState = ICoreAPI.UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("ConfirmationActivity", e.getMessage());
         }
-        coreLogic = new CoreLogic(this, currentState);
+        coreLogic = new CoreAPI(this, currentState);
 
         participantsAdapter = new ParticipantsAdapter(coreLogic);
 
@@ -85,7 +85,7 @@ public class ConfirmationActivity extends Activity {
         Button buttonConfirm = (Button) this.findViewById(R.id.button_confirm);
 
         // Hide controls if already in accepted state
-        if (currentState.equals(ICoreLogic.UserState.ACCEPTED)) {
+        if (currentState.equals(ICoreAPI.UserState.ACCEPTED)) {
             layoutConfirmWait.setVisibility(View.VISIBLE);
             layoutConfirmButtons.setVisibility(View.GONE);
         }
@@ -106,7 +106,7 @@ public class ConfirmationActivity extends Activity {
                     public void run(Object rawData) {
                         Map<String, Object> data = (Map<String, Object>) rawData;
                         // set state
-                        coreLogic.setState(ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE)));
+                        coreLogic.setState(ICoreAPI.UserState.valueOf((String)data.get(ICoreAPI.PROPERTY_STATE)));
                         // Hide controls
                         layoutConfirmWait.setVisibility(View.VISIBLE);
                         layoutConfirmButtons.setVisibility(View.GONE);
@@ -152,7 +152,7 @@ public class ConfirmationActivity extends Activity {
                                     public void run(Object rawData) {
                                         Map<String, Object> data = (Map<String, Object>) rawData;
                                         // set state
-                                        coreLogic.setState(ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE)));
+                                        coreLogic.setState(ICoreAPI.UserState.valueOf((String)data.get(ICoreAPI.PROPERTY_STATE)));
                                     }
                                 }, null);
                             }
@@ -200,7 +200,7 @@ public class ConfirmationActivity extends Activity {
         registerReceiver(foregroundReceiver,
                 new IntentFilter(ConfirmationActivity.BROADCAST_CONFIRMATION));
 
-        coreLogic.load(null);
+        coreLogic.initialize(null);
         updateLobby();
     }
 
@@ -265,9 +265,9 @@ public class ConfirmationActivity extends Activity {
                         // onSuccess
                         final Map<String, Object> data = (Map<String, Object>) rawData;
 
-                        if(data.keySet().contains(ICoreLogic.PROPERTY_STATE)) {
-                            ICoreLogic.UserState state;
-                            state = ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE));
+                        if(data.keySet().contains(ICoreAPI.PROPERTY_STATE)) {
+                            ICoreAPI.UserState state;
+                            state = ICoreAPI.UserState.valueOf((String)data.get(ICoreAPI.PROPERTY_STATE));
                             coreLogic.setState(state);
                             return;
                         }
@@ -278,9 +278,9 @@ public class ConfirmationActivity extends Activity {
                         final List<Participant> resultList = new ArrayList<Participant>();
                         for (Object rawEntry : participants) {
                             Map<String, Object> entry = (Map<String, Object>) rawEntry;
-                            String id = (String) entry.get(ICoreLogic.PROPERTY_USER_ID);
-                            String status = (String) entry.get(ICoreLogic.PROPERTY_STATE);
-                            String name = (String) entry.get(ICoreLogic.PROPERTY_USER_NAME);
+                            String id = (String) entry.get(ICoreAPI.PROPERTY_USER_ID);
+                            String status = (String) entry.get(ICoreAPI.PROPERTY_STATE);
+                            String name = (String) entry.get(ICoreAPI.PROPERTY_USER_NAME);
                             resultList.add(new Participant(id, name, status));
                         }
                         ConfirmationActivity.this.runOnUiThread(new Runnable() {

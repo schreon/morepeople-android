@@ -6,7 +6,6 @@ import android.location.Location;
 import android.location.LocationManager;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -16,11 +15,11 @@ import org.robolectric.shadows.ShadowLocationManager;
 import java.util.HashMap;
 import java.util.Map;
 
-import morepeople.android.app.morepeople.android.app.core.CoreLocation;
-import morepeople.android.app.morepeople.android.app.core.ICoreLocation;
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreRegistrar;
-import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+import morepeople.android.app.core.CoreLocationManager;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreLocationManager;
+import morepeople.android.app.interfaces.ICoreRegistrar;
+import morepeople.android.app.interfaces.IDataCallback;
 
 import static java.lang.Thread.sleep;
 import static junit.framework.Assert.assertEquals;
@@ -42,17 +41,17 @@ import static org.robolectric.Robolectric.shadowOf;
  * Created by schreon on 3/4/14.
  */
 public class CoreLocationTest {
-    ICoreLocation coreLocation;
+    ICoreLocationManager coreLocation;
 
     public static void sharedPrefs() {
         // Insert registration id and the user name into SharedPreferences
-        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
         sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
 
         // Add pending HTTP response which will be served as soon as the application
         // sends the first HTTP request (no matter which request that will be).
-        Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+ ICoreLogic.UserState.RUNNING.toString()+"' }");
+        Robolectric.addPendingHttpResponse(200, "{ 'STATE' : '"+ ICoreAPI.UserState.RUNNING.toString()+"' }");
     }
 
     /**
@@ -61,7 +60,7 @@ public class CoreLocationTest {
     @Before
     public void setUp(){
         sharedPrefs();
-        coreLocation = new CoreLocation(Robolectric.application);
+        coreLocation = new CoreLocationManager(Robolectric.application);
     }
 
     @Test
@@ -130,7 +129,7 @@ public class CoreLocationTest {
         });
 
         // This starts the asynchronous location request
-        coreLocation.setPolling(true);
+        coreLocation.setListenToLocationUpdates(true);
 
         // This simulates a location changed event
         shadowLocationManager.simulateLocation(newLocation);
@@ -144,6 +143,6 @@ public class CoreLocationTest {
         // Immediately run the delayed fallback task if it still is existent
         Robolectric.runUiThreadTasksIncludingDelayedTasks();
 
-        coreLocation.setPolling(false);
+        coreLocation.setListenToLocationUpdates(false);
     }
 }

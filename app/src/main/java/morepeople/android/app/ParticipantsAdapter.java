@@ -1,13 +1,10 @@
 package morepeople.android.app;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,22 +12,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import morepeople.android.app.morepeople.android.app.core.CoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.IDataCallback;
 
 /**
  * ParticipantsAdapter extends BaseAdapter and includes methods for the participant list
  */
 public class ParticipantsAdapter extends BaseAdapter {
     private List<Participant> participantList;
-    private ICoreLogic coreLogic;
+    private ICoreAPI coreLogic;
     private IDataCallback onAcceptSuccess;
     private IDataCallback onAcceptError;
     /**
      * Constructor of ParticipantsAdapter class
      */
-    public ParticipantsAdapter(ICoreLogic coreLogic) {
+    public ParticipantsAdapter(ICoreAPI coreLogic) {
         participantList = new ArrayList<Participant>();
         this.coreLogic = coreLogic;
     }
@@ -112,7 +108,7 @@ public class ParticipantsAdapter extends BaseAdapter {
 
         Participant participant = participantList.get(i);
         nameView.setText(participant.name);
-        switch(ICoreLogic.UserState.valueOf(participant.status)) {
+        switch(ICoreAPI.UserState.valueOf(participant.status)) {
             case OPEN:
                 statusView.setText("Überlegt noch ...");
                 break;

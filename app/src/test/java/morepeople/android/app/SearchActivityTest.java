@@ -10,14 +10,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreRegistrar;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreRegistrar;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -35,7 +34,7 @@ public class SearchActivityTest {
 
     public static void sharedPrefs() {
         // Insert registration id and the user name into SharedPreferences
-        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
         sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
     }

@@ -1,4 +1,4 @@
-package morepeople.android.app.morepeople.android.app.core;
+package morepeople.android.app.interfaces;
 
 import android.location.Location;
 
@@ -7,8 +7,8 @@ import java.util.Map;
 /**
  * Created by schreon on 3/19/14.
  */
-public interface ICoreLogic {
-    public static enum UserState {
+public interface ICoreAPI {
+    public enum UserState {
         OFFLINE,
         QUEUED,
         OPEN,
@@ -36,11 +36,11 @@ public interface ICoreLogic {
     public void setState(UserState newState);
 
     /**
-     * Load the state from the persistence layer
+     * Initialize the API.
      *
      * @param onError
      */
-    public void load(IDataCallback onError);
+    public void initialize(ICallback onFinished, IDataCallback onError);
 
     /**
      * Search the environment for other users with similar intents

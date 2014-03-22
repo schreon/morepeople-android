@@ -8,26 +8,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import morepeople.android.app.morepeople.android.app.core.CoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+import morepeople.android.app.morepeople.android.app.core.CoreAPI;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.IDataCallback;
 
 public class CancelActivity extends Activity {
 
-    private ICoreLogic coreLogic;
+    private ICoreAPI coreLogic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cancel);
         getActionBar().setTitle("morepeople");
-        ICoreLogic.UserState currentState = null;
+        ICoreAPI.UserState currentState = null;
         try {
-            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
+            currentState = ICoreAPI.UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("ConfirmationActivity", e.getMessage());
         }
-        coreLogic = new CoreLogic(this, currentState);
+        coreLogic = new CoreAPI(this, currentState);
 
         final Button buttonConfirmCancel = (Button) this.findViewById(R.id.button_confirmcancel);
         buttonConfirmCancel.setOnClickListener(new View.OnClickListener() {
@@ -36,7 +36,7 @@ public class CancelActivity extends Activity {
                 coreLogic.confirmCancel(new IDataCallback() {
                     @Override
                     public void run(Object data) {
-                        coreLogic.load(null);
+                        coreLogic.initialize(null);
                     }
                 }, null);
             }

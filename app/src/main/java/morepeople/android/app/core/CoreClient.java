@@ -1,4 +1,4 @@
-package morepeople.android.app.morepeople.android.app.core;
+package morepeople.android.app.core;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+
+import morepeople.android.app.interfaces.ICoreClient;
+import morepeople.android.app.interfaces.IDataCallback;
 
 /**
  * Created by schreon on 3/20/14.

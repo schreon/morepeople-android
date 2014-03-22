@@ -1,4 +1,4 @@
-package morepeople.android.app.morepeople.android.app.core;
+package morepeople.android.app.core;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,6 +9,10 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
+
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreRegistrar;
+import morepeople.android.app.interfaces.IDataCallback;
 
 /**
  * Created by schreon on 3/20/14.
@@ -25,7 +29,7 @@ public class CoreRegistrar implements ICoreRegistrar {
 
     @Override
     public String getRegistrationId() {
-        final SharedPreferences prefs = context.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
+        final SharedPreferences prefs = context.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
         String regId = prefs.getString(PROPERTY_REG_ID, "");
         if (regId.isEmpty()) {
             for (String key : prefs.getAll().keySet()) {
@@ -39,7 +43,7 @@ public class CoreRegistrar implements ICoreRegistrar {
 
     @Override
     public void requestRegistrationId(IDataCallback onSuccess, IDataCallback onError) {
-        final SharedPreferences prefs = context.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
+        final SharedPreferences prefs = context.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
         String regId = prefs.getString(PROPERTY_REG_ID, "");
         if (regId.isEmpty()) {
             for (String key : prefs.getAll().keySet()) {
@@ -97,7 +101,7 @@ public class CoreRegistrar implements ICoreRegistrar {
 
     private void storeRegistrationId(Context applicationContext, String regId) {
         Log.d(TAG, "storing reg id");
-        final SharedPreferences prefs = applicationContext.getSharedPreferences(ICoreLogic.SHARED_PREFS, Context.MODE_PRIVATE);
+        final SharedPreferences prefs = applicationContext.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
         ;
         int appVersion = getAppVersion(applicationContext);
         SharedPreferences.Editor editor = prefs.edit();

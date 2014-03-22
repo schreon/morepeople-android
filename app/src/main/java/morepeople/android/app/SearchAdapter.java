@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.IDataCallback;
 
 /**
  * SearchAdapter extends BaseAdapter and provides functions for managing the searchEntryList.
@@ -23,7 +23,7 @@ import morepeople.android.app.morepeople.android.app.core.IDataCallback;
 public class SearchAdapter extends BaseAdapter {
 
     private List<SearchEntry> searchEntryList;
-    private ICoreLogic coreLogic;
+    private ICoreAPI coreLogic;
 
     public IDataCallback getOnQueueSuccess() {
         return onQueueSuccess;
@@ -48,7 +48,7 @@ public class SearchAdapter extends BaseAdapter {
      * Constructor of SearchAdapter class.
      * Inits new searchEntryList.
      */
-    public SearchAdapter(ICoreLogic coreLogic) {
+    public SearchAdapter(ICoreAPI coreLogic) {
         searchEntryList = new ArrayList<SearchEntry>();
         this.coreLogic = coreLogic;
     }

@@ -11,13 +11,13 @@ import android.widget.Button;
 import java.util.HashMap;
 import java.util.Map;
 
-import morepeople.android.app.morepeople.android.app.core.CoreLogic;
-import morepeople.android.app.morepeople.android.app.core.ICoreLogic;
-import morepeople.android.app.morepeople.android.app.core.IDataCallback;
+import morepeople.android.app.morepeople.android.app.core.CoreAPI;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.IDataCallback;
 
 public class EvaluationActivity extends Activity {
 
-    private ICoreLogic coreLogic;
+    private ICoreAPI coreLogic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +25,13 @@ public class EvaluationActivity extends Activity {
 
         getActionBar().setTitle("morepeople");
         setContentView(R.layout.activity_evaluation);
-        ICoreLogic.UserState currentState = null;
+        ICoreAPI.UserState currentState = null;
         try {
-            currentState = ICoreLogic.UserState.valueOf(getIntent().getExtras().getString(ICoreLogic.PROPERTY_STATE));
+            currentState = ICoreAPI.UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("ConfirmationActivity", e.getMessage());
         }
-        coreLogic = new CoreLogic(this, currentState);
+        coreLogic = new CoreAPI(this, currentState);
 
         final Button btn = (Button)findViewById(R.id.button_send_evaluation);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -44,7 +44,7 @@ public class EvaluationActivity extends Activity {
                         public void run(Object rawData) {
                             Map<String, Object> data = (Map<String, Object>) rawData;
                             // set state
-                            coreLogic.setState(ICoreLogic.UserState.valueOf((String)data.get(ICoreLogic.PROPERTY_STATE)));
+                            coreLogic.setState(ICoreAPI.UserState.valueOf((String)data.get(ICoreAPI.PROPERTY_STATE)));
                         }
                     },
                     null

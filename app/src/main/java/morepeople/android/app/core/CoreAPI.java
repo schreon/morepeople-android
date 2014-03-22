@@ -1,32 +1,40 @@
-package morepeople.android.app.morepeople.android.app.core;
+package morepeople.android.app.core;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.location.Location;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import morepeople.android.app.interfaces.ICallback;
+import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreClient;
+import morepeople.android.app.interfaces.ICoreFactory;
+import morepeople.android.app.interfaces.ICoreLocationManager;
+import morepeople.android.app.interfaces.ICorePreferencesManager;
+import morepeople.android.app.interfaces.ICoreRegistrar;
+import morepeople.android.app.interfaces.ICoreStateHandler;
+import morepeople.android.app.interfaces.IDataCallback;
+
 /**
  * Created by schreon on 3/20/14.
  */
-public class CoreLogic implements ICoreLogic {
+public class CoreAPI implements ICoreAPI {
     private Context context;
     private ICoreRegistrar registrar;
     private ICoreClient client;
     private ICoreStateHandler stateHandler;
-    private ICoreLocation coreLocation;
-    private ICoreUserInfo coreUserInfo;
+    private ICoreLocationManager coreLocation;
+    private ICorePreferencesManager coreUserInfo;
+    private ICoreFactory factory;
 
-
-    public CoreLogic(Context context, UserState currentState) {
+    public CoreAPI(Context context, UserState currentState, ICoreFactory factory) {
         this.context = context;
-        registrar = new CoreRegistrar(context);
-        client = new CoreClient(readHostName());
-        stateHandler = new CoreStateHandler(context, currentState);
-        coreLocation = new CoreLocation(context);
-        coreUserInfo = new CoreUserInfo(registrar, coreLocation, context);
+        registrar = factory.createCoreRegistrar();
+        client = factory.createCoreClient();
+        stateHandler = factory.createCoreStateHandler();
+        coreLocation = factory.createCoreLocationManager();
+        coreUserInfo = factory.createCoreUserInfoManager();
     }
 
     /**
@@ -41,15 +49,15 @@ public class CoreLogic implements ICoreLogic {
     private Map<String, Object> decorateWithUserInfo(Map<String, Object> data, String userId, String userName, Location loc) {
         HashMap<String, Object> userLoc = new HashMap<String, Object>();
         if (loc != null) {
-            userLoc.put(ICoreLogic.PROPERTY_LONGITUDE, loc.getLongitude());
-            userLoc.put(ICoreLogic.PROPERTY_LATITUDE, loc.getLatitude());
+            userLoc.put(ICoreAPI.PROPERTY_LONGITUDE, loc.getLongitude());
+            userLoc.put(ICoreAPI.PROPERTY_LATITUDE, loc.getLatitude());
         } else {
-            userLoc.put(ICoreLogic.PROPERTY_LONGITUDE, 0);
-            userLoc.put(ICoreLogic.PROPERTY_LATITUDE, 0);
+            userLoc.put(ICoreAPI.PROPERTY_LONGITUDE, 0);
+            userLoc.put(ICoreAPI.PROPERTY_LATITUDE, 0);
         }
-        data.put(ICoreLogic.PROPERTY_LOC, userLoc);
-        data.put(ICoreLogic.PROPERTY_USER_ID, userId);
-        data.put(ICoreLogic.PROPERTY_USER_NAME, userName);
+        data.put(ICoreAPI.PROPERTY_LOC, userLoc);
+        data.put(ICoreAPI.PROPERTY_USER_ID, userId);
+        data.put(ICoreAPI.PROPERTY_USER_NAME, userName);
         return data;
     }
 
@@ -66,21 +74,22 @@ public class CoreLogic implements ICoreLogic {
     }
 
     @Override
-    public void load(final IDataCallback onError) {
+    public void initialize(final ICallback onFinished, final IDataCallback onError) {
         final IDataCallback onSuccess = new IDataCallback() {
             @Override
             public void run(Object data) {
                 // call state state handler with loaded state
                 String userState = ((Map<String, String>) data).get(PROPERTY_STATE);
                 stateHandler.transferToState(UserState.valueOf(userState));
+                onFinished.run();
             }
         };
-        coreUserInfo.load(new IDataCallback() {
+        coreUserInfo.initialize(new IDataCallback() {
             @Override
             public void run(Object data) {
                 HashMap<String, Object> arguments = new HashMap<String, Object>();
                 decorateWithUserInfo(arguments, coreUserInfo.getUserId(), coreUserInfo.getUserName(), coreUserInfo.getUserLocation());
-                // load state from server
+                // initialize state from server
                 client.doPostRequest("/state", arguments, onSuccess, onError);
             }
         }, onError);
@@ -142,13 +151,5 @@ public class CoreLogic implements ICoreLogic {
         client.doPostRequest("/confirmcancel", payload, onSuccess, onError);
     }
 
-    private String readHostName() {
-        ApplicationInfo ai = null;
-        try {
-            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return (String) ai.metaData.get("morepeople.android.app.HOSTNAME");
-    }
+
 }
