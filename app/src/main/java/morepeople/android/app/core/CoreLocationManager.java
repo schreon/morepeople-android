@@ -6,6 +6,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import morepeople.android.app.interfaces.Constants;
+import morepeople.android.app.interfaces.Coordinates;
 import morepeople.android.app.interfaces.ICoreLocationManager;
 import morepeople.android.app.interfaces.IDataCallback;
 
@@ -23,6 +28,15 @@ public class CoreLocationManager implements ICoreLocationManager {
     private LocationListener gpsLocationListener;
     private LocationListener networkLocationListener;
 
+    private synchronized void notifyLocationUpdate(Location location) {
+        if ( onLocationUpdate == null) {
+            return;
+        }
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put(Constants.PROPERTY_COORDINATES, locationToCoordinates(location));
+        onLocationUpdate.run(resultMap);
+    }
+
     public CoreLocationManager(Context context) {
         onLocationUpdate = null;
         gpsEnabled = false;
@@ -33,9 +47,7 @@ public class CoreLocationManager implements ICoreLocationManager {
         gpsLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if (onLocationUpdate != null) {
-                    onLocationUpdate.run(location);
-                }
+                notifyLocationUpdate(location);
             }
 
             @Override
@@ -57,9 +69,7 @@ public class CoreLocationManager implements ICoreLocationManager {
         networkLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if (onLocationUpdate != null) {
-                    onLocationUpdate.run(location);
-                }
+                notifyLocationUpdate(location);
             }
 
             @Override
@@ -79,8 +89,11 @@ public class CoreLocationManager implements ICoreLocationManager {
         };
     }
 
+    private Coordinates locationToCoordinates(Location location) {
+        return new Coordinates(location.getLongitude(), location.getLatitude());
+    }
     @Override
-    public Location getLastKnownLocation() {
+    public Coordinates getLastKnownCoordinates() {
         if (locationManager == null) {
             locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         }
@@ -103,18 +116,18 @@ public class CoreLocationManager implements ICoreLocationManager {
         // If both values are available, use the newest one
         if (gpsLocation != null && networkLocation != null) {
             if (gpsLocation.getTime() > networkLocation.getTime()) {
-                return gpsLocation;
+                return locationToCoordinates(gpsLocation);
             } else {
-                return networkLocation;
+                return locationToCoordinates(networkLocation);
             }
         }
 
         if (gpsLocation != null) {
-            return gpsLocation;
+            return locationToCoordinates(gpsLocation);
         }
 
         if (networkLocation != null) {
-            return networkLocation;
+            return locationToCoordinates(networkLocation);
         }
 
         return null;

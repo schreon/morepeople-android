@@ -8,14 +8,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.UserState;
 import morepeople.android.app.morepeople.android.app.core.CoreAPI;
-import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.IDataCallback;
 
 public class CancelActivity extends Activity {
 
-    private ICoreAPI coreLogic;
+    private ICoreApi coreLogic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class CancelActivity extends Activity {
         getActionBar().setTitle("morepeople");
         UserState currentState = null;
         try {
-            currentState = UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
+            currentState = UserState.valueOf(getIntent().getExtras().getString(Constants.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("ConfirmationActivity", e.getMessage());
         }

@@ -26,9 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.UserState;
 import morepeople.android.app.morepeople.android.app.core.CoreAPI;
-import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.IDataCallback;
 
 /**
@@ -37,7 +38,7 @@ import morepeople.android.app.interfaces.IDataCallback;
 public class ConfirmationActivity extends Activity {
 
     public static String BROADCAST_CONFIRMATION = "morepeople.android.app.BROADCAST_CONFIRMATION";
-    private ICoreAPI coreLogic;
+    private ICoreApi coreLogic;
     private BroadcastReceiver foregroundReceiver = new BroadcastReceiver() {
 
         @Override
@@ -70,7 +71,7 @@ public class ConfirmationActivity extends Activity {
 
         UserState currentState = null;
         try {
-            currentState = UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
+            currentState = UserState.valueOf(getIntent().getExtras().getString(Constants.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("ConfirmationActivity", e.getMessage());
         }
@@ -107,7 +108,7 @@ public class ConfirmationActivity extends Activity {
                     public void run(Object rawData) {
                         Map<String, Object> data = (Map<String, Object>) rawData;
                         // set state
-                        coreLogic.setState(UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE)));
+                        coreLogic.setState(UserState.valueOf((String) data.get(Constants.PROPERTY_STATE)));
                         // Hide controls
                         layoutConfirmWait.setVisibility(View.VISIBLE);
                         layoutConfirmButtons.setVisibility(View.GONE);
@@ -153,7 +154,7 @@ public class ConfirmationActivity extends Activity {
                                     public void run(Object rawData) {
                                         Map<String, Object> data = (Map<String, Object>) rawData;
                                         // set state
-                                        coreLogic.setState(UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE)));
+                                        coreLogic.setState(UserState.valueOf((String) data.get(Constants.PROPERTY_STATE)));
                                     }
                                 }, null);
                             }
@@ -266,9 +267,9 @@ public class ConfirmationActivity extends Activity {
                         // onSuccess
                         final Map<String, Object> data = (Map<String, Object>) rawData;
 
-                        if(data.keySet().contains(ICoreAPI.PROPERTY_STATE)) {
+                        if(data.keySet().contains(Constants.PROPERTY_STATE)) {
                             UserState state;
-                            state = UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE));
+                            state = UserState.valueOf((String) data.get(Constants.PROPERTY_STATE));
                             coreLogic.setState(state);
                             return;
                         }
@@ -279,9 +280,9 @@ public class ConfirmationActivity extends Activity {
                         final List<Participant> resultList = new ArrayList<Participant>();
                         for (Object rawEntry : participants) {
                             Map<String, Object> entry = (Map<String, Object>) rawEntry;
-                            String id = (String) entry.get(ICoreAPI.PROPERTY_USER_ID);
-                            String status = (String) entry.get(ICoreAPI.PROPERTY_STATE);
-                            String name = (String) entry.get(ICoreAPI.PROPERTY_USER_NAME);
+                            String id = (String) entry.get(Constants.PROPERTY_USER_ID);
+                            String status = (String) entry.get(Constants.PROPERTY_STATE);
+                            String name = (String) entry.get(Constants.PROPERTY_USER_NAME);
                             resultList.add(new Participant(id, name, status));
                         }
                         ConfirmationActivity.this.runOnUiThread(new Runnable() {

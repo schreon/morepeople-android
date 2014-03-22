@@ -9,12 +9,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import morepeople.android.app.morepeople.android.app.core.CoreAPI;
-import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.IDataCallback;
 
 public class WelcomeActivity extends Activity {
     ProgressDialog mDialog;
-    ICoreAPI coreLogic;
+    ICoreApi coreLogic;
     public static final String TAG = "WelcomeActivity";
 
     @Override
@@ -25,7 +25,7 @@ public class WelcomeActivity extends Activity {
         getActionBar().setTitle("morepeople");
 
         mDialog = new ProgressDialog(this);
-        // Start CoreAPI with no start state
+        // Start CoreApi with no start state
         coreLogic = new CoreAPI(this, null);
         final Context context = this;
         IDataCallback onError = new IDataCallback() {

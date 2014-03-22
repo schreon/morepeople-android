@@ -20,9 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import morepeople.android.app.core.CoreLocationManager;
+import morepeople.android.app.interfaces.Constants;
+import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.UserState;
 import morepeople.android.app.morepeople.android.app.core.CoreAPI;
-import morepeople.android.app.interfaces.ICoreAPI;
 import morepeople.android.app.interfaces.ICoreLocationManager;
 import morepeople.android.app.interfaces.IDataCallback;
 
@@ -36,7 +37,7 @@ public class SearchActivity extends Activity {
     private SearchAdapter searchAdapter;
     private ICoreLocationManager coreLocation;
     private IDataCallback onLocationUpdate;
-    private ICoreAPI coreLogic;
+    private ICoreApi coreLogic;
     private Location userLocation;
 
     private EditText inputSearch;
@@ -52,7 +53,7 @@ public class SearchActivity extends Activity {
         coreLocation = new CoreLocationManager(this);
         UserState currentState = null;
         try {
-            currentState = UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
+            currentState = UserState.valueOf(getIntent().getExtras().getString(Constants.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("SearchActivity", e.getMessage());
         }
@@ -148,7 +149,7 @@ public class SearchActivity extends Activity {
                 hideControls();
                 Map<String, Object> data = (Map<String, Object>) rawData;
                 // set state
-                coreLogic.setState(UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE)));
+                coreLogic.setState(UserState.valueOf((String) data.get(Constants.PROPERTY_STATE)));
                 searchAndUpdate();
             }
         });
@@ -166,7 +167,7 @@ public class SearchActivity extends Activity {
                             public void run(Object rawData) {
                                 Map<String, Object> data = (Map<String, Object>) rawData;
                                 // set state
-                                UserState state = UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE));
+                                UserState state = UserState.valueOf((String) data.get(Constants.PROPERTY_STATE));
                                 adaptViewToState(state);
                                 coreLogic.setState(state);
                             }

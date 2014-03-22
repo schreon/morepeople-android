@@ -22,13 +22,16 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import morepeople.android.app.interfaces.ICallback;
 import morepeople.android.app.interfaces.ICoreClient;
 import morepeople.android.app.interfaces.IDataCallback;
+import morepeople.android.app.interfaces.IErrorCallback;
 
 /**
  * Created by schreon on 3/20/14.
  */
 public class CoreClient implements ICoreClient {
+    private static final String TAG = "morepeople.android.app.core.CoreClient";
     /**
      * the host name
      */
@@ -61,10 +64,7 @@ public class CoreClient implements ICoreClient {
     }
 
     @Override
-    public void doGetRequest(String path, Map<String, String> data, IDataCallback onSuccess, IDataCallback onError) {
-
-        final IDataCallback fOnSuccess = onSuccess;
-        final IDataCallback fOnError = onError;
+    public void doGetRequest(String path, Map<String, String> data, final IDataCallback onSuccess, final IErrorCallback onError) {
 
         // Url rewriting \m/
         String url = hostName + path;
@@ -88,20 +88,16 @@ public class CoreClient implements ICoreClient {
                 try {
                     BasicResponseHandler response = new BasicResponseHandler();
                     String responseString = client.execute(get, response);
-                    Log.d("CoreClient", "responseString = " + responseString);
+                    Log.d(TAG, "responseString = " + responseString);
                     responseMap = gson.fromJson(responseString, HashMap.class);
-                    fOnSuccess.run(responseMap);
+                    onSuccess.run(responseMap);
                 } catch (ClientProtocolException e) {
-                    Log.e("IDataCallback", e.getMessage());
-                    responseMap = new HashMap<String, Object>();
-                    responseMap.put("ERROR", e.getMessage());
-                    fOnError.run(responseMap);
+                    Log.e(TAG, e.getMessage());
+                    onError.run(e.getMessage());
 
                 } catch (IOException e) {
-                    Log.e("IDataCallback", e.getMessage());
-                    responseMap = new HashMap<String, Object>();
-                    responseMap.put("ERROR", e.getMessage());
-                    fOnError.run(responseMap);
+                    Log.e(TAG, e.getMessage());
+                    onError.run(e.getMessage());
                 }
                 return null;
             }
@@ -110,14 +106,14 @@ public class CoreClient implements ICoreClient {
     }
 
     @Override
-    public void doPostRequest(String path, Map<String, Object> data, final IDataCallback onSuccess, final IDataCallback onError) {
+    public void doPostRequest(String path, Map<String, Object> data, final IDataCallback onSuccess, final IErrorCallback onError) {
 
         final HttpPost post = new HttpPost(hostName + path);
         post.setEntity(toJson(data));
         post.setHeader("Accept", "application/json");
         post.setHeader("Content-type", "application/json");
-        Log.d("CoreClient -> hostName", hostName);
-        Log.d("CoreClient -> path", path);
+        Log.d(TAG, hostName);
+        Log.d(TAG, path);
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -129,18 +125,14 @@ public class CoreClient implements ICoreClient {
                         onSuccess.run(responseMap);
                     }
                 } catch (ClientProtocolException e) {
-                    Log.e("IDataCallback", e.getMessage());
-                    responseMap = new HashMap<String, Object>();
-                    responseMap.put("ERROR", e.getMessage());
+                    Log.e(TAG, e.getMessage());
                     if (onError != null) {
-                        onError.run(responseMap);
+                        onError.run(e.getMessage());
                     }
                 } catch (IOException e) {
-                    Log.e("IDataCallback", e.getMessage());
-                    responseMap = new HashMap<String, Object>();
-                    responseMap.put("ERROR", e.getMessage());
+                    Log.e(TAG, e.getMessage());
                     if (onError != null) {
-                        onError.run(responseMap);
+                        onError.run(e.getMessage());
                     }
                 }
                 return null;

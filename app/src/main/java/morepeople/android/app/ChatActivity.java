@@ -10,9 +10,10 @@ import android.widget.ListView;
 
 import java.util.Map;
 
+import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.interfaces.UserState;
 import morepeople.android.app.morepeople.android.app.core.CoreAPI;
-import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.IDataCallback;
 
 /**
@@ -22,7 +23,7 @@ import morepeople.android.app.interfaces.IDataCallback;
 public class ChatActivity extends Activity {
 
     private ChatAdapter chatAdapterAdapter;
-    private ICoreAPI coreLogic;
+    private ICoreApi coreLogic;
 
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -34,7 +35,7 @@ public class ChatActivity extends Activity {
         setContentView(R.layout.activity_chat);
         UserState currentState = null;
         try {
-            currentState = UserState.valueOf(getIntent().getExtras().getString(ICoreAPI.PROPERTY_STATE));
+            currentState = UserState.valueOf(getIntent().getExtras().getString(Constants.PROPERTY_STATE));
         } catch (Exception e) {
             Log.e("ConfirmationActivity", e.getMessage());
         }
@@ -73,7 +74,7 @@ public class ChatActivity extends Activity {
                     public void run(Object rawData) {
                         Map<String, Object> data = (Map<String, Object>) rawData;
                         // set state
-                        coreLogic.setState(UserState.valueOf((String) data.get(ICoreAPI.PROPERTY_STATE)));
+                        coreLogic.setState(UserState.valueOf((String) data.get(Constants.PROPERTY_STATE)));
                     }
                 }, null);
             }

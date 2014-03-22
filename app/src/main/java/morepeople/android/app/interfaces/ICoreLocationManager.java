@@ -6,7 +6,7 @@ import android.location.Location;
  * Location Manager which provides access to the location of the user.
  */
 public interface ICoreLocationManager {
-    public Location getLastKnownLocation();
+    public Coordinates getLastKnownCoordinates();
 
     /**
      * @param onLocationUpdate will be called when the location changes. The parameter is an

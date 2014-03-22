@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.interfaces.UserState;
 
@@ -21,13 +21,13 @@ import morepeople.android.app.interfaces.UserState;
  */
 public class ParticipantsAdapter extends BaseAdapter {
     private List<Participant> participantList;
-    private ICoreAPI coreLogic;
+    private ICoreApi coreLogic;
     private IDataCallback onAcceptSuccess;
     private IDataCallback onAcceptError;
     /**
      * Constructor of ParticipantsAdapter class
      */
-    public ParticipantsAdapter(ICoreAPI coreLogic) {
+    public ParticipantsAdapter(ICoreApi coreLogic) {
         participantList = new ArrayList<Participant>();
         this.coreLogic = coreLogic;
     }

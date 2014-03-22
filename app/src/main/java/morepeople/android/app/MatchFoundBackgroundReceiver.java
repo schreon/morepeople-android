@@ -10,7 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
-import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreApi;
 
 /**
  * Created by schreon on 3/21/14.
@@ -20,7 +20,7 @@ public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("GCM", "MatchFoundBackgroundReceiver.onReceive");
 
-        SharedPreferences prefs = context.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(ICoreApi.SHARED_PREFS, Context.MODE_PRIVATE);
         String participantsListJson = (String) intent.getExtras().get("participantsListJson");
         prefs.edit().putString("participantsList", participantsListJson);
         prefs.edit().commit();

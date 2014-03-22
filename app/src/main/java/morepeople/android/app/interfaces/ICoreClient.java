@@ -3,10 +3,18 @@ package morepeople.android.app.interfaces;
 import java.util.Map;
 
 /**
- * Created by schreon on 3/20/14.
+ * Client to handle simplified HTTP GET and POST requests. The data exchange format is always
+ * a Map<String, Object>.
  */
 public interface ICoreClient {
-    public void doGetRequest(String path, Map<String, String> data, IDataCallback onSuccess, IDataCallback onError);
+    /**
+     *
+     * @param path
+     * @param arguments parameters. Plain String-String Map.
+     * @param onSuccess
+     * @param onError
+     */
+    public void doGetRequest(String path, Map<String, String> arguments, IDataCallback onSuccess, IErrorCallback onError);
 
-    public void doPostRequest(String path, Map<String, Object> data, IDataCallback onSuccess, IDataCallback onError);
+    public void doPostRequest(String path, Map<String, Object> data, IDataCallback onSuccess, IErrorCallback onError);
 }

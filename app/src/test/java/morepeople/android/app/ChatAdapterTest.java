@@ -12,7 +12,7 @@ import android.widget.TextView;
 import org.junit.Before;
 import org.junit.Test;
 
-import morepeople.android.app.interfaces.ICoreAPI;
+import morepeople.android.app.interfaces.ICoreApi;
 import morepeople.android.app.interfaces.ICoreRegistrar;
 
 import static junit.framework.Assert.assertEquals;
@@ -36,7 +36,7 @@ public class ChatAdapterTest {
 
     public static void sharedPrefs() {
         // Insert registration id and the user name into SharedPreferences
-        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreAPI.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(ICoreApi.SHARED_PREFS, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("appUsername", "Thorsten Test").commit();
         sharedPreferences.edit().putString(ICoreRegistrar.PROPERTY_REG_ID, "test-gcm-id").commit();
     }
