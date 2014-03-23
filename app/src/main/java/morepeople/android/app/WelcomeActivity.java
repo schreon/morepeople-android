@@ -1,12 +1,24 @@
 package morepeople.android.app;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.util.Log;
+
+import morepeople.android.app.interfaces.Constants;
 
 public class WelcomeActivity extends BaseActivity {
     private ProgressDialog mDialog;
     public static final String TAG = "morepeople.android.app.WelcomeActivity";
+
+    @Override
+    protected void beforeCoreApi() {
+        boolean isDebuggable =  ( 0 != ( getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
+        if (isDebuggable) {
+            wipeSharedPrefs();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +31,11 @@ public class WelcomeActivity extends BaseActivity {
         Log.d(TAG, "onCreate finished");
     }
 
+    private void wipeSharedPrefs() {
+        Log.d(TAG, "wipe shared prefs");
+        getSharedPreferences(Constants.PROPERTY_SHARED_PREFS, Context.MODE_PRIVATE).edit().clear().commit();
+    }
+
     @Override
     protected int getLayoutResourceId() {
         return R.layout.activity_welcome;
@@ -27,9 +44,7 @@ public class WelcomeActivity extends BaseActivity {
     @Override
     protected void onCoreInitFinished() {
         super.onCoreInitFinished();
-        Log.d(TAG, "starting onCoreInitFinished");
-        coreApi.loadState(defaultErrorCallback);
-        Log.d(TAG, "finishing onCoreInitFinished");
+        Log.d(TAG, "onCoreInitFinished");
     }
 
     @Override

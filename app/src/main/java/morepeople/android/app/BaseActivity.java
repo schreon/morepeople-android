@@ -43,12 +43,33 @@ public abstract class BaseActivity extends Activity {
         }
     };
 
+    protected void beforeCoreApi() {};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResourceId());
+
+        beforeCoreApi();
+
         context = this;
         coreApi = null;
+
+        if (coreApi == null) {
+            ICoreFactory coreFactory = new CoreFactory(this);
+            coreFactory.createCoreApi(
+                    null,
+                    new IApiCallback() {
+                        @Override
+                        public void run(ICoreApi pCoreApi) {
+                            coreApi = pCoreApi;
+                            onCoreInitFinished();
+                        }
+                    },
+                    defaultErrorCallback
+            );
+        }
+
         pollHandler = new Handler(getMainLooper());
         Log.d(TAG, "onCreate finished");
         pollDelay = 10000;
@@ -69,30 +90,9 @@ public abstract class BaseActivity extends Activity {
         // nothing
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        Log.d(TAG, "starting onPostCreate");
-        if (coreApi == null) {
-            ICoreFactory coreFactory = new CoreFactory(this);
-            coreFactory.createCoreApi(
-                    null,
-                    new IApiCallback() {
-                        @Override
-                        public void run(ICoreApi pCoreApi) {
-                            coreApi = pCoreApi;
-                            onCoreInitFinished();
-                        }
-                    },
-                    defaultErrorCallback
-            );
-        }
-        Log.d(TAG, "finishing onPostCreate");
-    }
-
     protected void onCoreInitFinished() {
-        Log.d(TAG, "starting onCoreInitFinished");
-        Log.d(TAG, "finishing onCoreInitFinished");
+        Log.d(TAG, "onCoreInitFinished");
+        coreApi.loadState(defaultErrorCallback);
     }
 
     @Override
@@ -113,6 +113,7 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
+        pollHandler.removeCallbacks(poller);
         Log.d(TAG, "onStop");
     }
 
@@ -121,14 +122,5 @@ public abstract class BaseActivity extends Activity {
         super.onPause();
         pollHandler.removeCallbacks(poller);
         Log.d(TAG, "onPause");
-    }
-
-    @Override
-    public void onUserInteraction() {
-        super.onUserInteraction();
-        Log.d(TAG, "onUserInteraction");
-        pollHandler.removeCallbacks(poller);
-        poller.run();
-
     }
 }

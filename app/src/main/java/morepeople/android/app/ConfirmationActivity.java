@@ -36,15 +36,7 @@ public class ConfirmationActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
 
-    @Override
-    protected int getLayoutResourceId() {
-        return R.layout.activity_confirmation;
-    }
-
-    @Override
-    protected void onCoreInitFinished() {
 
         participantsAdapter = new ParticipantsAdapter();
 
@@ -111,8 +103,16 @@ public class ConfirmationActivity extends BaseActivity {
                 alertDialog.show();
             }
         });
+    }
 
-        updateParticipantList();
+    @Override
+    protected int getLayoutResourceId() {
+        return R.layout.activity_confirmation;
+    }
+
+    @Override
+    protected void onCoreInitFinished() {
+        updateLobby();
     }
 
     @Override

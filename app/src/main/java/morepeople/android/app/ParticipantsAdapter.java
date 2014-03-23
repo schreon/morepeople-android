@@ -44,7 +44,9 @@ public class ParticipantsAdapter extends BaseAdapter {
      * @param participants -> collection of participants
      */
     public void addAll(Collection<Participant> participants) {
-        participantList.addAll(participants);
+        if(participants != null) {
+            participantList.addAll(participants);
+        }
         notifyDataSetChanged();
 
     }
