@@ -149,10 +149,10 @@ public class ConfirmationActivity extends BaseActivity {
 
         // register ConfirmationForegroundReceiver
         //LocalBroadcastManager.getInstance(this).registerReceiver(foregroundReceiver,
-        //        new IntentFilter(ConfirmationActivity.BROADCAST_CONFIRMATION));
+        //        new IntentFilter(ConfirmationActivity.BROADCAST_LOCAL_CONFIRMATION));
 
         registerReceiver(foregroundReceiver,
-                new IntentFilter(Constants.BROADCAST_CONFIRMATION));
+                new IntentFilter(Constants.BROADCAST_LOCAL_CONFIRMATION));
     }
 
     @Override

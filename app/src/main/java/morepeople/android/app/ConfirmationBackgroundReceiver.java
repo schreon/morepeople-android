@@ -16,15 +16,10 @@ import morepeople.android.app.interfaces.Constants;
  * Created by schreon on 3/13/14.
  */
 public class ConfirmationBackgroundReceiver extends WakefulBroadcastReceiver {
-
+    private final static String TAG = "morepeople.android.app.ConfirmationBackgroundReceiver";
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("GCM", "ConfirmationBackgroundReceiver.onReceive");
-
-        SharedPreferences prefs = context.getSharedPreferences(Constants.PROPERTY_SHARED_PREFS, Context.MODE_PRIVATE);
-        String participantsListJson = (String) intent.getExtras().get("participantsListJson");
-        prefs.edit().putString("participantsList", participantsListJson);
-        prefs.edit().commit();
+        Log.d(TAG, "onReceive");
 
         // create notification which will start the activity if the notification is clicked
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

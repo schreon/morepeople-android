@@ -13,7 +13,7 @@ import morepeople.android.app.interfaces.Constants;
  * MainIntentService extends IntentService and provides onHandleIntent method
  */
 public class MainIntentService extends IntentService {
-
+    private final static String TAG = "morepeople.android.app.MainIntentService";
     /**
      * Constructor of MainIntentService class
      */
@@ -21,6 +21,12 @@ public class MainIntentService extends IntentService {
         super("MainIntentService");
     }
 
+    private void sendLocalBroadcast(String localBroadCast) {
+        Log.d(TAG, "sendLocalBroadcast -> " + localBroadCast);
+        Intent mIntent = new Intent();
+        mIntent.setAction(localBroadCast);
+        sendBroadcast(mIntent);
+    }
     /**
      * OnHandleIntent
      *
@@ -28,7 +34,7 @@ public class MainIntentService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d("GCM", "got an intent");
+        Log.d(TAG, "onHandleIntent");
         // dependent on the gcm message type etc. broadcast another intent
 
         // if the STATE code indicates, that no activity has intercepted the intent:
@@ -37,20 +43,23 @@ public class MainIntentService extends IntentService {
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         String messageType = gcm.getMessageType(intent);
-
-        if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+        Log.d(TAG, "messageType -> " + messageType);
+        if (extras != null) {
             // kick off broadcast stuff
-            if (extras.get("MP_MESSAGE_TYPE").equals("CONFIRMATION")) {
-                Log.d("GCM", "CONFIRMATION");
-                Intent mIntent = new Intent(Constants.BROADCAST_CONFIRMATION);
-
-                mIntent.putExtra("participantsListJson", "[{'USER_ID':'test', 'USER_NAME':'test', 'STATE':'OPEN'}]");
-
-                sendBroadcast(mIntent);
+            String mpMessageType = (String)extras.get(Constants.PROPERTY_MESSAGE_TYPE);
+            Log.d(TAG, "mpMessageType -> " + mpMessageType);
+            if (mpMessageType.equals(Constants.BROADCAST_GCM_CONFIRMATION)) {
+                sendLocalBroadcast(Constants.BROADCAST_LOCAL_CONFIRMATION);
+            }
+            if (mpMessageType.equals(Constants.BROADCAST_GCM_MATCH_FOUND)) {
+                sendLocalBroadcast(Constants.BROADCAST_LOCAL_MATCH_FOUND);
+            }
+            if (mpMessageType.equals(Constants.BROADCAST_GCM_CHAT)) {
+                sendLocalBroadcast(Constants.BROADCAST_LOCAL_CHAT);
             }
         }
 
         MainBroadcastReceiver.completeWakefulIntent(intent);
-        // TODO: the same with chat messages
+        Log.d(TAG, "onHandleIntent complete");
     }
 }

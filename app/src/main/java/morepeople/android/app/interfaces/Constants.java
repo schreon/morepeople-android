@@ -20,7 +20,14 @@ public abstract class Constants {
     public static final String PROPERTY_PARTICIPANTS = "PARTICIPANTS";
     public static final String PROPERTY_SEARCHENTRIES = "SEARCHENTRIES";
     public static final String PROPERTY_SERVERMESSAGE = "SERVERMESSAGE";
-    public static String BROADCAST_CONFIRMATION = "morepeople.android.app.BROADCAST_CONFIRMATION";
+    public static final String PROPERTY_MESSAGE_TYPE = "MP_MESSAGE_TYPE";
+
+    public static final String BROADCAST_GCM_MATCH_FOUND = "MATCH_FOUND";
+    public static final String BROADCAST_GCM_CONFIRMATION = "CONFIRMATION";
+    public static final String BROADCAST_GCM_CHAT = "CHAT";
+    public static final String BROADCAST_LOCAL_MATCH_FOUND = "morepeople.android.app.BROADCAST_LOCAL_MATCH_FOUND";
+    public static final String BROADCAST_LOCAL_CONFIRMATION = "morepeople.android.app.BROADCAST_LOCAL_CONFIRMATION";
+    public static final String BROADCAST_LOCAL_CHAT = "morepeople.android.app.BROADCAST_LOCAL_CHAT";
 
     private Constants() {
         // Don't initialize this.

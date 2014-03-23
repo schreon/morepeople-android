@@ -11,7 +11,7 @@ import android.util.Log;
  * MainBroadcastReceiver extends WakefulBroadcastReceiver and provides the onReceive method
  */
 public class MainBroadcastReceiver extends WakefulBroadcastReceiver {
-
+    private final static String TAG = "morepeople.android.app.MainBroadcastReceiver";
     /**
      * OnReceive method sets wakeful service
      *
@@ -20,7 +20,7 @@ public class MainBroadcastReceiver extends WakefulBroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("GCM", "got a broadcast");
+        Log.d(TAG, "onReceive");
         ComponentName comp = new ComponentName(context.getPackageName(), MainIntentService.class.getName());
         Intent startIntent = intent.setComponent(comp);
         startWakefulService(context, startIntent);

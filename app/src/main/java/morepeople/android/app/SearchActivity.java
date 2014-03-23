@@ -1,6 +1,8 @@
 package morepeople.android.app;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -122,10 +124,46 @@ public class SearchActivity extends BaseActivity {
             }
         });
 
+        searchAdapter.setOnSearchEntryClickListener(onSearchEntryClickListener);
         searchAndUpdate();
         updateListView();
         Log.d(TAG, "finished onCoreInitFinished");
     }
+
+    private View.OnClickListener onSearchEntryClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            final SearchEntry entry = (SearchEntry) view.getTag();
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchActivity.this);
+
+            // set title
+            alertDialogBuilder.setTitle("Beitreten");
+
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage("Möchtest Du \"" + entry.MATCH_TAG + "\" beitreten?")
+                    .setCancelable(false)
+                    .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // enqueue for the same match tag
+                            coreApi.queue(entry.MATCH_TAG, defaultErrorCallback);
+                        }
+                    })
+                    .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+        }
+    };
 
     private void hideControls() {
         Runnable runOnUI = new Runnable() {

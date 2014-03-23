@@ -22,26 +22,6 @@ public class SearchAdapter extends BaseAdapter {
 
     private List<SearchEntry> searchEntryList;
 
-    public IDataCallback getOnQueueSuccess() {
-        return onQueueSuccess;
-    }
-
-    public void setOnQueueSuccess(IDataCallback onQueueSuccess) {
-        this.onQueueSuccess = onQueueSuccess;
-    }
-
-    public IDataCallback getOnQueueError() {
-        return onQueueError;
-    }
-
-    public void setOnQueueError(IDataCallback onQueueError) {
-        this.onQueueError = onQueueError;
-    }
-
-    private IDataCallback onQueueSuccess = null;
-    private IDataCallback onQueueError = null;
-
-
     /**
      * Constructor of SearchAdapter class.
      * Inits new searchEntryList.
@@ -110,6 +90,16 @@ public class SearchAdapter extends BaseAdapter {
         return i;
     }
 
+    public View.OnClickListener getOnSearchEntryClickListener() {
+        return onSearchEntryClickListener;
+    }
+
+    public void setOnSearchEntryClickListener(View.OnClickListener onSearchEntryClickListener) {
+        this.onSearchEntryClickListener = onSearchEntryClickListener;
+    }
+
+    private View.OnClickListener onSearchEntryClickListener = null;
+
     /**
      * Get the view of a single search entry.
      * <p/>
@@ -133,40 +123,9 @@ public class SearchAdapter extends BaseAdapter {
             descriptionView = (TextView) group.findViewById(R.id.search_term);
 
             final LinearLayout fGroup = group;
-            group.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-//                    final SearchEntry entry = (SearchEntry) fGroup.getTag();
-//                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-//
-//                    // set title
-//                    alertDialogBuilder.setTitle("Beitreten");
-//
-//                    // set dialog message
-//                    alertDialogBuilder
-//                            .setMessage("Möchtest Du \"" + entry.MATCH_TAG + "\" beitreten?")
-//                            .setCancelable(false)
-//                            .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    // enqueue for the same match tag
-//                                    coreApi.queue(entry.MATCH_TAG, onQueueSuccess, onQueueError);
-//                                }
-//                            })
-//                            .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    // if this button is clicked, just close
-//                                    // the dialog box and do nothing
-//                                    dialog.cancel();
-//                                }
-//                            });
-//
-//                    // create alert dialog
-//                    AlertDialog alertDialog = alertDialogBuilder.create();
-//
-//                    // show it
-//                    alertDialog.show();
-                }
-            });
+            if (onSearchEntryClickListener != null) {
+                group.setOnClickListener(onSearchEntryClickListener);
+            }
         } else {
             group = (LinearLayout) view;
             creatorView = (TextView) group.findViewById(R.id.search_creator);

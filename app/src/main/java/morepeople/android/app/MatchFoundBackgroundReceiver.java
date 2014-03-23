@@ -13,9 +13,10 @@ import android.util.Log;
  * Created by schreon on 3/21/14.
  */
 public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
+    private final static String TAG = "morepeople.android.app.MatchFoundBackgroundReceiver";
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("GCM", "MatchFoundBackgroundReceiver.onReceive");
+        Log.d(TAG, "onReceive");
 
         // create notification which will start activity if the notification is clicked
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -27,8 +28,8 @@ public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("Teilnehmer gefunden!")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Teilnehmer gefunden!"))
+                        .setContentTitle("Es geht los!")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Es geht los!"))
                         .setContentText("Wir haben Leute gefunden, die sich mit Dir treffen würden!")
                         .setVibrate(vibrate);
         mBuilder.setContentIntent(contentIntent);

@@ -60,7 +60,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public String getUserName() {
+    public synchronized String getUserName() {
         if (userName == null) {
             userName = sharedPreferences.getString(Constants.PROPERTY_USER_NAME, null);
             Log.d(TAG, "already contains username:" + userName);
@@ -69,14 +69,14 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setUserName(String userName) {
+    public synchronized void setUserName(String userName) {
         this.userName = userName;
         editor.putString(Constants.PROPERTY_USER_NAME, userName);
         editor.commit();
     }
 
     @Override
-    public String getUserId() {
+    public synchronized String getUserId() {
         if (userId == null) {
             userId = sharedPreferences.getString(Constants.PROPERTY_USER_ID, null);
             Log.d(TAG, "already contains user USER_ID:" + userId);
@@ -85,14 +85,14 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setUserId(String userId) {
+    public synchronized void setUserId(String userId) {
         this.userId = userId;
         editor.putString(Constants.PROPERTY_USER_ID, userId);
         editor.commit();
     }
 
     @Override
-    public String getServerHostName() {
+    public synchronized String getServerHostName() {
         if (hostName == null) {
             hostName = sharedPreferences.getString(Constants.PROPERTY_HOSTNAME, null);
             Log.d(TAG, "already contains hostname:" + userId);
@@ -101,14 +101,14 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setServerHostName(String serverHostName) {
+    public synchronized void setServerHostName(String serverHostName) {
         this.hostName = serverHostName;
         editor.putString(Constants.PROPERTY_HOSTNAME, serverHostName);
         editor.commit();
     }
 
     @Override
-    public Coordinates getLastKnownCoordinates() {
+    public synchronized Coordinates getLastKnownCoordinates() {
         if (lastKnownCoordinates == null) {
             String serialized = sharedPreferences.getString(Constants.PROPERTY_COORDINATES, null);
             if (serialized == null) {
@@ -128,7 +128,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public UserState getCurrentUserState() {
+    public synchronized UserState getCurrentUserState() {
         if (currentUserState == null) {
             currentUserState = UserState.valueOf(sharedPreferences.getString(Constants.PROPERTY_STATE, null));
             Log.d(TAG, "current state:" + userId);
@@ -137,14 +137,14 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setCurrentUserState(UserState currentUserState) {
+    public synchronized void setCurrentUserState(UserState currentUserState) {
         this.currentUserState = currentUserState;
         editor.putString(Constants.PROPERTY_STATE, currentUserState.toString());
         editor.commit();
     }
 
     @Override
-    public List<Participant> getParticipantList() {
+    public synchronized List<Participant> getParticipantList() {
         if (participantList == null) {
             String serialized = sharedPreferences.getString(Constants.PROPERTY_PARTICIPANTS, null);
             if (serialized == null) {
@@ -156,7 +156,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setParticipantList(List<Participant> participantList) {
+    public synchronized void setParticipantList(List<Participant> participantList) {
         this.participantList = participantList;
         String serialized = gson.toJson(participantList);
         editor.putString(Constants.PROPERTY_PARTICIPANTS, serialized);
@@ -164,7 +164,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setParticipantListFromMap(List<Map> participantListMap) {
+    public synchronized void setParticipantListFromMap(List<Map> participantListMap) {
         Log.d(TAG, "setParticipantListFromMap");
         List<Participant> newParticipantList = new ArrayList<Participant>();
         for (Map<String, Object> participantMap : participantListMap) {
@@ -178,7 +178,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
 
 
     @Override
-    public List<SearchEntry> getSearchEntryList() {
+    public synchronized List<SearchEntry> getSearchEntryList() {
         if (searchEntryList == null) {
             String serialized = sharedPreferences.getString(Constants.PROPERTY_SEARCHENTRIES, null);
             if (serialized == null) {
@@ -190,7 +190,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setSearchEntryList(List<SearchEntry> searchEntryList) {
+    public synchronized void setSearchEntryList(List<SearchEntry> searchEntryList) {
         this.searchEntryList = searchEntryList;
         String serialized = gson.toJson(searchEntryList);
         editor.putString(Constants.PROPERTY_SEARCHENTRIES, serialized);
@@ -198,7 +198,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setSearchEntryListFromMap(List<Map> searchEntryListMap) {
+    public synchronized void setSearchEntryListFromMap(List<Map> searchEntryListMap) {
         Log.d(TAG, "setSearchEntryListFromMap");
         List<SearchEntry> newSearchEntryList = new ArrayList<SearchEntry>();
         for (Map<String, Object> searchEntryMap : searchEntryListMap) {
@@ -211,7 +211,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public String getMatchTag() {
+    public synchronized String getMatchTag() {
         if (matchTag == null) {
             matchTag = sharedPreferences.getString(Constants.PROPERTY_MATCH_TAG, null);
         }
@@ -219,7 +219,7 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     }
 
     @Override
-    public void setMatchTag(String matchTag) {
+    public synchronized void setMatchTag(String matchTag) {
         this.matchTag = matchTag;
         editor.putString(Constants.PROPERTY_MATCH_TAG, matchTag);
         editor.commit();
