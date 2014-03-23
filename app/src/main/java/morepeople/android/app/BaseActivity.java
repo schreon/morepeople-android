@@ -21,7 +21,6 @@ public abstract class BaseActivity extends Activity {
     private static final String TAG = "morepeople.android.app.BaseActivity";
     private Context context;
 
-    protected boolean isPolling = false;
     private Runnable poller = null;
     protected long pollDelay;
     private Handler pollHandler;
@@ -45,6 +44,7 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getLayoutResourceId());
         context = this;
         coreApi = null;
         pollHandler = new Handler(getMainLooper());
@@ -53,12 +53,15 @@ public abstract class BaseActivity extends Activity {
         poller = new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "poll");
+                pollHandler.removeCallbacks(poller);
+                Log.d(TAG, "poller");
                 onPoll();
                 pollHandler.postDelayed(poller, pollDelay);
             }
         };
     }
+
+    protected abstract int getLayoutResourceId();
 
     protected synchronized void onPoll() {
         // nothing
@@ -87,7 +90,6 @@ public abstract class BaseActivity extends Activity {
 
     protected void onCoreInitFinished() {
         Log.d(TAG, "starting onCoreInitFinished");
-        poller.run();
         Log.d(TAG, "finishing onCoreInitFinished");
     }
 
@@ -95,28 +97,24 @@ public abstract class BaseActivity extends Activity {
     public void onBackPressed() {
     }
 
-    private synchronized void continuePolling() {
-        if (!isPolling) {
-            pollHandler.removeCallbacks(null);
-            isPolling = true;
-            poller.run();
-        }
-    }
-
-    private synchronized void stopPolling() {
-        pollHandler.removeCallbacks(null);
-        isPolling = false;
-    }
     @Override
     protected void onResume() {
         super.onResume();
-        continuePolling();
+        pollHandler.removeCallbacks(poller);
+        pollHandler.postDelayed(poller, pollDelay);
     }
 
 
     @Override
     protected void onStop() {
         super.onStop();
-        stopPolling();
+        Log.d(TAG, "onStop");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pollHandler.removeCallbacks(poller);
+        Log.d(TAG, "onPause");
     }
 }

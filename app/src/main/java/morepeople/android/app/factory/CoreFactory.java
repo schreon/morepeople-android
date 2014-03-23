@@ -153,15 +153,7 @@ public class CoreFactory implements ICoreFactory {
             public void run() {
                 Log.d(TAG, "finished building - passing coreApi instance.");
                 final ICoreApi coreApi = new CoreApi(client, preferences, onServerResponse);
-
-                Handler mainHandler = new Handler(context.getMainLooper());
-                Runnable runOnUI = new Runnable() {
-                    @Override
-                    public void run() {
-                        onFinish.run(coreApi);
-                    }
-                };
-                mainHandler.post(runOnUI);
+                    onFinish.run(coreApi);
             }
         });
 

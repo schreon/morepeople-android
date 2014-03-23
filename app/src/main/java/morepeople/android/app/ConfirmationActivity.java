@@ -60,9 +60,11 @@ public class ConfirmationActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_confirmation);
+    }
 
-        getActionBar().setTitle("Es geht los!");
+    @Override
+    protected int getLayoutResourceId() {
+        return R.layout.activity_confirmation;
     }
 
     @Override
@@ -135,12 +137,12 @@ public class ConfirmationActivity extends BaseActivity {
         });
 
         updateParticipantList();
-        updateLobby();
     }
 
     @Override
     protected synchronized void onPoll() {
-            updateLobby();
+        Log.d(TAG, "onPoll");
+        updateLobby();
     };
 
     private void adaptViewToState(UserState state) {
@@ -191,13 +193,6 @@ public class ConfirmationActivity extends BaseActivity {
         //enable static ConfirmationBackgroundReceiver
         ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        Log.d(TAG, "re enabled static confirmation background receiver");
     }
 
     private void updateParticipantList() {

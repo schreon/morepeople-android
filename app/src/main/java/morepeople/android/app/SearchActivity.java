@@ -29,7 +29,6 @@ public class SearchActivity extends BaseActivity {
 
     private SearchAdapter searchAdapter;
     private EditText inputSearch;
-    private boolean isSearching = false;
 
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -38,9 +37,12 @@ public class SearchActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate started");
-        setContentView(R.layout.activity_search);
-        getActionBar().setTitle("morepeople");
         Log.d(TAG, "onCreate finished");
+    }
+
+    @Override
+    protected int getLayoutResourceId() {
+        return R.layout.activity_search;
     }
 
     @Override
@@ -77,18 +79,12 @@ public class SearchActivity extends BaseActivity {
              */
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                Log.d(TAG, "onTextChanged");
                 if (charSequence.length() > 0) {
                     buttonSendSearch.setVisibility(View.VISIBLE);
                 } else {
                     buttonSendSearch.setVisibility(View.GONE);
                 }
-                coreApi.search(
-                        coreApi.getPreferences().getLastKnownCoordinates(),
-                        1000,
-                        charSequence.toString(),
-                        defaultErrorCallback
-                );
-
             }
 
             /**
@@ -97,6 +93,7 @@ public class SearchActivity extends BaseActivity {
              */
             @Override
             public void afterTextChanged(Editable editable) {
+                Log.d(TAG, "afterTextChanged");
             }
         });
 
@@ -108,6 +105,7 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 String searchTerm = inputSearch.getText().toString();
+                inputSearch.setText("");
                 hideControls();
                 coreApi.queue(searchTerm, defaultErrorCallback);
             }
@@ -182,7 +180,7 @@ public class SearchActivity extends BaseActivity {
                 layoutSearchInput.setVisibility(View.GONE);
                 InputMethodManager imm = (InputMethodManager) getSystemService(
                         Context.INPUT_METHOD_SERVICE);
-                inputSearch.setText("");
+
                 imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
             }
         };
@@ -213,6 +211,7 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     protected synchronized void onPoll() {
+        Log.d(TAG, "onPoll");
         if (coreApi != null) {
             coreApi.search(
                 coreApi.getPreferences().getLastKnownCoordinates(),
@@ -239,8 +238,7 @@ public class SearchActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
-
+        Log.d(TAG, "onNewIntent");
         if (coreApi != null) {
             // do a search
             updateListView();
@@ -250,8 +248,8 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "starting onResume");
         super.onResume();
+        Log.d(TAG, "onResume");
         if (coreApi != null) {
             // do a search
             updateListView();
@@ -259,6 +257,11 @@ public class SearchActivity extends BaseActivity {
         } else {
             Log.d(TAG, "coreApi still null, doing nothing");
         }
-        Log.d(TAG, "finishing onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
     }
 }

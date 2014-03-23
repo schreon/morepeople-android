@@ -11,14 +11,17 @@ public class WelcomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
-        getActionBar().setTitle("morepeople");
 
         mDialog = new ProgressDialog(this);
         mDialog.setMessage("Registrierung läuft ...");
         mDialog.setCancelable(false);
         mDialog.show();
         Log.d(TAG, "onCreate finished");
+    }
+
+    @Override
+    protected int getLayoutResourceId() {
+        return R.layout.activity_welcome;
     }
 
     @Override
@@ -32,6 +35,7 @@ public class WelcomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
         mDialog.setMessage("Registrierung läuft ...");
         mDialog.setCancelable(false);
         mDialog.show();
@@ -40,6 +44,18 @@ public class WelcomeActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause");
         mDialog.dismiss();
+    }
+
+    @Override
+    protected  void onPoll() {
+        Log.d(TAG, "onPoll");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
     }
 }

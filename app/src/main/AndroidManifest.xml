@@ -64,21 +64,25 @@
 
         <activity
             android:name="morepeople.android.app.SearchActivity"
+            android:noHistory="true"
             android:label="morepeople"
             android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name="morepeople.android.app.ChatActivity"
+            android:noHistory="true"
             android:label="morepeople"
             android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name="morepeople.android.app.ConfirmationActivity"
+            android:noHistory="true"
             android:label="Es geht los!"
             android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name="morepeople.android.app.WelcomeActivity"
+            android:noHistory="true"
             android:label="morepeople"
             android:launchMode="singleInstance" >
             <intent-filter>
@@ -88,10 +92,12 @@
         </activity>
         <activity
             android:name="morepeople.android.app.EvaluationActivity"
+            android:noHistory="true"
             android:label="morepeople" >
         </activity>
         <activity
             android:name="morepeople.android.app.CancelActivity"
+            android:noHistory="true"
             android:label="morepeople" >
         </activity>
     </application>

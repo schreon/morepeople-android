@@ -39,7 +39,7 @@ public class CoreApi implements ICoreApi {
     /**
      * Decorate a data hashmap with user information fields
      */
-    private Map<String, Object> decorateWithUserInfo(Map<String, Object> data, ICoreWritablePreferences preferences) {
+    private synchronized Map<String, Object> decorateWithUserInfo(Map<String, Object> data, ICoreWritablePreferences preferences) {
         Coordinates coordinates = preferences.getLastKnownCoordinates();
         String userId = preferences.getUserId();
         String userName = preferences.getUserName();
@@ -59,7 +59,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void loadState(IErrorCallback onError) {
+    public synchronized void loadState(IErrorCallback onError) {
         Log.d(TAG, "loadState");
         HashMap<String, Object> arguments = new HashMap<String, Object>();
         decorateWithUserInfo(arguments, preferences);
@@ -68,7 +68,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void getLobby(IErrorCallback onError) {
+    public synchronized void getLobby(IErrorCallback onError) {
         Log.d(TAG, "lobby");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
@@ -77,8 +77,8 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void search(Coordinates coordinates, long radius, String searchTerm, IErrorCallback onError) {
-        Log.d(TAG, "search");
+    public synchronized void search(Coordinates coordinates, long radius, String searchTerm, IErrorCallback onError) {
+        Log.d(TAG, "search for "+searchTerm);
         HashMap<String, String> rewrite = new HashMap<String, String>();
         rewrite.put("LON", String.valueOf(coordinates.getLongitude()));
         rewrite.put("LAT", String.valueOf(coordinates.getLatitude()));
@@ -90,7 +90,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void queue(String searchTerm, IErrorCallback onError) {
+    public synchronized void queue(String searchTerm, IErrorCallback onError) {
         Log.d(TAG, "queue");
         preferences.setMatchTag(searchTerm);
         Map<String, Object> payload = new HashMap<String, Object>();
@@ -100,7 +100,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void cancel(IErrorCallback onError) {
+    public synchronized void cancel(IErrorCallback onError) {
         Log.d(TAG, "cancel");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
@@ -108,7 +108,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void accept(IErrorCallback onError) {
+    public synchronized void accept(IErrorCallback onError) {
         Log.d(TAG, "accept");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
@@ -116,7 +116,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void finish(IErrorCallback onError) {
+    public synchronized void finish(IErrorCallback onError) {
         Log.d(TAG, "finish");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
@@ -124,7 +124,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void evaluate(Map<String, Object> evaluation, IErrorCallback onError) {
+    public synchronized void evaluate(Map<String, Object> evaluation, IErrorCallback onError) {
         Log.d(TAG, "evaluate");
         Map<String, Object> payload = new HashMap<String, Object>();
         payload.put(Constants.PROPERTY_EVALUATION, evaluation);
@@ -133,7 +133,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public void confirmCancel(IErrorCallback onError) {
+    public synchronized void confirmCancel(IErrorCallback onError) {
         Log.d(TAG, "confirmCancel");
         Map<String, Object> payload = new HashMap<String, Object>();
         decorateWithUserInfo(payload, preferences);
@@ -141,7 +141,7 @@ public class CoreApi implements ICoreApi {
     }
 
     @Override
-    public ICoreReadablePreferences getPreferences() {
+    public synchronized ICoreReadablePreferences getPreferences() {
         return this.preferences;
     }
 

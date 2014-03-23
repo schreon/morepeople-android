@@ -46,17 +46,17 @@ public class MainIntentService extends IntentService {
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         String messageType = gcm.getMessageType(intent);
         Log.d(TAG, "messageType -> " + messageType);
-        if (extras != null) {
+        if (messageType != null && extras != null) {
             // kick off broadcast stuff
             String mpMessageType = (String) extras.get(Constants.PROPERTY_MESSAGE_TYPE);
             Log.d(TAG, "mpMessageType -> " + mpMessageType);
-            if (mpMessageType.equals(Constants.BROADCAST_GCM_CONFIRMATION)) {
+            if (Constants.BROADCAST_GCM_CONFIRMATION.equals(mpMessageType)) {
                 sendLocalBroadcast(Constants.BROADCAST_LOCAL_CONFIRMATION);
             }
-            if (mpMessageType.equals(Constants.BROADCAST_GCM_MATCH_FOUND)) {
+            if (Constants.BROADCAST_GCM_MATCH_FOUND.equals(mpMessageType)) {
                 sendLocalBroadcast(Constants.BROADCAST_LOCAL_MATCH_FOUND);
             }
-            if (mpMessageType.equals(Constants.BROADCAST_GCM_CHAT)) {
+            if (Constants.BROADCAST_GCM_CHAT.equals(mpMessageType)) {
                 sendLocalBroadcast(Constants.BROADCAST_LOCAL_CHAT);
             }
         }
