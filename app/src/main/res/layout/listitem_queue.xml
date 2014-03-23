@@ -6,7 +6,7 @@
     android:divider="#353535"
     android:padding="1dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -17,9 +17,27 @@
             android:textAppearance="@android:style/TextAppearance.Medium"
             android:text="Suchbegriff"
             android:id="@+id/search_term"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp" />
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/search_distance"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:layout_alignParentLeft="false"
+            android:layout_marginLeft="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:orientation="horizontal"

@@ -1,6 +1,7 @@
 package morepeople.android.app.factory;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -44,6 +45,7 @@ public class CoreFactory implements ICoreFactory {
 
     @Override
     public void createCoreApi(ICallback onNoUserNameFound, final IApiCallback onFinish, final IErrorCallback onError) {
+
         final Plan plan = new Plan();
 
         final ICoreWritablePreferences preferences = new CoreWritablePreferences(context);

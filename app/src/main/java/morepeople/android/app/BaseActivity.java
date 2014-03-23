@@ -3,6 +3,7 @@ package morepeople.android.app;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -125,8 +126,9 @@ public abstract class BaseActivity extends Activity {
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
+        Log.d(TAG, "onUserInteraction");
         pollHandler.removeCallbacks(poller);
         poller.run();
-        Log.d(TAG, "onUserInteraction");
+
     }
 }

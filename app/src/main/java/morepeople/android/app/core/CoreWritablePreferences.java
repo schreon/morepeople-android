@@ -164,7 +164,14 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
             String USER_ID = (String) searchEntryMap.get(Constants.PROPERTY_USER_ID);
             String USER_NAME = (String) searchEntryMap.get(Constants.PROPERTY_USER_NAME);
             String MATCH_TAG = (String) searchEntryMap.get(Constants.PROPERTY_MATCH_TAG);
-            newSearchEntryList.add(new SearchEntry(USER_ID, MATCH_TAG, USER_NAME));
+            double DISTANCE;
+            if (searchEntryMap.containsKey(Constants.PROPERTY_DISTANCE)) {
+                DISTANCE = (Double) searchEntryMap.get(Constants.PROPERTY_DISTANCE);
+            } else {
+                DISTANCE = 0.0;
+            }
+
+            newSearchEntryList.add(new SearchEntry(USER_ID, MATCH_TAG, USER_NAME, DISTANCE));
         }
         this.setSearchEntryList(newSearchEntryList);
     }
