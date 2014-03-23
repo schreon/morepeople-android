@@ -1,6 +1,7 @@
 package morepeople.android.app;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -102,6 +103,9 @@ public abstract class BaseActivity extends Activity {
         super.onResume();
         pollHandler.removeCallbacks(poller);
         pollHandler.postDelayed(poller, pollDelay);
+        // Clear notifications if necessary
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(1);
     }
 
 
@@ -116,5 +120,13 @@ public abstract class BaseActivity extends Activity {
         super.onPause();
         pollHandler.removeCallbacks(poller);
         Log.d(TAG, "onPause");
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        pollHandler.removeCallbacks(poller);
+        poller.run();
+        Log.d(TAG, "onUserInteraction");
     }
 }

@@ -118,6 +118,7 @@ public class ConfirmationActivity extends BaseActivity {
     @Override
     protected synchronized void onPoll() {
         Log.d(TAG, "onPoll");
+        updateParticipantList();
         updateLobby();
     }
 
@@ -147,6 +148,7 @@ public class ConfirmationActivity extends BaseActivity {
         super.onResume();
 
         if (coreApi != null) {
+            updateParticipantList();
             adaptViewToState(coreApi.getPreferences().getCurrentUserState());
         }
     }
