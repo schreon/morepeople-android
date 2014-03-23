@@ -37,6 +37,8 @@ public class ConfirmationActivity extends BaseActivity {
     };
 
     private ParticipantsAdapter participantsAdapter;
+    private LinearLayout layoutConfirmWait;
+    private LinearLayout layoutConfirmButtons;
 
     /**
      * OnCreate method
@@ -59,15 +61,9 @@ public class ConfirmationActivity extends BaseActivity {
         ListView listView = (ListView) this.findViewById(R.id.confirm_list_view);
         listView.setAdapter(participantsAdapter);
 
-        final LinearLayout layoutConfirmWait = (LinearLayout) this.findViewById(R.id.confirm_wait_layout);
-        final LinearLayout layoutConfirmButtons = (LinearLayout) this.findViewById(R.id.confirm_button_layout);
+        layoutConfirmWait = (LinearLayout) this.findViewById(R.id.confirm_wait_layout);
+        layoutConfirmButtons = (LinearLayout) this.findViewById(R.id.confirm_button_layout);
         Button buttonConfirm = (Button) this.findViewById(R.id.button_confirm);
-
-        // Hide controls if already in accepted state
-        if (UserState.ACCEPTED.equals(coreApi.getPreferences().getCurrentUserState())) {
-            layoutConfirmWait.setVisibility(View.VISIBLE);
-            layoutConfirmButtons.setVisibility(View.GONE);
-        }
 
         /**
          * OnClickListener for confirm button.
@@ -137,6 +133,24 @@ public class ConfirmationActivity extends BaseActivity {
         }
     };
 
+    private void adaptViewToState(UserState state) {
+        // Hide the controls if already queued
+        if (UserState.ACCEPTED.equals(state)) {
+            hideControls();
+        } else {
+            showControls();
+        }
+    }
+
+    private void hideControls() {
+        layoutConfirmWait.setVisibility(View.VISIBLE);
+        layoutConfirmButtons.setVisibility(View.GONE);
+    }
+
+    private void showControls() {
+        layoutConfirmWait.setVisibility(View.GONE);
+        layoutConfirmButtons.setVisibility(View.VISIBLE);
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -153,6 +167,10 @@ public class ConfirmationActivity extends BaseActivity {
 
         registerReceiver(foregroundReceiver,
                 new IntentFilter(Constants.BROADCAST_LOCAL_CONFIRMATION));
+
+        if (coreApi != null) {
+            adaptViewToState(coreApi.getPreferences().getCurrentUserState());
+        }
     }
 
     @Override

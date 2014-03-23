@@ -37,7 +37,6 @@ public class ConfirmationBackgroundReceiver extends WakefulBroadcastReceiver {
                         .setVibrate(vibrate);
         mBuilder.setContentIntent(contentIntent);
         manager.notify(1, mBuilder.build());
-        setResultCode(Activity.RESULT_OK);
 
         completeWakefulIntent(intent);
     }

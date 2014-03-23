@@ -18,7 +18,7 @@ public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive");
 
-        // create notification which will start activity if the notification is clicked
+        // create notification which will start the activity if the notification is clicked
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent startConfirmationActivityIntent = new Intent(context, ConfirmationActivity.class);
@@ -34,8 +34,6 @@ public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
                         .setVibrate(vibrate);
         mBuilder.setContentIntent(contentIntent);
         manager.notify(1, mBuilder.build());
-        setResultCode(Activity.RESULT_OK);
-
         completeWakefulIntent(intent);
     }
 }
