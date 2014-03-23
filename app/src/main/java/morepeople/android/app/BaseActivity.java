@@ -3,10 +3,11 @@ package morepeople.android.app;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import morepeople.android.app.factory.CoreFactory;
@@ -93,6 +94,7 @@ public abstract class BaseActivity extends Activity {
     protected void onCoreInitFinished() {
         Log.d(TAG, "onCoreInitFinished");
         coreApi.loadState(defaultErrorCallback);
+
     }
 
     @Override

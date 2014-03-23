@@ -1,7 +1,6 @@
 package morepeople.android.app;
 
 import android.app.AlertDialog;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -147,7 +146,7 @@ public class SearchActivity extends BaseActivity {
 
             // set dialog message
             alertDialogBuilder
-                    .setMessage("Möchtest Du \"" + entry.MATCH_TAG + "\" beitreten?")
+                    .setMessage("Möchtest Du auch nach \"" + entry.MATCH_TAG + "\" suchen?")
                     .setCancelable(false)
                     .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
