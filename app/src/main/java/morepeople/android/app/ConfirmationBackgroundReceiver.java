@@ -1,22 +1,19 @@
 package morepeople.android.app;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
-
-import morepeople.android.app.interfaces.Constants;
 
 /**
  * Created by schreon on 3/13/14.
  */
 public class ConfirmationBackgroundReceiver extends WakefulBroadcastReceiver {
     private final static String TAG = "morepeople.android.app.ConfirmationBackgroundReceiver";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive");

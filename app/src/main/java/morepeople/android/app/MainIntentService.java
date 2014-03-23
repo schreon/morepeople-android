@@ -14,6 +14,7 @@ import morepeople.android.app.interfaces.Constants;
  */
 public class MainIntentService extends IntentService {
     private final static String TAG = "morepeople.android.app.MainIntentService";
+
     /**
      * Constructor of MainIntentService class
      */
@@ -27,6 +28,7 @@ public class MainIntentService extends IntentService {
         mIntent.setAction(localBroadCast);
         sendBroadcast(mIntent);
     }
+
     /**
      * OnHandleIntent
      *
@@ -46,7 +48,7 @@ public class MainIntentService extends IntentService {
         Log.d(TAG, "messageType -> " + messageType);
         if (extras != null) {
             // kick off broadcast stuff
-            String mpMessageType = (String)extras.get(Constants.PROPERTY_MESSAGE_TYPE);
+            String mpMessageType = (String) extras.get(Constants.PROPERTY_MESSAGE_TYPE);
             Log.d(TAG, "mpMessageType -> " + mpMessageType);
             if (mpMessageType.equals(Constants.BROADCAST_GCM_CONFIRMATION)) {
                 sendLocalBroadcast(Constants.BROADCAST_LOCAL_CONFIRMATION);

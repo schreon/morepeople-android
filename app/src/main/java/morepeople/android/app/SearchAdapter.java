@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.structures.SearchEntry;
 
 /**

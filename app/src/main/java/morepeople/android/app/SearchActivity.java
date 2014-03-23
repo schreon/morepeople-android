@@ -29,6 +29,7 @@ public class SearchActivity extends BaseActivity {
 
     private SearchAdapter searchAdapter;
     private EditText inputSearch;
+    private boolean isSearching = false;
 
     /**
      * @param savedInstanceState contains the previous state of the activity if it was existent before.
@@ -81,6 +82,13 @@ public class SearchActivity extends BaseActivity {
                 } else {
                     buttonSendSearch.setVisibility(View.GONE);
                 }
+                coreApi.search(
+                        coreApi.getPreferences().getLastKnownCoordinates(),
+                        1000,
+                        charSequence.toString(),
+                        defaultErrorCallback
+                );
+
             }
 
             /**
@@ -125,7 +133,6 @@ public class SearchActivity extends BaseActivity {
         });
 
         searchAdapter.setOnSearchEntryClickListener(onSearchEntryClickListener);
-        searchAndUpdate();
         updateListView();
         Log.d(TAG, "finished onCoreInitFinished");
     }
@@ -179,7 +186,7 @@ public class SearchActivity extends BaseActivity {
                 imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
             }
         };
-        mainHandler.post(runOnUI);
+        this.runOnUiThread(runOnUI);
     }
 
     private void showControls() {
@@ -192,7 +199,7 @@ public class SearchActivity extends BaseActivity {
                 layoutSearchInput.setVisibility(View.VISIBLE);
             }
         };
-        mainHandler.post(runOnUI);
+        this.runOnUiThread(runOnUI);
     }
 
     private void adaptViewToState(UserState state) {
@@ -204,29 +211,17 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
-    private void searchAndUpdate() {
-        Log.d(TAG, "searchAndUpdate");
-        String searchTerm = inputSearch.getText().toString();
-
-        coreApi.search(
-            coreApi.getPreferences().getLastKnownCoordinates(),
-            1000,
-            searchTerm,
-            defaultErrorCallback
-        );
-    }
-
-    private Runnable runSearch = new Runnable() {
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    searchAndUpdate();
-                }
-            });
+    @Override
+    protected synchronized void onPoll() {
+        if (coreApi != null) {
+            coreApi.search(
+                coreApi.getPreferences().getLastKnownCoordinates(),
+                1000,
+                coreApi.getPreferences().getMatchTag(),
+                defaultErrorCallback
+            );
         }
-    };
+    }
 
     private void updateListView() {
         Log.d(TAG, "updateListView");
@@ -244,6 +239,8 @@ public class SearchActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
+
         if (coreApi != null) {
             // do a search
             updateListView();
@@ -259,19 +256,9 @@ public class SearchActivity extends BaseActivity {
             // do a search
             updateListView();
             adaptViewToState(coreApi.getPreferences().getCurrentUserState());
-            // search again in 10 seconds
-            mainHandler.postDelayed(runSearch, 10000);
         } else {
             Log.d(TAG, "coreApi still null, doing nothing");
         }
         Log.d(TAG, "finishing onResume");
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mainHandler.removeCallbacks(runSearch);
-    }
-
-
 }

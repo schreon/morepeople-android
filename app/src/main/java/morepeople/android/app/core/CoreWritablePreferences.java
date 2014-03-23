@@ -29,15 +29,6 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    private String userName;
-    private String userId;
-    private String hostName;
-    private String matchTag;
-    private Coordinates lastKnownCoordinates;
-    private UserState currentUserState;
-    private List<Participant> participantList;
-    private List<SearchEntry> searchEntryList;
-
     private final Type participantListType = new TypeToken<List<Participant>>() {
     }.getType();
     private final Type searchEntryListType = new TypeToken<List<SearchEntry>>() {
@@ -48,80 +39,58 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
     public CoreWritablePreferences(Context context) {
         sharedPreferences = context.getSharedPreferences(Constants.PROPERTY_SHARED_PREFS, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        userName = null;
-        userId = null;
-        hostName = null;
-        lastKnownCoordinates = null;
-        currentUserState = null;
-        participantList = null;
-        searchEntryList = null;
-        matchTag = null;
         gson = new Gson();
     }
 
     @Override
     public synchronized String getUserName() {
-        if (userName == null) {
-            userName = sharedPreferences.getString(Constants.PROPERTY_USER_NAME, null);
-            Log.d(TAG, "already contains username:" + userName);
-        }
+        String userName;
+        userName = sharedPreferences.getString(Constants.PROPERTY_USER_NAME, null);
+        Log.d(TAG, "already contains username:" + userName);
         return userName;
     }
 
     @Override
     public synchronized void setUserName(String userName) {
-        this.userName = userName;
         editor.putString(Constants.PROPERTY_USER_NAME, userName);
         editor.commit();
     }
 
     @Override
     public synchronized String getUserId() {
-        if (userId == null) {
-            userId = sharedPreferences.getString(Constants.PROPERTY_USER_ID, null);
-            Log.d(TAG, "already contains user USER_ID:" + userId);
-        }
+        String userId = sharedPreferences.getString(Constants.PROPERTY_USER_ID, null);
         return userId;
     }
 
     @Override
     public synchronized void setUserId(String userId) {
-        this.userId = userId;
         editor.putString(Constants.PROPERTY_USER_ID, userId);
         editor.commit();
     }
 
     @Override
     public synchronized String getServerHostName() {
-        if (hostName == null) {
-            hostName = sharedPreferences.getString(Constants.PROPERTY_HOSTNAME, null);
-            Log.d(TAG, "already contains hostname:" + userId);
-        }
+        String hostName = sharedPreferences.getString(Constants.PROPERTY_HOSTNAME, null);
         return hostName;
     }
 
     @Override
     public synchronized void setServerHostName(String serverHostName) {
-        this.hostName = serverHostName;
         editor.putString(Constants.PROPERTY_HOSTNAME, serverHostName);
         editor.commit();
     }
 
     @Override
     public synchronized Coordinates getLastKnownCoordinates() {
-        if (lastKnownCoordinates == null) {
-            String serialized = sharedPreferences.getString(Constants.PROPERTY_COORDINATES, null);
-            if (serialized == null) {
-                return null;
-            }
-            lastKnownCoordinates = gson.fromJson(serialized, Coordinates.class);
+        String serialized = sharedPreferences.getString(Constants.PROPERTY_COORDINATES, null);
+        if (serialized == null) {
+            return null;
         }
-        return lastKnownCoordinates;
+        return gson.fromJson(serialized, Coordinates.class);
     }
 
     @Override
     public void setLastKnownCoordinates(Coordinates lastKnownCoordinates) {
-        this.lastKnownCoordinates = lastKnownCoordinates;
         String serialized = gson.toJson(lastKnownCoordinates);
         editor.putString(Constants.PROPERTY_COORDINATES, serialized);
         editor.commit();
@@ -129,35 +98,28 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
 
     @Override
     public synchronized UserState getCurrentUserState() {
-        if (currentUserState == null) {
-            currentUserState = UserState.valueOf(sharedPreferences.getString(Constants.PROPERTY_STATE, null));
-            Log.d(TAG, "current state:" + userId);
-        }
+        UserState currentUserState = UserState.valueOf(sharedPreferences.getString(Constants.PROPERTY_STATE, null));
         return currentUserState;
     }
 
     @Override
     public synchronized void setCurrentUserState(UserState currentUserState) {
-        this.currentUserState = currentUserState;
         editor.putString(Constants.PROPERTY_STATE, currentUserState.toString());
         editor.commit();
     }
 
     @Override
     public synchronized List<Participant> getParticipantList() {
-        if (participantList == null) {
-            String serialized = sharedPreferences.getString(Constants.PROPERTY_PARTICIPANTS, null);
-            if (serialized == null) {
-                return null;
-            }
-            participantList = gson.fromJson(serialized, participantListType);
+        String serialized = sharedPreferences.getString(Constants.PROPERTY_PARTICIPANTS, null);
+        if (serialized == null) {
+            return null;
         }
+        List<Participant> participantList = gson.fromJson(serialized, participantListType);
         return participantList;
     }
 
     @Override
     public synchronized void setParticipantList(List<Participant> participantList) {
-        this.participantList = participantList;
         String serialized = gson.toJson(participantList);
         editor.putString(Constants.PROPERTY_PARTICIPANTS, serialized);
         editor.commit();
@@ -179,19 +141,16 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
 
     @Override
     public synchronized List<SearchEntry> getSearchEntryList() {
-        if (searchEntryList == null) {
-            String serialized = sharedPreferences.getString(Constants.PROPERTY_SEARCHENTRIES, null);
-            if (serialized == null) {
-                return null;
-            }
-            searchEntryList = gson.fromJson(serialized, searchEntryListType);
+        String serialized = sharedPreferences.getString(Constants.PROPERTY_SEARCHENTRIES, null);
+        if (serialized == null) {
+            return null;
         }
+        List<SearchEntry> searchEntryList = gson.fromJson(serialized, searchEntryListType);
         return searchEntryList;
     }
 
     @Override
     public synchronized void setSearchEntryList(List<SearchEntry> searchEntryList) {
-        this.searchEntryList = searchEntryList;
         String serialized = gson.toJson(searchEntryList);
         editor.putString(Constants.PROPERTY_SEARCHENTRIES, serialized);
         editor.commit();
@@ -212,15 +171,12 @@ public class CoreWritablePreferences implements ICoreWritablePreferences {
 
     @Override
     public synchronized String getMatchTag() {
-        if (matchTag == null) {
-            matchTag = sharedPreferences.getString(Constants.PROPERTY_MATCH_TAG, null);
-        }
+        String matchTag = sharedPreferences.getString(Constants.PROPERTY_MATCH_TAG, null);
         return matchTag;
     }
 
     @Override
     public synchronized void setMatchTag(String matchTag) {
-        this.matchTag = matchTag;
         editor.putString(Constants.PROPERTY_MATCH_TAG, matchTag);
         editor.commit();
     }

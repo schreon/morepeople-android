@@ -27,11 +27,22 @@ import morepeople.android.app.structures.UserState;
  */
 public class ConfirmationActivity extends BaseActivity {
 
-    private BroadcastReceiver foregroundReceiver = new BroadcastReceiver() {
+    private static final String TAG = "morepeople.android.app.ConfirmationActivity";
+
+    private BroadcastReceiver confirmationForegroundReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("GCM", "ConfirmationActivity.foregroundReceiver");
+            Log.d(TAG, "confirmationForegroundReceiver");
+            coreApi.getLobby(defaultErrorCallback);
+        }
+    };
+
+    private BroadcastReceiver matchFoundForegroundReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "matchFoundForegroundReceiver");
             coreApi.getLobby(defaultErrorCallback);
         }
     };
@@ -39,6 +50,7 @@ public class ConfirmationActivity extends BaseActivity {
     private ParticipantsAdapter participantsAdapter;
     private LinearLayout layoutConfirmWait;
     private LinearLayout layoutConfirmButtons;
+
 
     /**
      * OnCreate method
@@ -126,11 +138,9 @@ public class ConfirmationActivity extends BaseActivity {
         updateLobby();
     }
 
-    private Runnable delayedLobby = new Runnable() {
-        @Override
-        public void run() {
+    @Override
+    protected synchronized void onPoll() {
             updateLobby();
-        }
     };
 
     private void adaptViewToState(UserState state) {
@@ -151,6 +161,7 @@ public class ConfirmationActivity extends BaseActivity {
         layoutConfirmWait.setVisibility(View.GONE);
         layoutConfirmButtons.setVisibility(View.VISIBLE);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -159,14 +170,13 @@ public class ConfirmationActivity extends BaseActivity {
         ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
-        Log.d("GCM", "disabled confirmation background receiver");
+        Log.d(TAG, "disabled confirmation background receiver");
 
-        // register ConfirmationForegroundReceiver
-        //LocalBroadcastManager.getInstance(this).registerReceiver(foregroundReceiver,
-        //        new IntentFilter(ConfirmationActivity.BROADCAST_LOCAL_CONFIRMATION));
-
-        registerReceiver(foregroundReceiver,
+        registerReceiver(confirmationForegroundReceiver,
                 new IntentFilter(Constants.BROADCAST_LOCAL_CONFIRMATION));
+
+        registerReceiver(matchFoundForegroundReceiver,
+                new IntentFilter(Constants.BROADCAST_LOCAL_MATCH_FOUND));
 
         if (coreApi != null) {
             adaptViewToState(coreApi.getPreferences().getCurrentUserState());
@@ -176,19 +186,18 @@ public class ConfirmationActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        // unregister ConfirmationForegroundReceiver
-        // LocalBroadcastManager.getInstance(this).unregisterReceiver(foregroundReceiver);
-
-        unregisterReceiver(foregroundReceiver);
-
+        unregisterReceiver(confirmationForegroundReceiver);
+        unregisterReceiver(matchFoundForegroundReceiver);
         //enable static ConfirmationBackgroundReceiver
         ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
         getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+    }
 
-        mainHandler.removeCallbacks(delayedLobby);
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-        Log.d("GCM", "re enabled static confirmation background receiver");
+        Log.d(TAG, "re enabled static confirmation background receiver");
     }
 
     private void updateParticipantList() {
@@ -205,7 +214,9 @@ public class ConfirmationActivity extends BaseActivity {
     }
 
     private void updateLobby() {
-        coreApi.getLobby(defaultErrorCallback);
+        if (coreApi != null) {
+            coreApi.getLobby(defaultErrorCallback);
+        }
     }
 
     @Override
@@ -213,7 +224,6 @@ public class ConfirmationActivity extends BaseActivity {
         super.onNewIntent(intent);
         if (coreApi != null) {
             updateParticipantList();
-            mainHandler.postDelayed(delayedLobby, 10000);
         }
     }
 }

@@ -13,7 +13,6 @@ import morepeople.android.app.interfaces.ICoreWritablePreferences;
 import morepeople.android.app.interfaces.IDataCallback;
 import morepeople.android.app.interfaces.IErrorCallback;
 import morepeople.android.app.structures.Coordinates;
-import morepeople.android.app.structures.UserState;
 
 /**
  * Created by schreon on 3/20/14.
@@ -80,18 +79,14 @@ public class CoreApi implements ICoreApi {
     @Override
     public void search(Coordinates coordinates, long radius, String searchTerm, IErrorCallback onError) {
         Log.d(TAG, "search");
-        if ( preferences.getCurrentUserState().equals(UserState.QUEUED)) {
-            queue(preferences.getMatchTag(), onError);
-        } else {
-            HashMap<String, String> rewrite = new HashMap<String, String>();
-            rewrite.put("LON", String.valueOf(coordinates.getLongitude()));
-            rewrite.put("LAT", String.valueOf(coordinates.getLatitude()));
-            rewrite.put("RAD", "1000");
-            if (searchTerm != null) {
-                rewrite.put("SEARCH", searchTerm);
-            }
-            client.doGetRequest("/queue", rewrite, onServerResponse, onError);
+        HashMap<String, String> rewrite = new HashMap<String, String>();
+        rewrite.put("LON", String.valueOf(coordinates.getLongitude()));
+        rewrite.put("LAT", String.valueOf(coordinates.getLatitude()));
+        rewrite.put("RAD", "1000");
+        if (searchTerm != null) {
+            rewrite.put("SEARCH", searchTerm);
         }
+        client.doGetRequest("/queue", rewrite, onServerResponse, onError);
     }
 
     @Override

@@ -21,7 +21,11 @@ public abstract class BaseActivity extends Activity {
     private static final String TAG = "morepeople.android.app.BaseActivity";
     private Context context;
 
-    protected Handler mainHandler;
+    protected boolean isPolling = false;
+    private Runnable poller = null;
+    protected long pollDelay;
+    private Handler pollHandler;
+
     protected IErrorCallback defaultErrorCallback = new IErrorCallback() {
         @Override
         public void run(final String errorMessage) {
@@ -43,8 +47,21 @@ public abstract class BaseActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = this;
         coreApi = null;
-        mainHandler = new Handler(getMainLooper());
+        pollHandler = new Handler(getMainLooper());
         Log.d(TAG, "onCreate finished");
+        pollDelay = 10000;
+        poller = new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "poll");
+                onPoll();
+                pollHandler.postDelayed(poller, pollDelay);
+            }
+        };
+    }
+
+    protected synchronized void onPoll() {
+        // nothing
     }
 
     @Override
@@ -70,10 +87,36 @@ public abstract class BaseActivity extends Activity {
 
     protected void onCoreInitFinished() {
         Log.d(TAG, "starting onCoreInitFinished");
+        poller.run();
         Log.d(TAG, "finishing onCoreInitFinished");
     }
 
     @Override
     public void onBackPressed() {
+    }
+
+    private synchronized void continuePolling() {
+        if (!isPolling) {
+            pollHandler.removeCallbacks(null);
+            isPolling = true;
+            poller.run();
+        }
+    }
+
+    private synchronized void stopPolling() {
+        pollHandler.removeCallbacks(null);
+        isPolling = false;
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        continuePolling();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopPolling();
     }
 }

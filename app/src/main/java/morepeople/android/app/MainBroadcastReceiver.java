@@ -12,6 +12,7 @@ import android.util.Log;
  */
 public class MainBroadcastReceiver extends WakefulBroadcastReceiver {
     private final static String TAG = "morepeople.android.app.MainBroadcastReceiver";
+
     /**
      * OnReceive method sets wakeful service
      *
