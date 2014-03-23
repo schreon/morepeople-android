@@ -214,10 +214,10 @@ public class SearchActivity extends BaseActivity {
         Log.d(TAG, "onPoll");
         if (coreApi != null) {
             coreApi.search(
-                coreApi.getPreferences().getLastKnownCoordinates(),
-                1000,
-                coreApi.getPreferences().getMatchTag(),
-                defaultErrorCallback
+                    coreApi.getPreferences().getLastKnownCoordinates(),
+                    1000,
+                    coreApi.getPreferences().getMatchTag(),
+                    defaultErrorCallback
             );
         }
     }

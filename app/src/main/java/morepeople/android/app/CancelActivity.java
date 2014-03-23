@@ -13,7 +13,7 @@ public class CancelActivity extends BaseActivity {
 
     @Override
     protected int getLayoutResourceId() {
-        return R.layout.activity_cancel;    
+        return R.layout.activity_cancel;
     }
 
     @Override

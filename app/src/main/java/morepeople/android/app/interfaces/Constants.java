@@ -24,9 +24,11 @@ public abstract class Constants {
 
     public static final String BROADCAST_GCM_MATCH_FOUND = "MATCH_FOUND";
     public static final String BROADCAST_GCM_CONFIRMATION = "CONFIRMATION";
+    public static final String BROADCAST_GCM_RUNNING = "RUNNING";
     public static final String BROADCAST_GCM_CHAT = "CHAT";
     public static final String BROADCAST_LOCAL_MATCH_FOUND = "morepeople.android.app.BROADCAST_LOCAL_MATCH_FOUND";
     public static final String BROADCAST_LOCAL_CONFIRMATION = "morepeople.android.app.BROADCAST_LOCAL_CONFIRMATION";
+    public static final String BROADCAST_LOCAL_RUNNING = "morepeople.android.app.BROADCAST_LOCAL_RUNNING";
     public static final String BROADCAST_LOCAL_CHAT = "morepeople.android.app.BROADCAST_LOCAL_CHAT";
 
     private Constants() {

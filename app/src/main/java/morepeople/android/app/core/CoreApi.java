@@ -78,7 +78,7 @@ public class CoreApi implements ICoreApi {
 
     @Override
     public synchronized void search(Coordinates coordinates, long radius, String searchTerm, IErrorCallback onError) {
-        Log.d(TAG, "search for "+searchTerm);
+        Log.d(TAG, "search for " + searchTerm);
         HashMap<String, String> rewrite = new HashMap<String, String>();
         rewrite.put("LON", String.valueOf(coordinates.getLongitude()));
         rewrite.put("LAT", String.valueOf(coordinates.getLatitude()));

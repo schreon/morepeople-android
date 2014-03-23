@@ -31,7 +31,7 @@
             android:name="morepeople.android.app.HOSTNAME"
             android:value="http://109.230.231.200" />
 
-        <!-- Local Broadcast Receivers -->
+        <!-- Local Broadcast Receiver -->
         <receiver android:name="morepeople.android.app.ConfirmationBackgroundReceiver" >
             <intent-filter>
                 <action android:name="morepeople.android.app.BROADCAST_LOCAL_CONFIRMATION" />
@@ -39,10 +39,18 @@
             </intent-filter>
         </receiver>
 
-        <!-- Local Broadcast Receivers -->
+        <!-- Local Broadcast Receiver -->
         <receiver android:name="morepeople.android.app.MatchFoundBackgroundReceiver" >
             <intent-filter>
                 <action android:name="morepeople.android.app.BROADCAST_LOCAL_MATCH_FOUND" />
+                <category android:name="morepeople.android.app" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Local Broadcast Receiver -->
+        <receiver android:name="morepeople.android.app.MatchRunningBackgroundReceiver" >
+            <intent-filter>
+                <action android:name="morepeople.android.app.BROADCAST_LOCAL_RUNNING" />
                 <category android:name="morepeople.android.app" />
             </intent-filter>
         </receiver>

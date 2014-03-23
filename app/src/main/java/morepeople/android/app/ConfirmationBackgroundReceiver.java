@@ -35,6 +35,9 @@ public class ConfirmationBackgroundReceiver extends WakefulBroadcastReceiver {
         mBuilder.setContentIntent(contentIntent);
         manager.notify(1, mBuilder.build());
 
+        Intent startIntent = new Intent(context, ConfirmationActivity.class);
+        startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(startIntent);
         completeWakefulIntent(intent);
     }
 }

@@ -56,6 +56,9 @@ public class MainIntentService extends IntentService {
             if (Constants.BROADCAST_GCM_MATCH_FOUND.equals(mpMessageType)) {
                 sendLocalBroadcast(Constants.BROADCAST_LOCAL_MATCH_FOUND);
             }
+            if (Constants.BROADCAST_GCM_RUNNING.equals(mpMessageType)) {
+                sendLocalBroadcast(Constants.BROADCAST_LOCAL_RUNNING);
+            }
             if (Constants.BROADCAST_GCM_CHAT.equals(mpMessageType)) {
                 sendLocalBroadcast(Constants.BROADCAST_LOCAL_CHAT);
             }

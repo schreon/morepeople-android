@@ -13,10 +13,10 @@ import morepeople.android.app.interfaces.ICoreWritablePreferences;
 import morepeople.android.app.structures.UserState;
 
 /**
- * Created by schreon on 3/21/14.
+ * Created by schreon on 3/23/14.
  */
-public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
-    private final static String TAG = "morepeople.android.app.MatchFoundBackgroundReceiver";
+public class MatchRunningBackgroundReceiver extends WakefulBroadcastReceiver {
+    private final static String TAG = "morepeople.android.app.MatchRunningBackgroundReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -24,14 +24,14 @@ public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
 
         // get preferences
         ICoreWritablePreferences preferences = new CoreWritablePreferences(context);
-        preferences.setCurrentUserState(UserState.OPEN);
+        preferences.setCurrentUserState(UserState.RUNNING);
 
         // create notification which will start the activity if the notification is clicked
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent startConfirmationActivityIntent = new Intent(context, ConfirmationActivity.class);
+        Intent startChatActivity = new Intent(context, ChatActivity.class);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, startConfirmationActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, startChatActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
         long[] vibrate = {0, 100, 200, 300};
         NotificationCompat.Builder mBuilder =
@@ -39,12 +39,12 @@ public class MatchFoundBackgroundReceiver extends WakefulBroadcastReceiver {
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle("Es geht los!")
                         .setStyle(new NotificationCompat.BigTextStyle().bigText("Es geht los!"))
-                        .setContentText("Wir haben Leute gefunden, die sich mit Dir treffen würden!")
+                        .setContentText("Alle haben zugesagt - bitte komme jetzt zum Treffpunkt!")
                         .setVibrate(vibrate);
         mBuilder.setContentIntent(contentIntent);
         manager.notify(1, mBuilder.build());
 
-        Intent startIntent = new Intent(context, ConfirmationActivity.class);
+        Intent startIntent = new Intent(context, ChatActivity.class);
         startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(startIntent);
         completeWakefulIntent(intent);

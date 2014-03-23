@@ -1,13 +1,8 @@
 package morepeople.android.app;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +13,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import morepeople.android.app.interfaces.Constants;
 import morepeople.android.app.structures.Participant;
 import morepeople.android.app.structures.UserState;
 
@@ -28,24 +22,6 @@ import morepeople.android.app.structures.UserState;
 public class ConfirmationActivity extends BaseActivity {
 
     private static final String TAG = "morepeople.android.app.ConfirmationActivity";
-
-    private BroadcastReceiver confirmationForegroundReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "confirmationForegroundReceiver");
-            coreApi.getLobby(defaultErrorCallback);
-        }
-    };
-
-    private BroadcastReceiver matchFoundForegroundReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "matchFoundForegroundReceiver");
-            coreApi.getLobby(defaultErrorCallback);
-        }
-    };
 
     private ParticipantsAdapter participantsAdapter;
     private LinearLayout layoutConfirmWait;
@@ -143,7 +119,9 @@ public class ConfirmationActivity extends BaseActivity {
     protected synchronized void onPoll() {
         Log.d(TAG, "onPoll");
         updateLobby();
-    };
+    }
+
+    ;
 
     private void adaptViewToState(UserState state) {
         // Hide the controls if already queued
@@ -168,18 +146,6 @@ public class ConfirmationActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        // disable static ConfirmationBackgroundReceiver
-        ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
-        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-
-        Log.d(TAG, "disabled confirmation background receiver");
-
-        registerReceiver(confirmationForegroundReceiver,
-                new IntentFilter(Constants.BROADCAST_LOCAL_CONFIRMATION));
-
-        registerReceiver(matchFoundForegroundReceiver,
-                new IntentFilter(Constants.BROADCAST_LOCAL_MATCH_FOUND));
-
         if (coreApi != null) {
             adaptViewToState(coreApi.getPreferences().getCurrentUserState());
         }
@@ -188,11 +154,6 @@ public class ConfirmationActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(confirmationForegroundReceiver);
-        unregisterReceiver(matchFoundForegroundReceiver);
-        //enable static ConfirmationBackgroundReceiver
-        ComponentName component = new ComponentName(this, ConfirmationBackgroundReceiver.class);
-        getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
 
     private void updateParticipantList() {

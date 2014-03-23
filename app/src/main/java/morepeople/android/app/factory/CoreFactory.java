@@ -3,7 +3,6 @@ package morepeople.android.app.factory;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.util.Log;
 
 import java.util.Map;
@@ -153,7 +152,7 @@ public class CoreFactory implements ICoreFactory {
             public void run() {
                 Log.d(TAG, "finished building - passing coreApi instance.");
                 final ICoreApi coreApi = new CoreApi(client, preferences, onServerResponse);
-                    onFinish.run(coreApi);
+                onFinish.run(coreApi);
             }
         });
 

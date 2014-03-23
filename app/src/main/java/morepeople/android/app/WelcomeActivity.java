@@ -49,7 +49,7 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     @Override
-    protected  void onPoll() {
+    protected void onPoll() {
         Log.d(TAG, "onPoll");
     }
 
