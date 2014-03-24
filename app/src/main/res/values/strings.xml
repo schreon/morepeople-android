@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MorePeopleAndroid</string>
+    <string name="app_name">morepeople</string>
     <string name="cancel_sorry">Sorry, die Aktivität wurde abgebrochen.</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_confirmation">ConfirmationActivity</string>
+    <string name="title_activity_confirmation">morepeople</string>
     <string name="please_confirm_cancel">Möchtest Du wirklich absagen?</string>
-    <string name="title_activity_welcome">WelcomeActivity</string>
-    <string name="title_activity_evaluation">EvaluationActivity</string>
-    <string name="title_activity_cancel">CancelActivity</string>
-    <string name="title_activity_enter_user_name">EnterUserNameActivity</string>
+    <string name="title_activity_welcome">morepeople</string>
+    <string name="title_activity_evaluation">morepeople</string>
+    <string name="title_activity_cancel">morepeople</string>
+    <string name="title_activity_enter_user_name">morepeople</string>
 
 </resources>
